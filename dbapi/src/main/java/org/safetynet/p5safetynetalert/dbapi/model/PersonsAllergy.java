@@ -6,13 +6,17 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name="medications")
-public class Medication {
+@Table(name="persons_allergies")
+public class PersonsAllergy {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private String name;
+  @ManyToOne
+  private Person person;
+
+  @ManyToOne
+  private Allergy allergy;
 
 }

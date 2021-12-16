@@ -6,13 +6,16 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name="medications")
-public class Medication {
+@Table(name = "persons_medications")
+public class PersonsMedication {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private String name;
+  @ManyToOne
+  private Person person;
 
+  @ManyToOne
+  private Medication medication;
 }

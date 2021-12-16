@@ -9,16 +9,22 @@ import javax.persistence.*;
 @Entity
 @Table(name = "persons")
 public class Person {
+
   @Id
-  @GeneratedValue
-  @Column(name = "person_id")
-  private Integer personId;
-  @Column(name = "first_name")
-  private String firstname;
-  @Column(name = "last_name")
-  private String lastname;
-  private String birthdate;
-  private String address;
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Integer id;
+
+  private String firstName;
+
+  private String lastName;
+
+  private String birthDate;
+
   private String phone;
+
   private String email;
+
+  @ManyToOne
+  private Address address;
+
 }
