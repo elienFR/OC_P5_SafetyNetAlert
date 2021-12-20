@@ -13,11 +13,11 @@ public class FireStation {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private Integer number;
+  private String number;
 
   public FireStation() {};
 
-  public FireStation(Integer number) {
+  public FireStation(String number) {
     this.number = number;
   }
 }

@@ -1,14 +1,16 @@
 package org.safetynet.p5safetynetalert.dbapi.service.initPersist;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.Allergy;
+import org.safetynet.p5safetynetalert.dbapi.model.*;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonData;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.AllergyRepository;
+import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
+import org.safetynet.p5safetynetalert.dbapi.repository.MedicationRepository;
 import org.safetynet.p5safetynetalert.dbapi.repository.initPersist.JsonPersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 @Data
@@ -23,6 +25,10 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   JsonPersonRepository jsonPersonRepository;
   @Autowired
   AllergyRepository allergyRepository;
+  @Autowired
+  FireStationRepository fireStationRepository;
+  @Autowired
+  MedicationRepository medicationRepository;
 
 
   private JsonData jsonData;
@@ -45,15 +51,15 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     importPersonsAllergies();
     importPersonsMedications();
 
-
-    System.out.println("test");
+    importJsonPersons();
   }
+
 
   private void importAllergies() {
     Set<String> mySet = new TreeSet<>();
     List<Allergy> myList = new ArrayList<>();
 
-    //create the allergies' set
+    //create a unique set
     int length = jsonData.getMedicalRecords().getMedicalrecords().size();
     for (int i = 0; i < length; i++) {
       int subLength = jsonData.getMedicalRecords().getMedicalrecords().get(i).getAllergies()
@@ -68,7 +74,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
       }
     }
 
-    //prepare unique allergies' list to insert into DataBase
+    //generate proper list to insert into DataBase
     for (String allergy : mySet) {
       myList.add(new Allergy(allergy));
     }
@@ -78,43 +84,109 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   }
 
   private void importAddresses() {
+    Set<String> mySetOfRoad = new TreeSet<>();
+    Set<String> mySetOfCity = new TreeSet<>();
+    Set<String> mySetOfZip = new TreeSet<>();
+    List<Address> myList = new ArrayList<>();
 
+    //create a unique set of road
+    //create three independent set of road city and zip from persons
+    int lenght = jsonData.getPersons().getPersons().size();
+    for (int i = 0; i < lenght; i++) {
+      String road = jsonData.getPersons().getPersons().get(i).getAddress();
+      String city = jsonData.getPersons().getPersons().get(i).getCity();
+      String zip = jsonData.getPersons().getPersons().get(i).getZip();
+
+      mySetOfRoad.add(road);
+      mySetOfCity.add(city);
+      mySetOfZip.add(zip);
+    }
+
+    //create set of road from firestations
+    int length = jsonData.getFireStations().getFirestations().size();
+    for (int i = 0; i < length; i++) {
+      String road = jsonData.getFireStations().getFirestations().get(i).getAddress();
+      mySetOfRoad.add(road);
+    }
+
+    //TODO : fix this part with a list of unique triplet address
+    JsonPerson personAnalysed = jsonData.getPersons().getPersons().get(i);
+    for (String roadFromSet : mySetOfRoad) {
+      for (String cityFormSet : mySetOfCity) {
+        for (String zipFromSet : mySetOfZip) {
+          if (personAnalysed.getAddress().equals(roadFromSet)
+              && personAnalysed.getCity().equals(cityFormSet)
+              && personAnalysed.getZip().equals(zipFromSet)) {
+            myList.add(new Address(roadFromSet,cityFormSet,zipFromSet,null));
+          }
+        }
+      }
+    }
+
+
+    //create list
+    System.out.println("test");
+
+    //associates firestation
+
+    //import into db
   }
 
   private void importPersons() {
+  }
+
+  private void importJsonPersons() {
     jsonPersonRepository.saveAll(jsonData.getPersons().getPersons());
   }
 
   private void importFireStations() {
     Set<String> mySet = new TreeSet<>();
-    List<Allergy> myList = new ArrayList<>();
+    List<FireStation> myList = new ArrayList<>();
 
-    //create the allergies' set
+    //create a unique set
+    int length = jsonData.getFireStations().getFirestations().size();
+    for (int i = 0; i < length; i++) {
+      String stringToAdd = jsonData.getFireStations()
+          .getFirestations()
+          .get(i)
+          .getStation();
+      mySet.add(stringToAdd);
+    }
+
+    //generate proper list to insert into DataBase
+    for (String fireStationNumber : mySet) {
+      myList.add(new FireStation(fireStationNumber));
+    }
+
+    //Import in H2 DB
+    fireStationRepository.saveAll(myList);
+  }
+
+  private void importMedications() {
+    Set<String> mySet = new TreeSet<>();
+    List<Medication> myList = new ArrayList<>();
+
+    //Create a unique set
     int length = jsonData.getMedicalRecords().getMedicalrecords().size();
     for (int i = 0; i < length; i++) {
-      int allergiesLength = jsonData.getMedicalRecords().getMedicalrecords().get(i).getAllergies()
-          .size();
-      for (int j = 0; j < allergiesLength; j++) {
+      int subLength = jsonData.getMedicalRecords().getMedicalrecords().get(i).getMedications().size();
+      for (int j = 0; j < subLength; j++) {
         String stringToAdd = jsonData.getMedicalRecords()
             .getMedicalrecords()
             .get(i)
-            .getAllergies()
+            .getMedications()
             .get(j);
         mySet.add(stringToAdd);
       }
     }
 
-    //prepare unique allergies' list to insert into DataBase
-    for (String allergy : mySet) {
-      myList.add(new Allergy(allergy));
+    //Generate proper list to insert into DataBase
+    for (String medicationName : mySet) {
+      myList.add(new Medication(medicationName));
     }
 
     //Import in H2 DB
-    allergyRepository.saveAll(myList);
-  }
-
-  private void importMedications() {
-
+    medicationRepository.saveAll(myList);
   }
 
   private void importPersonsMedications() {
