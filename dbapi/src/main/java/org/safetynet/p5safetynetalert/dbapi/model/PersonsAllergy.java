@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Data
 @Entity
-@Table(name="persons_allergies")
+@Table(name = "persons_allergies")
 public class PersonsAllergy {
 
   @Id
@@ -19,4 +19,11 @@ public class PersonsAllergy {
   @ManyToOne
   private Allergy allergy;
 
+  public PersonsAllergy() {
+  }
+
+  public PersonsAllergy(Person person, Allergy allergy) {
+    this.person = person;
+    this.allergy = allergy;
+  }
 }

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class CustomProperties {
 
-  private static String dumbProp;
+  private String mainPath;
+  private String mainResourcesPath;
 
 }

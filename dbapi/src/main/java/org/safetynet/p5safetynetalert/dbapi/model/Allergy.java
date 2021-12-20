@@ -15,4 +15,10 @@ public class Allergy {
 
   private String name;
 
+  public Allergy() {};
+
+  public Allergy(String name) {
+    this.name = name;
+  }
+
 }

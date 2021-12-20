@@ -15,4 +15,9 @@ public class Medication {
 
   private String name;
 
+  public Medication() {};
+
+  public Medication(String name) {
+    this.name = name;
+  }
 }

@@ -18,4 +18,12 @@ public class PersonsMedication {
 
   @ManyToOne
   private Medication medication;
+
+  public PersonsMedication() {
+  }
+
+  public PersonsMedication(Person person, Medication medication) {
+    this.person = person;
+    this.medication = medication;
+  }
 }
