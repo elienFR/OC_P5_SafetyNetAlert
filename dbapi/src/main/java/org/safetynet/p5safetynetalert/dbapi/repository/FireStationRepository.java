@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface FireStationRepository extends CrudRepository<FireStation, Integer> {
   FireStation findByNumber(String s);
+//  void saveAll(List<FireStation> savedList);
 }

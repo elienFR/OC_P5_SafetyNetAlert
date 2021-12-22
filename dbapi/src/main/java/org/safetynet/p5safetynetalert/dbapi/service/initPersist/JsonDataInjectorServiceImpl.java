@@ -4,11 +4,9 @@ import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.model.*;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonData;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
-import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
-import org.safetynet.p5safetynetalert.dbapi.repository.AllergyRepository;
-import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
-import org.safetynet.p5safetynetalert.dbapi.repository.MedicationRepository;
+import org.safetynet.p5safetynetalert.dbapi.repository.*;
 import org.safetynet.p5safetynetalert.dbapi.repository.initPersist.JsonPersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +22,6 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
 
   //Repositories to inject data into databases
   @Autowired
-  JsonPersonRepository jsonPersonRepository;
-  @Autowired
   AllergyRepository allergyRepository;
   @Autowired
   FireStationRepository fireStationRepository;
@@ -33,6 +29,8 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   MedicationRepository medicationRepository;
   @Autowired
   AddressRepository addressRepository;
+  @Autowired
+  PersonRepository personRepository;
 
 
   private JsonData jsonData;
@@ -55,7 +53,6 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     importPersonsAllergies();
     importPersonsMedications();
 
-    importJsonPersons();
   }
 
 
@@ -87,8 +84,8 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     allergyRepository.saveAll(myList);
   }
 
-  public void importAddresses() {
-    //Comparison set to verify unicity of address
+  private void importAddresses() {
+    //Comparison set to verify uniqueness of address
     Set<String> comparisonSet = new TreeSet<>();
 
     //create three independent set of road city and zip from persons
@@ -96,12 +93,12 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
       String road = jsonPerson.getAddress();
       String city = jsonPerson.getCity();
       String zip = jsonPerson.getZip();
-      String addressKey = road+city+zip;
+      String addressKey = road + city + zip;
       Address addressToAdd = new Address();
 
-      if(!comparisonSet.contains(addressKey)){
-        for(JsonFireStation fireStation : jsonData.getFireStations().getFirestations()){
-          if(fireStation.getAddress().equals(jsonPerson.getAddress())){
+      if (!comparisonSet.contains(addressKey)) {
+        for (JsonFireStation fireStation : jsonData.getFireStations().getFirestations()) {
+          if (fireStation.getAddress().equals(jsonPerson.getAddress())) {
             addressToAdd.setRoad(road);
             addressToAdd.setCity(city);
             addressToAdd.setZipCode(zip);
@@ -116,33 +113,48 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   }
 
   private void importPersons() {
-  }
+    Set<String> mySet = new TreeSet<>();
+    for(JsonPerson jsonPerson : jsonData.getPersons().getPersons()) {
+      Person personToAdd = new Person();
+      //Setting FirstName, LastName, Phone, Email
+      personToAdd.setFirstName(jsonPerson.getFirstName());
+      personToAdd.setLastName(jsonPerson.getLastName());
+      personToAdd.setPhone(jsonPerson.getPhone());
+      personToAdd.setEmail(jsonPerson.getEmail());
 
-  private void importJsonPersons() {
-    jsonPersonRepository.saveAll(jsonData.getPersons().getPersons());
+      //Setting the Address
+      String road = jsonPerson.getAddress();
+      String city = jsonPerson.getCity();
+      String zip = jsonPerson.getZip();
+      Address addressToAdd = addressRepository.findByRoadAndCityAndZipCode(road,city,zip);
+      personToAdd.setAddress(addressToAdd);
+
+      //Setting BirthDate
+      for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()) {
+        if(jsonMedicalRecord.getFirstName().equals(jsonPerson.getFirstName())
+        && jsonMedicalRecord.getLastName().equals(jsonPerson.getLastName())){
+          personToAdd.setBirthDate(jsonMedicalRecord.getBirthdate());
+          break;
+        }
+      }
+
+      //Uniqueness of each people imported
+      String uniqueKey = jsonPerson.getFirstName()+jsonPerson.getLastName()+jsonPerson.getAddress();
+      if(!mySet.contains(uniqueKey)) {
+        personRepository.save(personToAdd);
+      }
+      mySet.add(uniqueKey);
+    }
   }
 
   private void importFireStations() {
     Set<String> mySet = new TreeSet<>();
-    List<FireStation> myList = new ArrayList<>();
-
-    //create a unique set
-    int length = jsonData.getFireStations().getFirestations().size();
-    for (int i = 0; i < length; i++) {
-      String stringToAdd = jsonData.getFireStations()
-          .getFirestations()
-          .get(i)
-          .getStation();
-      mySet.add(stringToAdd);
+    for (JsonFireStation jsonFireStation : jsonData.getFireStations().getFirestations()) {
+      if (!mySet.contains(jsonFireStation.getStation())) {
+        fireStationRepository.save(new FireStation(jsonFireStation.getStation()));
+      }
+      mySet.add(jsonFireStation.getStation());
     }
-
-    //generate proper list to insert into DataBase
-    for (String fireStationNumber : mySet) {
-      myList.add(new FireStation(fireStationNumber));
-    }
-
-    //Import in H2 DB
-    fireStationRepository.saveAll(myList);
   }
 
   private void importMedications() {

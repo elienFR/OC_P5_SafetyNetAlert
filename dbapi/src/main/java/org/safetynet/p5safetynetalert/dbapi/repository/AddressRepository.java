@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AddressRepository extends CrudRepository<Address, Integer> {
+  public Address findByRoadAndCityAndZipCode (String road, String city, String zipCode);
 }

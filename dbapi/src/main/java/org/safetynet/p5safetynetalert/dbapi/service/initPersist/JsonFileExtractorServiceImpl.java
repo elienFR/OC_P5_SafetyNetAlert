@@ -21,7 +21,6 @@ public class JsonFileExtractorServiceImpl implements JsonFileExtractorService {
   private CustomProperties props;
 
 public JsonData fromFile(String fileName) {
-
     //Json's file location
     String jsonLocation = props.getMainResourcesPath() + fileName;
     String jsonContent = new String();
@@ -32,8 +31,8 @@ public JsonData fromFile(String fileName) {
       e.printStackTrace();
     }
 
-    JsonData jsonData = new JsonData();
     //Json parser
+    JsonData jsonData = new JsonData();
     Gson gson = new Gson();
     jsonData.setPersons(gson.fromJson(jsonContent, JsonPersons.class));
     jsonData.setFireStations(gson.fromJson(jsonContent, JsonFireStations.class));
