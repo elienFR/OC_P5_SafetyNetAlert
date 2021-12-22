@@ -20,10 +20,6 @@ public class DbApiApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
-
     jsonDataInjectorService.initDb();
-
-    System.out.println("test");
-
   }
 }
