@@ -4,6 +4,7 @@ import lombok.Data;
 import org.apache.catalina.LifecycleState;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -17,8 +18,8 @@ public class FireStation {
 
   private String number;
 
-  @OneToMany(mappedBy="fireStation")
-  private List<Address> address;
+  @OneToMany(mappedBy="fireStation", fetch = FetchType.LAZY)
+  private Collection<Address> addresses;
 
   public FireStation() {};
 

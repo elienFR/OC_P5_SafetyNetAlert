@@ -4,6 +4,8 @@ import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -23,7 +25,14 @@ public class Address {
   @ManyToOne
   private FireStation fireStation;
 
-  public Address() {};
+  @OneToMany(mappedBy = "address",fetch = FetchType.LAZY)
+  private Collection<Person> persons;
+
+  public Address() {
+  }
+
+  ;
+
   public Address(String road, String city, String zipCode, FireStation fireStation) {
     this.road = road;
     this.city = city;
