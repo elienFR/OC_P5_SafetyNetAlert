@@ -11,4 +11,5 @@ import java.util.List;
 
 @Repository
 public interface AllergyRepository extends CrudRepository<Allergy, Integer> {
+  public Allergy findByName(String name);
   }

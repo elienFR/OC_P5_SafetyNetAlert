@@ -1,8 +1,10 @@
 package org.safetynet.p5safetynetalert.dbapi.model;
 
 import lombok.Data;
+import org.apache.catalina.LifecycleState;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Data
 @Entity
@@ -14,6 +16,9 @@ public class FireStation {
   private Integer id;
 
   private String number;
+
+  @OneToMany(mappedBy="fireStation")
+  private List<Address> address;
 
   public FireStation() {};
 

@@ -20,6 +20,11 @@ public class DbApiApplication implements CommandLineRunner {
 
   @Override
   public void run(String... args) {
+    //Initialisation of the database thanks to the data.json file located in resources
     jsonDataInjectorService.initDb();
+
+
+
+
   }
 }

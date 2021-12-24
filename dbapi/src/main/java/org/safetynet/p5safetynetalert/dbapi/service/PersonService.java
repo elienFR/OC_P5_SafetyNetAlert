@@ -1,11 +1,13 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
+import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -26,6 +28,13 @@ public class PersonService {
   public Person savePerson(Person person) {
     Person savedPerson = personRepository.save(person);
     return savedPerson;
+  }
+
+  public List<PersonDTO> getPersonFromFireStationNumber (int fireStationNumber){
+
+
+
+    return null;
   }
 
 }

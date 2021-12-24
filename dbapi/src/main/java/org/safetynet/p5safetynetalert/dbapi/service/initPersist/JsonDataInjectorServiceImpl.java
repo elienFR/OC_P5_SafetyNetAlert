@@ -7,7 +7,6 @@ import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.*;
-import org.safetynet.p5safetynetalert.dbapi.repository.initPersist.JsonPersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +30,10 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   AddressRepository addressRepository;
   @Autowired
   PersonRepository personRepository;
+  @Autowired
+  PersonsMedicationRepository personsMedicationRepository;
+  @Autowired
+  PersonsAllergyRepository personsAllergyRepository;
 
 
   private JsonData jsonData;
@@ -50,8 +53,8 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     importAddresses();
     importMedications();
     importPersons();
-    importPersonsAllergies();
     importPersonsMedications();
+    importPersonsAllergies();
 
   }
 
@@ -185,9 +188,58 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   }
 
   private void importPersonsMedications() {
-  }
+    Set<String> mySet = new TreeSet<>();
+    //Analyse each line in data.json concerning Medical records
+    for(JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()){
+      //Constructing unique key
+      String firstName = jsonMedicalRecord.getFirstName();
+      String lastName = jsonMedicalRecord.getLastName();
+      String birthDate = jsonMedicalRecord.getBirthdate();
+      String uniqueKey = firstName+lastName+birthDate;
+
+      //if json object is unique
+      if(!mySet.contains(uniqueKey)) {
+        //Recover the already existing person from database regarding first/last name and birthday
+        Person personToAdd = personRepository
+            .findByFirstNameAndLastNameAndBirthDate(firstName, lastName, birthDate);
+
+        //Recover each medication for one person
+        for (String medicationName : jsonMedicalRecord.getMedications()) {
+          Medication medicationToAdd = medicationRepository.findByName(medicationName);
+          personsMedicationRepository.save(new PersonsMedication(personToAdd,medicationToAdd));
+        }
+      }
+
+      mySet.add(uniqueKey);
+      }
+    }
 
   private void importPersonsAllergies() {
+    //TODO:Create allergies import
+    Set<String> mySet = new TreeSet<>();
+    //Analyse each line in data.json concerning Medical records
+    for(JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()){
+      //Constructing unique key
+      String firstName = jsonMedicalRecord.getFirstName();
+      String lastName = jsonMedicalRecord.getLastName();
+      String birthDate = jsonMedicalRecord.getBirthdate();
+      String uniqueKey = firstName+lastName+birthDate;
+
+      //if json object is unique
+      if(!mySet.contains(uniqueKey)) {
+        //Recover the already existing person from database regarding first/last name and birthday
+        Person personToAdd = personRepository
+            .findByFirstNameAndLastNameAndBirthDate(firstName, lastName, birthDate);
+
+        //Recover each allergy for one person
+        for (String allergy : jsonMedicalRecord.getAllergies()) {
+          Allergy allergyToAdd = allergyRepository.findByName(allergy);
+          personsAllergyRepository.save(new PersonsAllergy(personToAdd,allergyToAdd));
+        }
+      }
+      mySet.add(uniqueKey);
+    }
+
   }
 
 }
