@@ -19,7 +19,7 @@ public class FireStationController {
   FireStationService fireStationService;
 
   @GetMapping("/firestation")
-  public Iterable<PersonDTO> getPersonFromFireStationNumber(@RequestParam("stationNumber") String fireStationNumber){
+  public Iterable<Person> getPersonFromFireStationNumber(@RequestParam("stationNumber") String fireStationNumber){
     return fireStationService.getPersonFromFireStationId(fireStationNumber);
   }
 }
