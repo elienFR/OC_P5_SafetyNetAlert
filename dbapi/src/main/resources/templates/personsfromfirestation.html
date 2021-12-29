@@ -24,8 +24,12 @@
                 <td colspan="3">Aucun employée en base de données</td>
             </tr>
             <tr th:each="person: ${persons}">
-                <td><span th:text="${persons.firstname}"> Prénom </span></td>
-                <td><span th:text="${persons.lastname}"> Nom </span></td>
+                <td><span th:text="${person.firstName}"> First Nameee </span></td>
+                <td><span th:text="${person.lastName}"> Last Name </span></td>
+                <td><span th:text="${person.address.road}"> Road </span></td>
+                <td><span th:text="${person.address.city}"> City </span></td>
+                <td><span th:text="${person.address.zip}"> Road </span></td>
+                <td><span th:text="${person.phone}"> Phone Number </span></td>
             </tr>
         </tbody>
     </table>
