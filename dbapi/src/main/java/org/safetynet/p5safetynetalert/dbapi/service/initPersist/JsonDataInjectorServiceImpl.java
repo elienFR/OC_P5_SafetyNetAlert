@@ -7,6 +7,8 @@ import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,6 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
 
   @Autowired
   JsonFileExtractorService jsonFileExtractorService;
-
   //Repositories to inject data into databases
   @Autowired
   AllergyRepository allergyRepository;
@@ -34,8 +35,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   PersonsMedicationRepository personsMedicationRepository;
   @Autowired
   PersonsAllergyRepository personsAllergyRepository;
-
-
+  private Logger logger = LoggerFactory.getLogger(JsonDataInjectorServiceImpl.class);
   private JsonData jsonData;
 
   /**
@@ -43,8 +43,14 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    */
   private String fileName = "data.json";
 
+
+  /**
+   * Script that initialise the database
+   */
   @Override
   public void initDb() {
+    logger.info("Starting database initialisation.");
+
     //Extracting file
     jsonData = jsonFileExtractorService.fromFile(fileName);
 
@@ -56,10 +62,15 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     importPersonsMedications();
     importPersonsAllergies();
 
+    logger.info("Database initialisation complete.");
+
   }
 
-
+  /**
+   * script that import allergies from a jsondata object
+   */
   private void importAllergies() {
+    logger.info("importing allergies...");
     Set<String> mySet = new TreeSet<>();
     List<Allergy> myList = new ArrayList<>();
 
@@ -87,7 +98,12 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     allergyRepository.saveAll(myList);
   }
 
+  /**
+   * script that import addresses from a jsondata object
+   */
   private void importAddresses() {
+    logger.info("importing addresses...");
+
     //Comparison set to verify uniqueness of address
     Set<String> comparisonSet = new TreeSet<>();
 
@@ -115,9 +131,14 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     }
   }
 
+  /**
+   * script that import persons from a jsondata object
+   */
   private void importPersons() {
+    logger.info("importing persons...");
+
     Set<String> mySet = new TreeSet<>();
-    for(JsonPerson jsonPerson : jsonData.getPersons().getPersons()) {
+    for (JsonPerson jsonPerson : jsonData.getPersons().getPersons()) {
       Person personToAdd = new Person();
       //Setting FirstName, LastName, Phone, Email
       personToAdd.setFirstName(jsonPerson.getFirstName());
@@ -129,28 +150,33 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
       String road = jsonPerson.getAddress();
       String city = jsonPerson.getCity();
       String zip = jsonPerson.getZip();
-      Address addressToAdd = addressRepository.findByRoadAndCityAndZipCode(road,city,zip);
+      Address addressToAdd = addressRepository.findByRoadAndCityAndZipCode(road, city, zip);
       personToAdd.setAddress(addressToAdd);
 
       //Setting BirthDate
       for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()) {
-        if(jsonMedicalRecord.getFirstName().equals(jsonPerson.getFirstName())
-        && jsonMedicalRecord.getLastName().equals(jsonPerson.getLastName())){
+        if (jsonMedicalRecord.getFirstName().equals(jsonPerson.getFirstName())
+            && jsonMedicalRecord.getLastName().equals(jsonPerson.getLastName())) {
           personToAdd.setBirthDate(jsonMedicalRecord.getBirthdate());
           break;
         }
       }
 
       //Uniqueness of each people imported
-      String uniqueKey = jsonPerson.getFirstName()+jsonPerson.getLastName()+jsonPerson.getAddress();
-      if(!mySet.contains(uniqueKey)) {
+      String uniqueKey = jsonPerson.getFirstName() + jsonPerson.getLastName() + jsonPerson.getAddress();
+      if (!mySet.contains(uniqueKey)) {
         personRepository.save(personToAdd);
       }
       mySet.add(uniqueKey);
     }
   }
 
+  /**
+   * script that import fire stations from a json data object
+   */
   private void importFireStations() {
+    logger.info("importing fire stations...");
+
     Set<String> mySet = new TreeSet<>();
     for (JsonFireStation jsonFireStation : jsonData.getFireStations().getFirestations()) {
       if (!mySet.contains(jsonFireStation.getStation())) {
@@ -160,7 +186,12 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     }
   }
 
+  /**
+   * script that import medications from a json data object
+   */
   private void importMedications() {
+    logger.info("importing medications...");
+
     Set<String> mySet = new TreeSet<>();
     List<Medication> myList = new ArrayList<>();
 
@@ -187,18 +218,23 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     medicationRepository.saveAll(myList);
   }
 
+  /**
+   * script that import persons medications from a json data object
+   */
   private void importPersonsMedications() {
+    logger.info("importing person's medications...");
+
     Set<String> mySet = new TreeSet<>();
     //Analyse each line in data.json concerning Medical records
-    for(JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()){
+    for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()) {
       //Constructing unique key
       String firstName = jsonMedicalRecord.getFirstName();
       String lastName = jsonMedicalRecord.getLastName();
       String birthDate = jsonMedicalRecord.getBirthdate();
-      String uniqueKey = firstName+lastName+birthDate;
+      String uniqueKey = firstName + lastName + birthDate;
 
       //if json object is unique
-      if(!mySet.contains(uniqueKey)) {
+      if (!mySet.contains(uniqueKey)) {
         //Recover the already existing person from database regarding first/last name and birthday
         Person personToAdd = personRepository
             .findByFirstNameAndLastNameAndBirthDate(firstName, lastName, birthDate);
@@ -206,27 +242,31 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
         //Recover each medication for one person
         for (String medicationName : jsonMedicalRecord.getMedications()) {
           Medication medicationToAdd = medicationRepository.findByName(medicationName);
-          personsMedicationRepository.save(new PersonsMedication(personToAdd,medicationToAdd));
+          personsMedicationRepository.save(new PersonsMedication(personToAdd, medicationToAdd));
         }
       }
 
       mySet.add(uniqueKey);
-      }
     }
+  }
 
+  /**
+   * Scrip that import person's allergies from a json data object
+   */
   private void importPersonsAllergies() {
-    //TODO:Create allergies import
+    logger.info("importing person's allergies...");
+
     Set<String> mySet = new TreeSet<>();
     //Analyse each line in data.json concerning Medical records
-    for(JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()){
+    for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()) {
       //Constructing unique key
       String firstName = jsonMedicalRecord.getFirstName();
       String lastName = jsonMedicalRecord.getLastName();
       String birthDate = jsonMedicalRecord.getBirthdate();
-      String uniqueKey = firstName+lastName+birthDate;
+      String uniqueKey = firstName + lastName + birthDate;
 
       //if json object is unique
-      if(!mySet.contains(uniqueKey)) {
+      if (!mySet.contains(uniqueKey)) {
         //Recover the already existing person from database regarding first/last name and birthday
         Person personToAdd = personRepository
             .findByFirstNameAndLastNameAndBirthDate(firstName, lastName, birthDate);
@@ -234,7 +274,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
         //Recover each allergy for one person
         for (String allergy : jsonMedicalRecord.getAllergies()) {
           Allergy allergyToAdd = allergyRepository.findByName(allergy);
-          personsAllergyRepository.save(new PersonsAllergy(personToAdd,allergyToAdd));
+          personsAllergyRepository.save(new PersonsAllergy(personToAdd, allergyToAdd));
         }
       }
       mySet.add(uniqueKey);
