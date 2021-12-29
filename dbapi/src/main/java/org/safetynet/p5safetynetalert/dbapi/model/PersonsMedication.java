@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table(name = "persons_medications")
 public class PersonsMedication {
@@ -13,10 +12,10 @@ public class PersonsMedication {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Person person;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Medication medication;
 
   public PersonsMedication() {

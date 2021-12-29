@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table(name = "persons_allergies")
 public class PersonsAllergy {
@@ -13,10 +12,10 @@ public class PersonsAllergy {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Person person;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Allergy allergy;
 
   public PersonsAllergy() {

@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
+import org.safetynet.p5safetynetalert.dbapi.dto.PersonFromFirestationDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class PersonService {
     return savedPerson;
   }
 
-  public List<PersonDTO> getPersonFromFireStationNumber (int fireStationNumber){
+  public List<PersonFromFirestationDTO> getPersonFromFireStationNumber (int fireStationNumber){
 
 
 

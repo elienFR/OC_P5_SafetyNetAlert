@@ -5,7 +5,6 @@ import lombok.extern.apachecommons.CommonsLog;
 
 import javax.persistence.*;
 
-@Data
 @Entity
 @Table(name = "persons")
 public class Person {
@@ -24,7 +23,7 @@ public class Person {
 
   private String email;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private Address address;
 
   public Person() {};
@@ -37,5 +36,61 @@ public class Person {
     this.phone = phone;
     this.email = email;
     this.address = address;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+
+  public void setBirthDate(String birthDate) {
+    this.birthDate = birthDate;
+  }
+
+  public void setPhone(String phone) {
+    this.phone = phone;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setAddress(Address address) {
+    this.address = address;
+  }
+
+  public Integer getId() {
+    return id;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public String getBirthDate() {
+    return birthDate;
+  }
+
+  public String getPhone() {
+    return phone;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public Address getAddress() {
+    return address;
   }
 }

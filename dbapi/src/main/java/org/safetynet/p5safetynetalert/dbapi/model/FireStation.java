@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
-@Data
 @Entity
 @Table(name="fire_stations")
 public class FireStation {
@@ -24,6 +23,14 @@ public class FireStation {
   public FireStation() {};
 
   public FireStation(String number) {
+    this.number = number;
+  }
+
+  public Collection<Address> getAddresses() {
+    return addresses;
+  }
+
+  public void setNumber(String number) {
     this.number = number;
   }
 }
