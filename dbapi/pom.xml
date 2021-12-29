@@ -55,6 +55,23 @@
 			<scope>compile</scope>
 		</dependency>
 
+<!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.mockito/mockito-core &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.mockito</groupId>-->
+<!--			<artifactId>mockito-core</artifactId>-->
+<!--			<version>4.2.0</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
+
+<!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.mockito/mockito-all &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.mockito</groupId>-->
+<!--			<artifactId>mockito-all</artifactId>-->
+<!--			<version>1.10.19</version>-->
+<!--			<scope>test</scope>-->
+<!--		</dependency>-->
+
+
 	</dependencies>
 
 	<build>

@@ -1,11 +1,11 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
+import org.safetynet.p5safetynetalert.dbapi.dto.AddressDTO;
+import org.safetynet.p5safetynetalert.dbapi.dto.PersonFromFirestationDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
-import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,14 +39,23 @@ public class FireStationService {
     return savedFireStation;
   }
 
-  public Iterable<Person> getPersonFromFireStationId(String id){
-    List<Person> myList = new ArrayList<>();
+  public Iterable<PersonFromFirestationDTO> getPersonFromFireStationId(String id){
+    List<PersonFromFirestationDTO> myList = new ArrayList<>();
     FireStation fireStation = fireStationRepository.findByNumber(id);
     Collection<Address> addresses = fireStation.getAddresses();
     for(Address address : addresses){
       for(Person person : address.getPersons()){
+        Address addressToAdd = person.getAddress();
+        PersonFromFirestationDTO personToAdd = new PersonFromFirestationDTO(
+            person.getFirstName(),
+            person.getLastName(),
+            person.getPhone(),
+            new AddressDTO(addressToAdd.getRoad(),
+                address.getCity(),
+                address.getZipCode())
+        );
           //TODO : problem to recover the address without having a recursive infinite loop that leads to stackoverflow
-        myList.add(person);
+        myList.add(personToAdd);
       }
     }
     return myList;
