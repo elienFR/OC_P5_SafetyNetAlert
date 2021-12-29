@@ -39,12 +39,25 @@ public class FireStationService {
     return savedFireStation;
   }
 
-  public Iterable<PersonFromFirestationDTO> getPersonFromFireStationId(String id){
+  public Iterable<Person> getPersonFromFireStationId(String id) {
+    List<Person> myList = new ArrayList<>();
+    FireStation fireStation = fireStationRepository.findByNumber(id);
+    Collection<Address> addresses = fireStation.getAddresses();
+    for (Address address : addresses) {
+      for (Person person : address.getPersons()) {
+        myList.add(person);
+      }
+    }
+    return myList;
+  }
+
+
+  public Iterable<PersonFromFirestationDTO> getPersonDTOFromFireStationId(String id) {
     List<PersonFromFirestationDTO> myList = new ArrayList<>();
     FireStation fireStation = fireStationRepository.findByNumber(id);
     Collection<Address> addresses = fireStation.getAddresses();
-    for(Address address : addresses){
-      for(Person person : address.getPersons()){
+    for (Address address : addresses) {
+      for (Person person : address.getPersons()) {
         Address addressToAdd = person.getAddress();
         PersonFromFirestationDTO personToAdd = new PersonFromFirestationDTO(
             person.getFirstName(),
@@ -52,9 +65,9 @@ public class FireStationService {
             person.getPhone(),
             new AddressDTO(addressToAdd.getRoad(),
                 address.getCity(),
-                address.getZipCode())
+                address.getZipCode()),
+            person.getBirthDate()
         );
-          //TODO : problem to recover the address without having a recursive infinite loop that leads to stackoverflow
         myList.add(personToAdd);
       }
     }

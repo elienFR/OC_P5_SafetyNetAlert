@@ -2,7 +2,7 @@ package org.safetynet.p5safetynetalert.dbapi;
 
 
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.service.MajorityCalculator;
+import org.safetynet.p5safetynetalert.dbapi.service.MajorityCalculatorService;
 
 import java.time.LocalDate;
 
@@ -18,7 +18,7 @@ public class AgeCalculatorTest {
     boolean isMajor = false;
 
     //WHEN
-    isMajor = MajorityCalculator.isOverEighteen(birtDate);
+    isMajor = MajorityCalculatorService.isOverEighteen(birtDate);
 
     //THEN
     assertThat(isMajor).isTrue();
@@ -32,7 +32,7 @@ public class AgeCalculatorTest {
     boolean isMajor = false;
 
     //WHEN
-    isMajor = MajorityCalculator.isOverEighteen(birtDate);
+    isMajor = MajorityCalculatorService.isOverEighteen(birtDate);
 
     //THEN
     assertThat(isMajor).isFalse();
