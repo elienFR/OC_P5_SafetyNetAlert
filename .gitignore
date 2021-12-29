@@ -33,4 +33,5 @@ build/
 .vscode/
 
 ###resources ignored###
-resources
+/resources
+

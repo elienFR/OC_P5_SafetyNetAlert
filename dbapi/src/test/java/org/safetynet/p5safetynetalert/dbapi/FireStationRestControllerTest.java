@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.controller.FireStationController;
+import org.safetynet.p5safetynetalert.dbapi.controller.FireStationRestController;
 import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
@@ -19,8 +19,8 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-@WebMvcTest(controllers = FireStationController.class)
-public class FireStationControllerTest {
+@WebMvcTest(controllers = FireStationRestController.class)
+public class FireStationRestControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
