@@ -10,5 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class FireStationRestController {
 
+  @Autowired
+  FireStationService fireStationService;
 
+  @GetMapping("/testPersonFireStation")
+  public Iterable<PersonFromFirestationDTO> get(@RequestParam("number") String id) {
+    return fireStationService.getPersonDTOFromFireStationId(id);
+  }
 }
