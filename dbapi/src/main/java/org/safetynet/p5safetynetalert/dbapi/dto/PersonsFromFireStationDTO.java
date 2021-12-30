@@ -4,14 +4,9 @@ import lombok.Data;
 
 @Data
 public class PersonsFromFireStationDTO {
+  private String title = "List of persons covered by a fire station.";
   private Integer adultCount;
   private Integer childrenCount;
   private Iterable<PersonDTO> personsList;
 
-  public PersonsFromFireStationDTO(){}
-  public PersonsFromFireStationDTO(Integer adultCount, Integer childrenCount, Iterable<PersonDTO> personsList) {
-    this.adultCount = adultCount;
-    this.childrenCount = childrenCount;
-    this.personsList = personsList;
-  }
 }

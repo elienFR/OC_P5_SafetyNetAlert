@@ -4,6 +4,7 @@ import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.dto.AddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
 import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
+import org.safetynet.p5safetynetalert.dbapi.dto.PhonesDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
@@ -11,10 +12,7 @@ import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Data
 @Service
@@ -25,24 +23,6 @@ public class FireStationService {
   @Autowired
   private FireStationRepository fireStationRepository;
 
-  public Optional<FireStation> getFireStation(final Integer id) {
-    return fireStationRepository.findById(id);
-  }
-
-  public Iterable<FireStation> getFireStations() {
-    return fireStationRepository.findAll();
-  }
-
-  public void deleteFireStation(final Integer id) {
-    fireStationRepository.deleteById(id);
-  }
-
-  public FireStation saveFireStation(FireStation fireStation) {
-    FireStation savedFireStation = fireStationRepository.save(fireStation);
-    return savedFireStation;
-  }
-
-
   /**
    * This method should return a list of people covered by the corresponding fire station.
    * So, if the station number = 1, it must return the inhabitants covered by the station number 1.
@@ -51,17 +31,17 @@ public class FireStationService {
    * What's more, it must provide a count of the number of adults,
    * and the number of children (anyone aged 18 or over less) in the service area.
    *
-   * @param number is the number of the firestation
+   * @param number is the number of the fire station
    * @return see description
    */
-  public PersonsFromFireStationDTO getPersonsFromFireStationId(String number) {
+  public PersonsFromFireStationDTO getPersonsFromFireStationNumber(String number) {
     PersonsFromFireStationDTO listOfPersons = new PersonsFromFireStationDTO();
     List<PersonDTO> personsList = new ArrayList<>();
     Integer adultCount = 0;
     Integer childrenCount = 0;
 
     FireStation fireStation = fireStationRepository.findByNumber(number);
-    if(fireStation!=null) {
+    if (fireStation != null) {
       Collection<Address> addresses = fireStation.getAddresses();
 
       for (Address address : addresses) {
@@ -102,4 +82,30 @@ public class FireStationService {
     }
   }
 
+  /**
+   * @param number
+   */
+  public PhonesDTO getPhonesFromFireStationNumber(String number) {
+    Set<String> phonesToAdd = new TreeSet<>();
+
+    FireStation fireStation = fireStationRepository.findByNumber(number);
+    if (fireStation != null) {
+      Collection<Address> addresses = fireStation.getAddresses();
+      for (Address address : addresses) {
+        Collection<Person> persons = address.getPersons();
+        for (Person person : persons) {
+          String phoneToAdd = person.getPhone();
+          if (!phonesToAdd.contains(phoneToAdd)) {
+            phonesToAdd.add(person.getPhone());
+          }
+        }
+      }
+      PhonesDTO phonesDTO = new PhonesDTO();
+      phonesDTO.setPhonesList(phonesToAdd);
+      return phonesDTO;
+    } else {
+      return null;
+    }
+
+  }
 }

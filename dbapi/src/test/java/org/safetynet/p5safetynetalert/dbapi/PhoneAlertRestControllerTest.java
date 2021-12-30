@@ -1,8 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.controller.FireStationRestController;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
+import org.safetynet.p5safetynetalert.dbapi.controller.PhoneAlertRestController;
+import org.safetynet.p5safetynetalert.dbapi.dto.PhonesDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,48 +13,52 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = FireStationRestController.class)
-public class FireStationRestControllerTest {
+@WebMvcTest(PhoneAlertRestController.class)
+public class PhoneAlertRestControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
-
   @MockBean
-  private JsonDataInjectorService jsonDataInjectorServiceMock;
-
+  private JsonDataInjectorService jsonDataInjectorService;
   @MockBean
-  private FireStationService fireStationServiceMock;
+  private FireStationService fireStationServiceMocked;
 
   @Test
-  public void testGetPersonsFromFireStationNumber() throws Exception {
-    PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
+  public void getPhoneListFromFireStationTest() throws Exception {
+    //GIVEN
+    PhonesDTO phones = new PhonesDTO();
+    when(fireStationServiceMocked.getPhonesFromFireStationNumber("1")).thenReturn(phones);
 
-    when(fireStationServiceMock.getPersonsFromFireStationNumber("1")).thenReturn(persons);
-
+    //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-        .get("/firestation")
-        .param("stationNumber", "1")
+        .get("/phoneAlert")
+        .param("firestation", "1")
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(builder).andExpect(status().isOk());
+
   }
 
   @Test
-  public void testGetPersonsFromFireStationNumber404() throws Exception {
-    PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
+  public void getPhoneListFromFireStation404Test() throws Exception {
+    //GIVEN
+    PhonesDTO phones = new PhonesDTO();
+    when(fireStationServiceMocked.getPhonesFromFireStationNumber("1")).thenReturn(phones);
 
-    when(fireStationServiceMock.getPersonsFromFireStationNumber("1")).thenReturn(persons);
-
+    //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-        .get("/firestation")
-        .param("stationNumber", "2")
+        .get("/phoneAlert")
+        .param("firestation", "2")
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(builder).andExpect(status().isNotFound());
-  }
 
+  }
 
 }

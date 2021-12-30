@@ -35,6 +35,7 @@ public class ChildAlertService {
     List<PersonDTO> adultsToAdd = new ArrayList<>();
 
     Iterable<Address> addressesFromDb = addressRepository.findByRoad(road);
+
     for (Address addressFromDb : addressesFromDb) {
       Collection<Person> persons = addressFromDb.getPersons();
       for (Person person : persons) {

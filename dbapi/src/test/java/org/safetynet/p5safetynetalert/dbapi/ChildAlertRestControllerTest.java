@@ -36,8 +36,6 @@ public class ChildAlertRestControllerTest {
 
   @Test
   public void getChildrenFromAddress() throws Exception {
-//    Address address = new Address();
-//    Address.setNumber("6");
     ChildFromAddressDTO children = new ChildFromAddressDTO();
 
     when(childAlertService.getChildFromAddress("test")).thenReturn(children);
@@ -45,6 +43,20 @@ public class ChildAlertRestControllerTest {
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
         .get("/childAlert")
         .param("address", "test")
+        .contentType(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(builder).andExpect(status().isOk());
+  }
+
+  @Test
+  public void getChildrenFromAddress404() throws Exception {
+    ChildFromAddressDTO children = new ChildFromAddressDTO();
+
+    when(childAlertService.getChildFromAddress("test")).thenReturn(children);
+
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+        .get("/childAlert")
+        .param("address", "404")
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(builder).andExpect(status().isOk());
