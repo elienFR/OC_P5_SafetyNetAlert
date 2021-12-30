@@ -27,8 +27,8 @@ public class FireStationController {
     Iterable<Person> personList =
         fireStationService.getPersonFromFireStationId(fireStationNumber);
 
-    Integer majors = majorityCalculatorService.countMajors(personList);
-    Integer minors = majorityCalculatorService.countMinors(personList);
+    Integer majors = majorityCalculatorService.countAdults(personList);
+    Integer minors = majorityCalculatorService.countChildren(personList);
 
     model.addAttribute("persons", personsDTOList);
     model.addAttribute("majorsNumber", majors);
