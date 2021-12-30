@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = FireStationRestController.class)
 public class FireStationRestControllerTest {
@@ -33,18 +34,19 @@ public class FireStationRestControllerTest {
 
   @Test
   public void testGetPersonsFromFireStationNumber() throws Exception {
-    //GIVEN
     FireStation fireStation = new FireStation();
     fireStation.setNumber("6");
     List<FireStation> persons = new ArrayList<>();
 
     when(fireStationServiceMock.getFireStations()).thenReturn(persons);
 
-    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/firestation")
-            .param("stationNumber","6")
-            .contentType(MediaType.APPLICATION_JSON);
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+        .get("/testPersonFireStation")
+        .param("number", "6")
+        .contentType(MediaType.APPLICATION_JSON);
 
-    mockMvc.perform(builder).andExpect(MockMvcResultMatchers.status().isOk());
+    mockMvc.perform(builder).andExpect(status().isOk());
+
   }
 
 
