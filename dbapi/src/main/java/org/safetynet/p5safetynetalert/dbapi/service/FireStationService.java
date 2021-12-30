@@ -10,9 +10,7 @@ import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,7 +21,7 @@ import java.util.Optional;
 public class FireStationService {
 
   @Autowired
-  MajorityCalculatorService majorityCalculatorService;
+  AgeCalculatorService ageCalculatorService;
   @Autowired
   private FireStationRepository fireStationRepository;
 
@@ -46,7 +44,7 @@ public class FireStationService {
 
 
   /**
-   * This url should return a list of people covered by the corresponding fire station.
+   * This method should return a list of people covered by the corresponding fire station.
    * So, if the station number = 1, it must return the inhabitants covered by the station number 1.
    * The list includes the following specific information: first name, last name, address,
    * telephone number.
@@ -71,7 +69,7 @@ public class FireStationService {
 
         for (Person person : persons) {
           try {
-            if (majorityCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
+            if (ageCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
               adultCount += 1;
             } else {
               childrenCount += 1;

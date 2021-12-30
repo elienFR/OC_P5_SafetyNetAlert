@@ -1,6 +1,5 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
 import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ public class FireStationRestController {
   FireStationService fireStationService;
 
   @GetMapping("")
-  public PersonsFromFireStationDTO get(@RequestParam("stationNumber") String id) {
+  public PersonsFromFireStationDTO getPersonsFromFireStationId(@RequestParam("stationNumber") String id) {
     PersonsFromFireStationDTO persons = fireStationService.getPersonsFromFireStationId(id);
     if (persons != null) {
       return persons;

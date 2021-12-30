@@ -2,9 +2,8 @@ package org.safetynet.p5safetynetalert.dbapi;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.service.MajorityCalculatorService;
+import org.safetynet.p5safetynetalert.dbapi.service.AgeCalculatorService;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,11 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class MajorityCalculatorTest {
 
-  private MajorityCalculatorService majorityCalculatorService;
+  private AgeCalculatorService ageCalculatorService;
 
   @BeforeEach
   public void initTest(){
-     majorityCalculatorService = new MajorityCalculatorService();
+     ageCalculatorService = new AgeCalculatorService();
   }
 
   @Test
@@ -27,7 +26,7 @@ public class MajorityCalculatorTest {
     boolean isMajor = false;
 
     //WHEN
-    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedAge);
+    isMajor =  ageCalculatorService.isStrictlyOverEighteen(testedAge);
 
     //THEN
     assertThat(isMajor).isTrue();
@@ -42,11 +41,11 @@ public class MajorityCalculatorTest {
     // Ten years old person
     testedBirthDate = testedBirthDate + (yearNow-howManyYearsOld);
 
-    MajorityCalculatorService majorityCalculatorService = new MajorityCalculatorService();
+    AgeCalculatorService ageCalculatorService = new AgeCalculatorService();
     boolean isMajor = true;
 
     //WHEN
-    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate);
+    isMajor =  ageCalculatorService.isStrictlyOverEighteen(testedBirthDate);
 
     //THEN
     assertThat(isMajor).isFalse();
@@ -61,7 +60,7 @@ public class MajorityCalculatorTest {
 
     //THEN
     assertThrows(IllegalArgumentException.class,
-        () -> majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate));
+        () -> ageCalculatorService.isStrictlyOverEighteen(testedBirthDate));
   }
 
   @Test
@@ -71,7 +70,7 @@ public class MajorityCalculatorTest {
     boolean isMajor = false;
 
     //WHEN
-    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate);
+    isMajor =  ageCalculatorService.isStrictlyOverEighteen(testedBirthDate);
 
     //THEN
     assertThat(isMajor).isTrue();
@@ -84,7 +83,7 @@ public class MajorityCalculatorTest {
     boolean isMajor = true;
 
     //WHEN
-    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate);
+    isMajor =  ageCalculatorService.isStrictlyOverEighteen(testedBirthDate);
 
     //THEN
     assertThat(isMajor).isFalse();

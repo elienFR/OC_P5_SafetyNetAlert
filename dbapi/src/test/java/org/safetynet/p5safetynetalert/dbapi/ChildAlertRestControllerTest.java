@@ -1,9 +1,11 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.controller.FireStationRestController;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
+import org.safetynet.p5safetynetalert.dbapi.controller.ChildAlertRestController;
+import org.safetynet.p5safetynetalert.dbapi.dto.ChildFromAddressDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
+import org.safetynet.p5safetynetalert.dbapi.service.ChildAlertService;
 import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,31 +22,31 @@ import java.util.List;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = FireStationRestController.class)
-public class FireStationRestControllerTest {
+@WebMvcTest(ChildAlertRestController.class)
+public class ChildAlertRestControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
 
   @MockBean
-  private JsonDataInjectorService jsonDataInjectorServiceMock;
+  private JsonDataInjectorService jsonDataInjectorService;
 
   @MockBean
-  private FireStationService fireStationServiceMock;
+  private ChildAlertService childAlertService;
 
   @Test
-  public void testGetPersonsFromFireStationNumber() throws Exception {
-    PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
+  public void getChildrenFromAddress() throws Exception {
+//    Address address = new Address();
+//    Address.setNumber("6");
+    ChildFromAddressDTO children = new ChildFromAddressDTO();
 
-    when(fireStationServiceMock.getPersonsFromFireStationId("1")).thenReturn(persons);
+    when(childAlertService.getChildFromAddress("test")).thenReturn(children);
 
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-        .get("/firestation")
-        .param("stationNumber", "1")
+        .get("/childAlert")
+        .param("address", "test")
         .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(builder).andExpect(status().isOk());
   }
-
-
 }

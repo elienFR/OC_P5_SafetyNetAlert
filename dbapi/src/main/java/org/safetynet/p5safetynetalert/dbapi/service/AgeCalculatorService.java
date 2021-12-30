@@ -1,6 +1,5 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -8,7 +7,7 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 @Service
-public class MajorityCalculatorService {
+public class AgeCalculatorService {
 
   /**
    * Parse a string patterned MM/dd/yyyy into a LocalDate
@@ -52,5 +51,17 @@ public class MajorityCalculatorService {
       }
       return isMajor;
     }
+  }
+
+  /**
+   * Return the age regarding a certain birth date.
+   *
+   * @param birthDate a string patterned MM/dd/yyyy
+   * @return An integer of the age in Year. Under a year it says 0 years old.
+   */
+  public Integer getAge(String birthDate) {
+    LocalDate formattedBirthDate = parseStringMMddYYYY(birthDate);
+    Period period = Period.between(formattedBirthDate,LocalDate.now());
+    return period.getYears();
   }
 }
