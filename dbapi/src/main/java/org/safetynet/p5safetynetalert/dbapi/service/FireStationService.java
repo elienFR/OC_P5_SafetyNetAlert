@@ -2,14 +2,17 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.dto.AddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonFromFirestationDTO;
+import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
+import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -19,6 +22,8 @@ import java.util.Optional;
 @Service
 public class FireStationService {
 
+  @Autowired
+  MajorityCalculatorService majorityCalculatorService;
   @Autowired
   private FireStationRepository fireStationRepository;
 
@@ -39,39 +44,64 @@ public class FireStationService {
     return savedFireStation;
   }
 
-  public Iterable<Person> getPersonFromFireStationId(String id) {
-    List<Person> myList = new ArrayList<>();
-    FireStation fireStation = fireStationRepository.findByNumber(id);
-    Collection<Address> addresses = fireStation.getAddresses();
-    for (Address address : addresses) {
-      for (Person person : address.getPersons()) {
-        myList.add(person);
-      }
-    }
-    return myList;
-  }
 
+  /**
+   * This url should return a list of people covered by the corresponding fire station.
+   * So, if the station number = 1, it must return the inhabitants covered by the station number 1.
+   * The list includes the following specific information: first name, last name, address,
+   * telephone number.
+   * What's more, it must provide a count of the number of adults,
+   * and the number of children (anyone aged 18 or over less) in the service area.
+   *
+   * @param number is the number of the firestation
+   * @return see description
+   */
+  public PersonsFromFireStationDTO getPersonsFromFireStationId(String number) {
+    PersonsFromFireStationDTO listOfPersons = new PersonsFromFireStationDTO();
+    List<PersonDTO> personsList = new ArrayList<>();
+    Integer adultCount = 0;
+    Integer childrenCount = 0;
 
-  public Iterable<PersonFromFirestationDTO> getPersonDTOFromFireStationId(String id) {
-    List<PersonFromFirestationDTO> myList = new ArrayList<>();
-    FireStation fireStation = fireStationRepository.findByNumber(id);
-    Collection<Address> addresses = fireStation.getAddresses();
-    for (Address address : addresses) {
-      for (Person person : address.getPersons()) {
-        Address addressToAdd = person.getAddress();
-        PersonFromFirestationDTO personToAdd = new PersonFromFirestationDTO(
-            person.getFirstName(),
-            person.getLastName(),
-            person.getPhone(),
-            new AddressDTO(addressToAdd.getRoad(),
-                address.getCity(),
-                address.getZipCode()),
-            person.getBirthDate()
-        );
-        myList.add(personToAdd);
+    FireStation fireStation = fireStationRepository.findByNumber(number);
+    if(fireStation!=null) {
+      Collection<Address> addresses = fireStation.getAddresses();
+
+      for (Address address : addresses) {
+        Collection<Person> persons = address.getPersons();
+
+        for (Person person : persons) {
+          try {
+            if (majorityCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
+              adultCount += 1;
+            } else {
+              childrenCount += 1;
+            }
+            personsList.add(new PersonDTO(
+                person.getFirstName(),
+                person.getLastName(),
+                person.getPhone(),
+                person.getBirthDate(),
+                new AddressDTO(
+                    address.getRoad(),
+                    address.getCity(),
+                    address.getZipCode()
+                )
+            ));
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
       }
+
+      listOfPersons.setPersonsList(personsList);
+      listOfPersons.setAdultCount(adultCount);
+      listOfPersons.setChildrenCount(childrenCount);
+
+      return listOfPersons;
+
+    } else {
+      return null;
     }
-    return myList;
   }
 
 }

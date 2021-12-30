@@ -9,39 +9,48 @@ import java.time.format.DateTimeFormatter;
 
 @Service
 public class MajorityCalculatorService {
-  private static boolean isStrictlyOverEighteen(LocalDate birthDate) throws Exception {
-    double period = Period.between(birthDate, LocalDate.now()).getYears();
-    boolean isMajor = false;
-    if (period > 18) {
-      isMajor = true;
-    }
-    return isMajor;
-  }
 
-  public Integer countAdults(Iterable<Person> listOfPersons) throws Exception {
-    Integer count = 0;
-    for (Person person : listOfPersons) {
-      LocalDate birthDate = parseStringMMddYYYY(person.getBirthDate());
-      if (isStrictlyOverEighteen(birthDate)) {
-        count += 1;
-      }
-    }
-    return count;
-  }
-
-  public Integer countChildren(Iterable<Person> listOfPersons) throws Exception {
-    Integer count = 0;
-    for (Person person : listOfPersons) {
-      LocalDate birthDate = parseStringMMddYYYY(person.getBirthDate());
-      if (!isStrictlyOverEighteen(birthDate)) {
-        count += 1;
-      }
-    }
-    return count;
-  }
-
-  private LocalDate parseStringMMddYYYY(String date) {
+  /**
+   * Parse a string patterned MM/dd/yyyy into a LocalDate
+   *
+   * @param date is the string patterned MM/dd/yyyy
+   * @return the date in LocalDate time format
+   */
+  private static LocalDate parseStringMMddYYYY(String date) {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     return LocalDate.parse(date, formatter);
+  }
+
+  /**
+   * Calculate majority over eighteen years old
+   *
+   * @param birthDate is the date of birth given with the pattern MM/dd/yyyy
+   * @return true if age is strictly superior to eighteen years old
+   * @throws IllegalArgumentException when age is negative
+   */
+  public boolean isStrictlyOverEighteen(String birthDate) throws Exception {
+    LocalDate formattedBirthDate = parseStringMMddYYYY(birthDate);
+    return isStrictlyOverEighteen(formattedBirthDate);
+  }
+
+  /**
+   * Calculate majority over eighteen years old
+   *
+   * @param birthDate is the date of birth
+   * @return true if age is strictly superior to eighteen years old
+   * @throws IllegalArgumentException when age is negative
+   */
+  public boolean isStrictlyOverEighteen(LocalDate birthDate) throws Exception {
+    Period period = Period.between(birthDate, LocalDate.now());
+    boolean isMajor = false;
+    if (period.isNegative() || period.isZero()) {
+      throw new IllegalArgumentException("Error while calculating Age. Age is negative.");
+    }
+    else {
+      if (period.getYears() > 18) {
+        isMajor = true;
+      }
+      return isMajor;
+    }
   }
 }

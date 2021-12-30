@@ -1,69 +1,93 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
-
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.safetynet.p5safetynetalert.dbapi.service.MajorityCalculatorService;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 public class MajorityCalculatorTest {
 
+  private MajorityCalculatorService majorityCalculatorService;
 
-
-  @Test
-  public void countAdultsTest() throws Exception {
-    //GIVEN
-    Person person1 = new Person();
-    person1.setBirthDate("01/01/1964");
-    Person person2 = new Person();
-    person2.setBirthDate("01/01/1965");
-    Person person3 = new Person();
-    person3.setBirthDate("01/01/1966");
-    List<Person> testedPersons = new ArrayList<>();
-    testedPersons.add(person1);
-    testedPersons.add(person2);
-    testedPersons.add(person3);
-    Integer expectedAdultNumber = 3;
-    Integer actualNumber = 0;
-    MajorityCalculatorService majorityCalculatorService = new MajorityCalculatorService();
-
-    //WHEN
-    actualNumber = majorityCalculatorService.countAdults(testedPersons);
-
-    //THEN
-    assertThat(actualNumber).isEqualTo(expectedAdultNumber);
+  @BeforeEach
+  public void initTest(){
+     majorityCalculatorService = new MajorityCalculatorService();
   }
 
   @Test
-  public void countChildrenTest() throws Exception {
+  public void isStrictlyOverEighteenWithStringedAgeTest() throws Exception {
     //GIVEN
-    Integer actualYear = LocalDate.now().getYear();
-    Person person1 = new Person();
-    person1.setBirthDate("01/01/"+(actualYear-10));
-    Person person2 = new Person();
-    person2.setBirthDate("01/01/"+(actualYear-11));
-    Person person3 = new Person();
-    person3.setBirthDate("01/01/"+(actualYear-12));
-    List<Person> testedPersons = new ArrayList<>();
-    testedPersons.add(person1);
-    testedPersons.add(person2);
-    testedPersons.add(person3);
-    Integer expectedChildrenNumber = 3;
-    Integer actualNumber = 0;
-    MajorityCalculatorService majorityCalculatorService = new MajorityCalculatorService();
+    String testedAge = "01/01/1965";
+    boolean isMajor = false;
 
     //WHEN
-    actualNumber = majorityCalculatorService.countChildren(testedPersons);
+    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedAge);
 
     //THEN
-    assertThat(actualNumber).isEqualTo(expectedChildrenNumber);
+    assertThat(isMajor).isTrue();
   }
+
+  @Test
+  public void isUnderEighteenWithStringedAgeTest() throws Exception {
+    //GIVEN
+    String testedBirthDate = "01/01/";
+    Integer yearNow = LocalDate.now().getYear();
+    Integer howManyYearsOld = 10;
+    // Ten years old person
+    testedBirthDate = testedBirthDate + (yearNow-howManyYearsOld);
+
+    MajorityCalculatorService majorityCalculatorService = new MajorityCalculatorService();
+    boolean isMajor = true;
+
+    //WHEN
+    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate);
+
+    //THEN
+    assertThat(isMajor).isFalse();
+  }
+
+  @Test
+  public void isStrictlyOverEighteenThrowsExceptionForNegativeAge() throws Exception {
+    //GIVEN
+    LocalDate testedBirthDate = LocalDate.of(LocalDate.now().getYear()+1,1,1);
+
+    //WHEN
+
+    //THEN
+    assertThrows(IllegalArgumentException.class,
+        () -> majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate));
+  }
+
+  @Test
+  public void isOverEighteenWithLocalDatedAgeTest() throws Exception {
+    //GIVEN
+    LocalDate testedBirthDate = LocalDate.of(1965,1,1);
+    boolean isMajor = false;
+
+    //WHEN
+    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate);
+
+    //THEN
+    assertThat(isMajor).isTrue();
+  }
+
+  @Test
+  public void isUnderEighteenWithLocalDatedAgeTest() throws Exception {
+    //GIVEN
+    LocalDate testedBirthDate = LocalDate.of(LocalDate.now().getYear()-1, 1,1);
+    boolean isMajor = true;
+
+    //WHEN
+    isMajor =  majorityCalculatorService.isStrictlyOverEighteen(testedBirthDate);
+
+    //THEN
+    assertThat(isMajor).isFalse();
+  }
+
 }
