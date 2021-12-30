@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class ChildAlertService {
   @Autowired
-  AddressRepository addressRepository;
+  AddressService addressService;
   @Autowired
   AgeCalculatorService ageCalculatorService;
 
@@ -34,10 +34,10 @@ public class ChildAlertService {
     List<ChildDTO> childrenToAdd = new ArrayList<>();
     List<PersonDTO> adultsToAdd = new ArrayList<>();
 
-    Iterable<Address> addressesFromDb = addressRepository.findByRoad(road);
+    Address address = addressService.findByRoad(road);
 
-    for (Address addressFromDb : addressesFromDb) {
-      Collection<Person> persons = addressFromDb.getPersons();
+
+      Collection<Person> persons = address.getPersons();
       for (Person person : persons) {
         String birthDate = person.getBirthDate();
         if (!ageCalculatorService.isStrictlyOverEighteen(birthDate)) {
@@ -56,15 +56,15 @@ public class ChildAlertService {
                   person.getPhone(),
                   person.getBirthDate(),
                   new AddressDTO(
-                      addressFromDb.getRoad(),
-                      addressFromDb.getCity(),
-                      addressFromDb.getZipCode()
+                      address.getRoad(),
+                      address.getCity(),
+                      address.getZipCode()
                   )
               )
           );
         }
       }
-    }
+
 
     ChildFromAddressDTO childFromAddressDTO = new ChildFromAddressDTO();
     childFromAddressDTO.setChildrenAtAddress(childrenToAdd);

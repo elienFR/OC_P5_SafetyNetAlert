@@ -76,4 +76,8 @@ public class Address {
   public String getZipCode() {
     return zipCode;
   }
+
+  public FireStation getFireStation() {
+    return fireStation;
+  }
 }

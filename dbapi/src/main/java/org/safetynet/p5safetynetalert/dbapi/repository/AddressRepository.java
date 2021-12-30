@@ -4,10 +4,14 @@ import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface AddressRepository extends CrudRepository<Address, Integer> {
-  public Address findByRoadAndCityAndZipCode (String road, String city, String zipCode);
-  public Iterable<Address> findByRoad (String road);
+  Address findByRoadAndCityAndZipCode(String road, String city, String zipCode);
+
+  Address findByRoad(String road);
+
+  Collection<Address> findAllByCity(String city);
 }

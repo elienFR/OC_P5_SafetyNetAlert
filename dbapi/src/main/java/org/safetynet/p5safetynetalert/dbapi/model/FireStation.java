@@ -30,6 +30,10 @@ public class FireStation {
     return addresses;
   }
 
+  public String getNumber() {
+    return number;
+  }
+
   public void setNumber(String number) {
     this.number = number;
   }

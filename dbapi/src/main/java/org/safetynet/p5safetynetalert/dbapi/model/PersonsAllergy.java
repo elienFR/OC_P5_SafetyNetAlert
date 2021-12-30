@@ -25,4 +25,8 @@ public class PersonsAllergy {
     this.person = person;
     this.allergy = allergy;
   }
+
+  public Allergy getAllergy() {
+    return allergy;
+  }
 }
