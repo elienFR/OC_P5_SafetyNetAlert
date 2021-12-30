@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface AddressRepository extends CrudRepository<Address, Integer> {
   public Address findByRoadAndCityAndZipCode (String road, String city, String zipCode);
-  public Iterable<Address> findByRoad (String road);
+  public Address findByRoad (String road);
 }

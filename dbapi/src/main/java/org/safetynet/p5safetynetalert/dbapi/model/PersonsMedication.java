@@ -25,4 +25,12 @@ public class PersonsMedication {
     this.person = person;
     this.medication = medication;
   }
+
+  public Person getPerson() {
+    return person;
+  }
+
+  public Medication getMedication() {
+    return medication;
+  }
 }

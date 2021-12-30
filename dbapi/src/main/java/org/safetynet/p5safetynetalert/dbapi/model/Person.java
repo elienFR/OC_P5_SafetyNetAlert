@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.extern.apachecommons.CommonsLog;
 
 import javax.persistence.*;
+import java.util.Collection;
 
 @Entity
 @Table(name = "persons")
@@ -25,6 +26,12 @@ public class Person {
 
   @ManyToOne(fetch = FetchType.LAZY)
   private Address address;
+
+  @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
+  private Collection<PersonsMedication> personsMedications;
+
+  @OneToMany(mappedBy = "person", fetch = FetchType.LAZY)
+  private Collection<PersonsAllergy> personsAllergies;
 
   public Person() {};
 
@@ -92,5 +99,13 @@ public class Person {
 
   public Address getAddress() {
     return address;
+  }
+
+  public Collection<PersonsMedication> getPersonsMedications() {
+    return personsMedications;
+  }
+
+  public Collection<PersonsAllergy> getPersonsAllergies() {
+    return personsAllergies;
   }
 }

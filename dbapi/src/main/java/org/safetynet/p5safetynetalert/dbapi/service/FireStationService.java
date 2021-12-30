@@ -19,9 +19,13 @@ import java.util.*;
 public class FireStationService {
 
   @Autowired
-  AgeCalculatorService ageCalculatorService;
-  @Autowired
   private FireStationRepository fireStationRepository;
+  @Autowired
+  private AgeCalculatorService ageCalculatorService;
+
+  public FireStation findByNumber (final String number) {
+    return fireStationRepository.findByNumber(number);
+  }
 
   /**
    * This method should return a list of people covered by the corresponding fire station.
@@ -40,7 +44,7 @@ public class FireStationService {
     Integer adultCount = 0;
     Integer childrenCount = 0;
 
-    FireStation fireStation = fireStationRepository.findByNumber(number);
+    FireStation fireStation = findByNumber(number);
     if (fireStation != null) {
       Collection<Address> addresses = fireStation.getAddresses();
 
@@ -82,13 +86,11 @@ public class FireStationService {
     }
   }
 
-  /**
-   * @param number
-   */
+
   public PhonesDTO getPhonesFromFireStationNumber(String number) {
     Set<String> phonesToAdd = new TreeSet<>();
 
-    FireStation fireStation = fireStationRepository.findByNumber(number);
+    FireStation fireStation = findByNumber(number);
     if (fireStation != null) {
       Collection<Address> addresses = fireStation.getAddresses();
       for (Address address : addresses) {
