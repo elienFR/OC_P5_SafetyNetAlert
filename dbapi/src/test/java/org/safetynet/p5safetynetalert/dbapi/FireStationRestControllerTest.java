@@ -1,5 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.controller.FireStationRestController;
 import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
@@ -28,32 +29,58 @@ public class FireStationRestControllerTest {
   @MockBean
   private FireStationService fireStationServiceMock;
 
+  @BeforeEach
+  public void initTest() {
+    PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
+    when(fireStationServiceMock.getPersonsFromFireStationNumber("1")).thenReturn(persons);
+  }
+
   @Test
   public void testGetPersonsFromFireStationNumber() throws Exception {
-    PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
+    //GIVEN
+    //is in initTest()
+    //firestation number is set to "1"
 
-    when(fireStationServiceMock.getPersonsFromFireStationNumber("1")).thenReturn(persons);
-
+    //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
         .get("/firestation")
         .param("stationNumber", "1")
         .contentType(MediaType.APPLICATION_JSON);
 
+    //THEN
     mockMvc.perform(builder).andExpect(status().isOk());
   }
 
   @Test
   public void testGetPersonsFromFireStationNumber404() throws Exception {
-    PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
+    //GIVEN
+    //is in initTest()
+    //firestation number is set to "1"
 
-    when(fireStationServiceMock.getPersonsFromFireStationNumber("1")).thenReturn(persons);
-
+    //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
         .get("/firestation")
         .param("stationNumber", "2")
         .contentType(MediaType.APPLICATION_JSON);
 
+    //THEN
     mockMvc.perform(builder).andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void testGetPersonsFromFireStationNumber400() throws Exception {
+    //GIVEN
+    //is in initTest()
+    //firestation number is set to "1"
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+        .get("/firestation")
+        .param("stationNumber_bad", "2")
+        .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isBadRequest());
   }
 
 
