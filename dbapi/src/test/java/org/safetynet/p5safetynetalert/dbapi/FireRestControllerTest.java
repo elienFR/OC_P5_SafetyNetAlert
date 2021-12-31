@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.controller.FireRestController;
 import org.safetynet.p5safetynetalert.dbapi.dto.FireDTO;
@@ -30,30 +32,58 @@ public class FireRestControllerTest {
   @MockBean
   private AddressService addressService;
 
-  @Test
-  public void testGetPersonsFromAddressInFire() throws Exception {
+  @BeforeEach
+  public void initTest(){
     FireDTO fireDTO = new FireDTO();
     when(addressService.getPersonFromAddressInFire("test")).thenReturn(fireDTO);
+  }
 
+  @Test
+  public void testGetPersonsFromAddressInFire() throws Exception {
+    //GIVEN
+    // is in initTest()
+    //road used is "test"
+
+    //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
         .get("/fire")
         .param("address", "test")
         .contentType(MediaType.APPLICATION_JSON);
 
+    //THEN
     mockMvc.perform(builder).andExpect(status().isOk());
   }
 
   @Test
   public void testGetPersonsFromAddressInFire404() throws Exception {
-    FireDTO fireDTO = new FireDTO();
-    when(addressService.getPersonFromAddressInFire("test")).thenReturn(fireDTO);
+    //GIVEN
+    // is in initTest()
+    //road used is "test"
 
+    //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
         .get("/fire")
         .param("address", "testt")
         .contentType(MediaType.APPLICATION_JSON);
 
+    //THEN
     mockMvc.perform(builder).andExpect(status().isNotFound());
+  }
+
+  @Test
+  public void testGetPersonsFromAddressInFire400() throws Exception {
+    //GIVEN
+    // is in initTest()
+    //road used is "test"
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+        .get("/fire")
+        .param("address_with_bad_request", "test")
+        .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isBadRequest());
   }
 
 }
