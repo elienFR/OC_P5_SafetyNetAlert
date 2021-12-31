@@ -101,11 +101,11 @@ public class Person {
     return address;
   }
 
-  public Collection<PersonsMedication> getPersonsMedications() {
+  public Iterable<PersonsMedication> getPersonsMedications() {
     return personsMedications;
   }
 
-  public Collection<PersonsAllergy> getPersonsAllergies() {
+  public Iterable<PersonsAllergy> getPersonsAllergies() {
     return personsAllergies;
   }
 }

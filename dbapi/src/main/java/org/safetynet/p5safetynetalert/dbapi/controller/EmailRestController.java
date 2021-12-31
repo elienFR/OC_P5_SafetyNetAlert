@@ -1,6 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
-import org.safetynet.p5safetynetalert.dbapi.dto.EmailListDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.EmailListDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

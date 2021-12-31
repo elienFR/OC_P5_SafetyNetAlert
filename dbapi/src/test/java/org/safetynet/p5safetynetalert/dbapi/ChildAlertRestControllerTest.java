@@ -3,11 +3,8 @@ package org.safetynet.p5safetynetalert.dbapi;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.controller.ChildAlertRestController;
-import org.safetynet.p5safetynetalert.dbapi.dto.ChildFromAddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.Address;
-import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.ChildAlertService;
-import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,9 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

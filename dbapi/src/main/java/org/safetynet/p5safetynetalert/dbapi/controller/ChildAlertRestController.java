@@ -1,9 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
-import org.safetynet.p5safetynetalert.dbapi.dto.AddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.ChildDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.ChildFromAddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.Address;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.ChildAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
