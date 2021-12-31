@@ -1,4 +1,4 @@
-package org.safetynet.p5safetynetalert.dbapi.dto;
+package org.safetynet.p5safetynetalert.dbapi.model.dto;
 
 public class AdultDTO {
   private String firstName;

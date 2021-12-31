@@ -1,6 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,12 +1,9 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.controller.FireRestController;
-import org.safetynet.p5safetynetalert.dbapi.dto.FireDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.Address;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;

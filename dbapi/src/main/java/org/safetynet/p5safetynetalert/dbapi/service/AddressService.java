@@ -1,9 +1,9 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.dto.FireDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.MedicalRecordsDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonForFireDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.MedicalRecordsDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonForFireDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.*;
 import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,12 +61,12 @@ public class AddressService {
       List<String> allergiesToAdd = new ArrayList<>();
       MedicalRecordsDTO medicalRecordsDTOs = new MedicalRecordsDTO();
 
-      Collection<PersonsMedication> personsMedications = person.getPersonsMedications();
+      Iterable<PersonsMedication> personsMedications = person.getPersonsMedications();
       for (PersonsMedication personsMedication : personsMedications) {
         medicationsListToAdd.add(personsMedication.getMedication().getName());
       }
 
-      Collection<PersonsAllergy> personsAllergies = person.getPersonsAllergies();
+      Iterable<PersonsAllergy> personsAllergies = person.getPersonsAllergies();
       for (PersonsAllergy personsAllergy : personsAllergies) {
         allergiesToAdd.add(personsAllergy.getAllergy().getName());
       }

@@ -1,6 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import org.safetynet.p5safetynetalert.dbapi.dto.EmailListDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.EmailListDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.springframework.beans.factory.annotation.Autowired;

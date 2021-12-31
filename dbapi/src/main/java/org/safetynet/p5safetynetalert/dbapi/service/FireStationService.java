@@ -1,10 +1,10 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.dto.AddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonsFromFireStationDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.PhonesDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.AddressDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PhonesDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;

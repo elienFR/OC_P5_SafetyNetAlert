@@ -1,12 +1,11 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import org.safetynet.p5safetynetalert.dbapi.dto.AddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.ChildDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.ChildFromAddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.dto.PersonDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.AddressDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
-import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

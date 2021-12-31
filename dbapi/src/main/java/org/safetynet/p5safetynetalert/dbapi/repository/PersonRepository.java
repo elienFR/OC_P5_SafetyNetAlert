@@ -9,6 +9,9 @@ import java.util.List;
 
 @Repository
 public interface PersonRepository extends CrudRepository<Person, Integer> {
-  public Person findByFirstNameAndLastNameAndBirthDate (String firstName, String lastName, String birthDate);
+  Person findByFirstNameAndLastNameAndBirthDate(String firstName, String lastName, String birthDate);
 
+  Iterable<Person> findAllByFirstNameAndLastName(String firstName, String lastName);
+
+  Iterable<Person> findAllByLastName(String lastName);
 }
