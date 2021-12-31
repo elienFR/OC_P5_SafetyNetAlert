@@ -6,8 +6,6 @@ import org.safetynet.p5safetynetalert.dbapi.dto.MedicalRecordsDTO;
 import org.safetynet.p5safetynetalert.dbapi.dto.PersonForFireDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.*;
 import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
-import org.safetynet.p5safetynetalert.dbapi.repository.PersonsAllergyRepository;
-import org.safetynet.p5safetynetalert.dbapi.repository.PersonsMedicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +35,10 @@ public class AddressService {
 
   public Address findByRoad(final String road) {
     return addressRepository.findByRoad(road);
+  }
+
+  public Collection<Address> getAllByCity(final String city) {
+    return addressRepository.findAllByCity(city);
   }
 
   public void deleteAddress(final Integer id) {

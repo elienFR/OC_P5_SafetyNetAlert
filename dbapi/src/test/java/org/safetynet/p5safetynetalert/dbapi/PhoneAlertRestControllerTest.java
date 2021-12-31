@@ -1,5 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.controller.PhoneAlertRestController;
 import org.safetynet.p5safetynetalert.dbapi.dto.PhonesDTO;
@@ -29,11 +30,17 @@ public class PhoneAlertRestControllerTest {
   @MockBean
   private FireStationService fireStationServiceMocked;
 
+  @BeforeEach
+  public void initTest() {
+    PhonesDTO phones = new PhonesDTO();
+    when(fireStationServiceMocked.getPhonesFromFireStationNumber("1")).thenReturn(phones);
+  }
+
   @Test
   public void getPhoneListFromFireStationTest() throws Exception {
     //GIVEN
-    PhonesDTO phones = new PhonesDTO();
-    when(fireStationServiceMocked.getPhonesFromFireStationNumber("1")).thenReturn(phones);
+    //in initTest()
+    //firestation is set to "1"
 
     //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
@@ -41,15 +48,15 @@ public class PhoneAlertRestControllerTest {
         .param("firestation", "1")
         .contentType(MediaType.APPLICATION_JSON);
 
+    //THEN
     mockMvc.perform(builder).andExpect(status().isOk());
-
   }
 
   @Test
   public void getPhoneListFromFireStation404Test() throws Exception {
     //GIVEN
-    PhonesDTO phones = new PhonesDTO();
-    when(fireStationServiceMocked.getPhonesFromFireStationNumber("1")).thenReturn(phones);
+    //in initTest()
+    //firestation is set to "1"
 
     //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
@@ -57,8 +64,24 @@ public class PhoneAlertRestControllerTest {
         .param("firestation", "2")
         .contentType(MediaType.APPLICATION_JSON);
 
+    //THEN
     mockMvc.perform(builder).andExpect(status().isNotFound());
+  }
 
+  @Test
+  public void testGetPhoneListFromFireStation400() throws Exception {
+    //GIVEN
+    //in initTest()
+    //firestation is set to "1"
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+        .get("/phoneAlert")
+        .param("firestation_bad", "2")
+        .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isBadRequest());
   }
 
 }
