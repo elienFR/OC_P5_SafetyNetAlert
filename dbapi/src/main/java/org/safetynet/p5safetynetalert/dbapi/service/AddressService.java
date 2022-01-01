@@ -50,6 +50,13 @@ public class AddressService {
     return savedAddress;
   }
 
+  public Collection<Person> getPersons(Collection<Address> addresses) {
+    Collection<Person> persons = new ArrayList<>();
+    for(Address address : addresses){
+      persons.addAll(address.getPersons());
+    }
+    return persons;
+  }
 
   public FireDTO getPersonFromAddressInFire(String road) {
     List<PersonForFireDTO> personToAdd = new ArrayList<>();

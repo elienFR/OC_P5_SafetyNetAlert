@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,10 +74,20 @@ public class PersonService {
     return savedPerson;
   }
 
-  public List<PersonDTO> getPersonFromFireStationNumber(int fireStationNumber) {
+  public int getAge(Person person) {
+    return ageCalculatorService.getAge(person.getBirthDate());
+  }
 
+  public String getEmail(Person person) {
+    return person.getEmail();
+  }
 
-    return null;
+  public List<String> getEmails(Iterable<Person> persons){
+    List<String> emails = new ArrayList<>();
+    for(Person person : persons){
+      emails.add(person.getEmail());
+    }
+    return emails;
   }
 
   /**
@@ -107,8 +118,7 @@ public class PersonService {
 
         personInfoDTO.setFirstName(person.getFirstName());
         personInfoDTO.setLastName(person.getLastName());
-        personInfoDTO.setAge(
-            ageCalculatorService.getAge(person.getBirthDate())
+        personInfoDTO.setAge(getAge(person)
         );
         personInfoDTO.setMail(person.getEmail());
         personInfoDTO.setMedicalRecords(
