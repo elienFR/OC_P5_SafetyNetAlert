@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +76,18 @@ public class PersonService {
 
   public int getAge(Person person) {
     return ageCalculatorService.getAge(person.getBirthDate());
+  }
+
+  public String getEmail(Person person) {
+    return person.getEmail();
+  }
+
+  public List<String> getEmails(Iterable<Person> persons){
+    List<String> emails = new ArrayList<>();
+    for(Person person : persons){
+      emails.add(person.getEmail());
+    }
+    return emails;
   }
 
   /**

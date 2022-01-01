@@ -15,20 +15,17 @@ public class EmailService {
 
   @Autowired
   AddressService addressService;
+  @Autowired
+  PersonService personService;
 
   public EmailListDTO getAllEmailFromCityInhabitants(String city) {
-    List<String> emails = new ArrayList<>();
     Collection<Address> addresses = addressService.getAllByCity(city);
-
     if (addresses != null) {
-      for (Address address : addresses) {
-        Collection<Person> persons = address.getPersons();
-        for (Person person : persons) {
-          emails.add(person.getEmail());
-        }
-      }
       EmailListDTO emailListDTO = new EmailListDTO();
-      emailListDTO.setEmailList(emails);
+      emailListDTO.setEmailList(
+          personService.getEmails(
+          addressService.getPersons(addresses))
+      );
       emailListDTO.setCityName(city);
       return emailListDTO;
     } else {
