@@ -73,10 +73,8 @@ public class PersonService {
     return savedPerson;
   }
 
-  public List<PersonDTO> getPersonFromFireStationNumber(int fireStationNumber) {
-
-
-    return null;
+  public int getAge(Person person) {
+    return ageCalculatorService.getAge(person.getBirthDate());
   }
 
   /**
@@ -107,8 +105,7 @@ public class PersonService {
 
         personInfoDTO.setFirstName(person.getFirstName());
         personInfoDTO.setLastName(person.getLastName());
-        personInfoDTO.setAge(
-            ageCalculatorService.getAge(person.getBirthDate())
+        personInfoDTO.setAge(getAge(person)
         );
         personInfoDTO.setMail(person.getEmail());
         personInfoDTO.setMedicalRecords(
