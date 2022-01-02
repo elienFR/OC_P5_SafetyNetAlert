@@ -1,13 +1,17 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
-public class AgeCalculatorService {
+public class AgeService {
 
   /**
    * Parse a string patterned MM/dd/yyyy into a LocalDate
@@ -44,8 +48,7 @@ public class AgeCalculatorService {
     boolean isMajor = false;
     if (period.isNegative() || period.isZero()) {
       throw new IllegalArgumentException("Error while calculating Age. Age is negative.");
-    }
-    else {
+    } else {
       if (period.getYears() > 18) {
         isMajor = true;
       }
@@ -61,7 +64,23 @@ public class AgeCalculatorService {
    */
   public Integer getAge(String birthDate) {
     LocalDate formattedBirthDate = parseStringMMddYYYY(birthDate);
-    Period period = Period.between(formattedBirthDate,LocalDate.now());
+    Period period = Period.between(formattedBirthDate, LocalDate.now());
     return period.getYears();
+  }
+
+  public Map<String, Integer> countAdultsAndChildren(Collection<PersonDTO> persons) throws Exception {
+    Map<String,Integer> adultsAndChildrenCount = new HashMap<>();
+    adultsAndChildrenCount.put("adults",0);
+    adultsAndChildrenCount.put("children",0);
+    for (PersonDTO person : persons) {
+      if (isStrictlyOverEighteen(person.getBirthDate())) {
+        Integer current = adultsAndChildrenCount.get("adults");
+        adultsAndChildrenCount.put("adults", current+1);
+      } else {
+        Integer current = adultsAndChildrenCount.get("children");
+        adultsAndChildrenCount.put("children", current+1);
+      }
+    }
+    return adultsAndChildrenCount;
   }
 }

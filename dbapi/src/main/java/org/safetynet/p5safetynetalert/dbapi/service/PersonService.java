@@ -2,6 +2,7 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
+import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.PersonsMedication;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
@@ -22,7 +23,7 @@ public class PersonService {
   @Autowired
   private PersonRepository personRepository;
   @Autowired
-  private AgeCalculatorService ageCalculatorService;
+  private AgeService ageService;
   @Autowired
   private PersonsMedicationService personsMedicationService;
   @Autowired
@@ -52,15 +53,15 @@ public class PersonService {
     Iterable<PersonsMedication> personsMedications = person.getPersonsMedications();
 
     List<String> medications = new ArrayList<>(
-        personsMedicationService.getMedicationsFromPersonsMedications(
-            person.getPersonsMedications()
-        )
+      personsMedicationService.getMedicationsFromPersonsMedications(
+        person.getPersonsMedications()
+      )
     );
 
     List<String> allergies = new ArrayList<>(
-        personsAllergyService.getAllergiesFromPersonsMedications(
-            person.getPersonsAllergies()
-        )
+      personsAllergyService.getAllergiesFromPersonsMedications(
+        person.getPersonsAllergies()
+      )
     );
 
     medicalRecordsDTO.setMedications(medications);
@@ -74,19 +75,23 @@ public class PersonService {
   }
 
   public int getAge(Person person) {
-    return ageCalculatorService.getAge(person.getBirthDate());
+    return ageService.getAge(person.getBirthDate());
   }
 
   public String getEmail(Person person) {
     return person.getEmail();
   }
 
-  public List<String> getEmails(Iterable<Person> persons) {
-    List<String> emails = new ArrayList<>();
-    for (Person person : persons) {
-      emails.add(person.getEmail());
+  public List<String> getEmails(Collection<Person> persons) {
+    if (persons == null || persons.size() == 0) {
+      return null;
+    } else {
+      List<String> emails = new ArrayList<>();
+      for (Person person : persons) {
+        emails.add(person.getEmail());
+      }
+      return emails;
     }
-    return emails;
   }
 
   /**
@@ -99,8 +104,8 @@ public class PersonService {
    * @return an object PersonsInfoDTO (see description)
    */
   public PersonsInfoDTO getPersonInfoFromFirstAndOrLastName(
-      String firstName,
-      @NotNull @NotBlank String lastName
+    String firstName,
+    @NotNull @NotBlank String lastName
   ) {
     if ((firstName != null && lastName != null) || (!firstName.equals("") && !lastName.equals(""))) {
       Iterable<Person> persons;
@@ -120,7 +125,7 @@ public class PersonService {
         );
         personInfoDTO.setMail(person.getEmail());
         personInfoDTO.setMedicalRecords(
-            getMedicalRecords(person)
+          getMedicalRecords(person)
         );
 
         personsInfoDTOToAdd.add(personInfoDTO);
@@ -140,18 +145,102 @@ public class PersonService {
     }
   }
 
-  public Collection<PersonForFireDTO> getPersonsFromAddressInFire(Collection<Person> persons) {
+  public Collection<PersonForFireDTO> getPersonsForFireDTOFromAddressInFire(Collection<Person> persons) {
     List<PersonForFireDTO> personToAdd = new ArrayList<>();
     for (Person person : persons) {
       personToAdd.add(
-          new PersonForFireDTO(
-              person.getFirstName(),
-              person.getLastName(),
-              person.getPhone(),
-              medicalRecordsService.getMedicalRecordsDTOFromPerson(person)
-          ));
+        new PersonForFireDTO(
+          person.getFirstName(),
+          person.getLastName(),
+          person.getPhone(),
+          medicalRecordsService.getMedicalRecordsDTOFromPerson(person)
+        ));
     }
     return personToAdd;
+  }
+
+  public Collection<PersonDTO> getPersonDTOsFromAddress(Address address) {
+    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
+    Collection<Person> persons = address.getPersons();
+    for (Person person : persons) {
+      listOfPersonsDTO.add(
+        new PersonDTO(
+          person.getFirstName(),
+          person.getLastName(),
+          person.getPhone(),
+          person.getBirthDate(),
+          new AddressDTO(
+            address.getRoad(),
+            address.getCity(),
+            address.getZipCode()
+          )
+        )
+      );
+    }
+    return listOfPersonsDTO;
+  }
+
+  public Collection<PersonDTO> getPersonDTOsFromAddresses(Collection<Address> addresses) {
+    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
+    for (Address address : addresses) {
+      listOfPersonsDTO.addAll(getPersonDTOsFromAddress(address));
+    }
+    return listOfPersonsDTO;
+  }
+
+  private Collection<PersonDTO> getPersonDTOsFromPersons(Collection<Person> persons) {
+    Collection<PersonDTO> personDTOCollection = new ArrayList<>();
+    for (Person person : persons) {
+      personDTOCollection.add(
+        new PersonDTO(
+          person.getFirstName(),
+          person.getLastName(),
+          person.getPhone(),
+          person.getBirthDate(),
+          new AddressDTO(
+            person.getAddress().getRoad(),
+            person.getAddress().getCity(),
+            person.getAddress().getZipCode()
+          )
+        )
+      );
+    }
+    return personDTOCollection;
+  }
+
+  private Collection<PersonDTO> getAdultsFromPersons(Collection<Person> persons) throws Exception {
+    Collection<PersonDTO> personsDTOs = getPersonDTOsFromPersons(persons);
+    for (PersonDTO personDTO : personsDTOs) {
+      if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
+        personsDTOs.remove(personDTO);
+      }
+    }
+    return personsDTOs;
+  }
+
+  public Collection<PersonDTO> getAdultsFromPersonsDTOs(Collection<PersonDTO> personsDTOs) throws Exception {
+    Collection<PersonDTO> adultsList = new ArrayList<>();
+    for (PersonDTO personDTO : personsDTOs) {
+      if (ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
+        adultsList.add(personDTO);
+      }
+    }
+    return adultsList;
+  }
+
+  public Collection<ChildDTO> getChildrenFromPersonsDTOs(Collection<PersonDTO> personDTOs) throws Exception {
+    Collection<ChildDTO> childrenList = new ArrayList<>();
+    for (PersonDTO personDTO : personDTOs) {
+      if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
+        childrenList.add(new ChildDTO(
+            personDTO.getFirstName(),
+            personDTO.getLastName(),
+            ageService.getAge(personDTO.getBirthDate())
+          )
+        );
+      }
+    }
+    return childrenList;
   }
 
 }

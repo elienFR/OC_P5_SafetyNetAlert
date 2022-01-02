@@ -17,7 +17,7 @@ public class ChildAlertRestController {
 
   @GetMapping("")
   public ChildFromAddressDTO getChildrenFromAddress(
-      @RequestParam("address") String address) throws Exception {
+    @RequestParam("address") String address) throws Exception {
     return childAlertService.getChildrenFromAddress(address);
   }
 }
