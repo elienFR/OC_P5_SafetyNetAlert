@@ -8,6 +8,7 @@ public class AddressDTO {
   private String city;
   private String zip;
 
+  public AddressDTO() {}
   public AddressDTO(String road, String city, String zip) {
     this.road = road;
     this.city = city;

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -23,7 +22,7 @@ public class AddressService {
   @Autowired
   private PersonsAllergyService personsAllergyService;
   @Autowired
-  private AgeCalculatorService ageCalculatorService;
+  private AgeService ageService;
   @Autowired
   private MedicalRecordsService medicalRecordsService;
   @Autowired
@@ -37,12 +36,16 @@ public class AddressService {
     return addressRepository.findAll();
   }
 
-  public Address findByRoad(final String road) {
+  public Address getByRoad(final String road) {
     return addressRepository.findByRoad(road);
   }
 
   public Collection<Address> getAllByCity(final String city) {
-    return addressRepository.findAllByCity(city);
+    if (city == null || city.equals("")) {
+      return null;
+    } else {
+      return addressRepository.findAllByCity(city);
+    }
   }
 
   public void deleteAddress(final Integer id) {
@@ -54,86 +57,39 @@ public class AddressService {
     return savedAddress;
   }
 
-  public Collection<Person> getPersons(Collection<Address> addresses) {
-    Collection<Person> persons = new ArrayList<>();
-    for (Address address : addresses) {
-      persons.addAll(address.getPersons());
-    }
-    return persons;
+  public Collection<Person> getPersons(Address address){
+    return address.getPersons();
   }
 
-  public List<ChildDTO> getChildrenDTO(Address address) throws Exception {
-    List<ChildDTO> listOfChildren = new ArrayList<>();
-    Collection<Person> persons = address.getPersons();
-    for (Person person : persons) {
-      if (!ageCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
-        listOfChildren.add(
-            new ChildDTO(
-                person.getFirstName(),
-                person.getLastName(),
-                ageCalculatorService.getAge(person.getBirthDate())
-            )
-        );
+  public Collection<Person> getPersons(Collection<Address> addresses) {
+    if (addresses == null || addresses.size() == 0) {
+      return null;
+    } else {
+      Collection<Person> persons = new ArrayList<>();
+      for (Address address : addresses) {
+        persons.addAll(address.getPersons());
       }
+      return persons;
     }
+  }
+
+  public Collection<PersonDTO> getPersonDTOsFromAddress(Address address) throws Exception {
+    Collection<PersonDTO> listOfPersonsDTO =
+      personService.getPersonDTOsFromAddress(address);
+    return listOfPersonsDTO;
+  }
+
+  public Collection<PersonDTO> getAdultsDTO(Address address) throws Exception {
+    Collection<PersonDTO> listOfAdults = personService
+      .getAdultsFromPersonsDTOs(personService.getPersonDTOsFromAddress(address));
+    return listOfAdults;
+  }
+
+  public Collection<ChildDTO> getChildrenDTO(Address address) throws Exception {
+    Collection<ChildDTO> listOfChildren = personService
+      .getChildrenFromPersonsDTOs(personService.getPersonDTOsFromAddress(address));
+
     return listOfChildren;
   }
 
-  public List<PersonDTO> getPersonsDTO(Address address) throws Exception {
-    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
-    Collection<Person> persons = address.getPersons();
-    for (Person person : persons) {
-      listOfPersonsDTO.add(
-          new PersonDTO(
-              person.getFirstName(),
-              person.getLastName(),
-              person.getPhone(),
-              person.getBirthDate(),
-              new AddressDTO(
-                  address.getRoad(),
-                  address.getCity(),
-                  address.getZipCode()
-              )
-          )
-      );
-    }
-    return listOfPersonsDTO;
-  }
-
-  public List<PersonDTO> getAdultsDTO(Address address) throws Exception {
-    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
-    Collection<Person> persons = address.getPersons();
-    for (Person person : persons) {
-      if (ageCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
-        listOfPersonsDTO.add(
-            new PersonDTO(
-                person.getFirstName(),
-                person.getLastName(),
-                person.getPhone(),
-                person.getBirthDate(),
-                new AddressDTO(
-                    address.getRoad(),
-                    address.getCity(),
-                    address.getZipCode()
-                )
-            )
-        );
-      }
-    }
-    return listOfPersonsDTO;
-  }
-
-  public FireDTO getPersonFromAddressInFire(String road) {
-    Address address = findByRoad(road);
-
-    Collection<PersonForFireDTO> personToAdd =
-        personService.getPersonsFromAddressInFire(
-            address.getPersons()
-        );
-
-    FireDTO fireDTO = new FireDTO();
-    fireDTO.setFireStationNumber(address.getFireStation().getNumber());
-    fireDTO.setPersonsList(personToAdd);
-    return fireDTO;
-  }
 }

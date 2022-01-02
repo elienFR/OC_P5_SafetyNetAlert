@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.FireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 public class FireRestController {
 
   @Autowired
-  private AddressService addressService;
+  private FireService fireService;
 
   /**
    * This url returns the list of inhabitants living at the given address
@@ -29,7 +29,9 @@ public class FireRestController {
   @GetMapping("")
   public FireDTO getPersonsFromAddressInFire(
       @RequestParam("address") String road) {
-    FireDTO fireDTO = addressService.getPersonFromAddressInFire(road);
+//    FireDTO fireDTO = addressService.getFireDTOFromAddressInFire(road);
+    FireDTO fireDTO = fireService.getFireDTOFromAddressInFire(road);
+
     if(fireDTO != null){
       return fireDTO;
     }else{

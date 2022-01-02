@@ -1,5 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.AddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
@@ -21,9 +22,13 @@ public class FireStationService {
   @Autowired
   private FireStationRepository fireStationRepository;
   @Autowired
-  private AgeCalculatorService ageCalculatorService;
+  private AgeService ageService;
+  @Autowired
+  private AddressService addressService;
+  @Autowired
+  private PersonService personService;
 
-  public FireStation findByNumber (final String number) {
+  private FireStation getFireStationByNumber(final String number) {
     return fireStationRepository.findByNumber(number);
   }
 
@@ -32,65 +37,44 @@ public class FireStationService {
    * So, if the station number = 1, it must return the inhabitants covered by the station number 1.
    * The list includes the following specific information: first name, last name, address,
    * telephone number.
-   * What's more, it must provide a count of the number of adults,
-   * and the number of children (anyone aged 18 or over less) in the service area.
+   * It provides a count of adults, and a count of children (anyone aged 18 or over less)
+   * in the service area.
    *
    * @param number is the number of the fire station
    * @return see description
    */
   public PersonsFromFireStationDTO getPersonsFromFireStationNumber(String number) {
-    PersonsFromFireStationDTO listOfPersons = new PersonsFromFireStationDTO();
-    List<PersonDTO> personsList = new ArrayList<>();
-    Integer adultCount = 0;
-    Integer childrenCount = 0;
-
-    FireStation fireStation = findByNumber(number);
+    FireStation fireStation = getFireStationByNumber(number);
     if (fireStation != null) {
-      Collection<Address> addresses = fireStation.getAddresses();
+      Collection<PersonDTO> personsList = personService.getPersonDTOsFromAddresses(
+        fireStation.getAddresses()
+      );
 
-      for (Address address : addresses) {
-        Collection<Person> persons = address.getPersons();
-
-        for (Person person : persons) {
-          try {
-            if (ageCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
-              adultCount += 1;
-            } else {
-              childrenCount += 1;
-            }
-            personsList.add(new PersonDTO(
-                person.getFirstName(),
-                person.getLastName(),
-                person.getPhone(),
-                person.getBirthDate(),
-                new AddressDTO(
-                    address.getRoad(),
-                    address.getCity(),
-                    address.getZipCode()
-                )
-            ));
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
+      Integer adultCount = null;
+      Integer childrenCount = null;
+      try {
+        adultCount = ageService.countAdultsAndChildren(personsList).get("adults");
+        childrenCount = ageService.countAdultsAndChildren(personsList).get("children");
+      } catch (Exception e) {
+        e.printStackTrace();
       }
 
+      PersonsFromFireStationDTO listOfPersons = new PersonsFromFireStationDTO();
       listOfPersons.setPersonsList(personsList);
       listOfPersons.setAdultCount(adultCount);
       listOfPersons.setChildrenCount(childrenCount);
 
       return listOfPersons;
-
     } else {
       return null;
     }
   }
 
 
-  public PhonesDTO getPhonesFromFireStationNumber(String number) {
+  public PhonesDTO getPhonesFromFireStationNumberTEST(String number) {
     Set<String> phonesToAdd = new TreeSet<>();
 
-    FireStation fireStation = findByNumber(number);
+    FireStation fireStation = getFireStationByNumber(number);
     if (fireStation != null) {
       Collection<Address> addresses = fireStation.getAddresses();
       for (Address address : addresses) {
@@ -108,6 +92,23 @@ public class FireStationService {
     } else {
       return null;
     }
-
   }
+
+  public PhonesDTO getPhonesFromFireStationNumber(String number) {
+    FireStation fireStation = getFireStationByNumber(number);
+    if (fireStation != null) {
+      Collection<String> phoneNumbers =
+        personService.getPhones(
+          addressService.getPersons(
+            fireStation.getAddresses()
+          )
+        );
+      PhonesDTO phonesDTO = new PhonesDTO();
+      phonesDTO.setPhonesList(phoneNumbers);
+      return phonesDTO;
+    } else {
+      return null;
+    }
+  }
+
 }
