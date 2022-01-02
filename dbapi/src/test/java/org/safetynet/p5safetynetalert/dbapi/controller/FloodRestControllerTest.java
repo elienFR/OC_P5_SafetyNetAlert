@@ -15,10 +15,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,7 +35,7 @@ public class FloodRestControllerTest {
 
   @BeforeEach
   public void initTest() {
-    Collection<String> stations = new ArrayList<>();
+    Collection<String> stations = new LinkedHashSet<>();
     for (Integer i = 1; i < 4; i++) {
       stations.add(i.toString());
     }

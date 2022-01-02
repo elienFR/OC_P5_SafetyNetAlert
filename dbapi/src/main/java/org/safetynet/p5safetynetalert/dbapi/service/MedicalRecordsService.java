@@ -3,6 +3,7 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 import com.google.common.collect.Iterables;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.MedicalRecordsDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -111,5 +112,40 @@ public class MedicalRecordsService {
 
   public PersonsAllergy savePersonsAllergy(PersonsAllergy personsAllergy) {
     return personsAllergyService.save(personsAllergy);
+  }
+
+  public void createMedicationsFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
+      List<String> medicationToAdd = jsonMedicalRecord.getMedications();
+      for (String medication : medicationToAdd) {
+        Medication medicationToAssign = new Medication();
+        if (!getMedicationExistence(medication)) {
+          medicationToAssign = saveMedication(medication);
+        } else {
+          medicationToAssign = getMedication(medication);
+        }
+        PersonsMedication personsMedicationToSave = new PersonsMedication();
+        personsMedicationToSave.setPerson(person);
+        personsMedicationToSave.setMedication(medicationToAssign);
+
+        personsMedicationToSave = savePersonsMedication(personsMedicationToSave);
+      }
+
+  }
+
+  public void createAllergiesFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
+    List<String> allergiesToAdd = jsonMedicalRecord.getAllergies();
+    for (String allergy : allergiesToAdd) {
+      Allergy allergyToAssign;
+      if (!getAllergyExistence(allergy)) {
+        allergyToAssign = saveAllergy(allergy);
+      } else {
+        allergyToAssign = getAllergyByName(allergy);
+      }
+      PersonsAllergy personsAllergyToSave = new PersonsAllergy();
+      personsAllergyToSave.setAllergy(allergyToAssign);
+      personsAllergyToSave.setPerson(person);
+
+      personsAllergyToSave = savePersonsAllergy(personsAllergyToSave);
+    }
   }
 }

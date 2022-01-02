@@ -417,6 +417,16 @@ public class PersonService {
     }
   }
 
+  public Person updateBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+    Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
+
+    if (!jsonMedicalRecord.getBirthdate().equals(personConcerned.getBirthDate()) && !jsonMedicalRecord.getBirthdate().isBlank()) {
+      personConcerned.setBirthDate(jsonMedicalRecord.getBirthdate());
+      personConcerned = save(personConcerned);
+    }
+    return personConcerned;
+  }
+
   public JsonMedicalRecord createMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
 
@@ -428,45 +438,16 @@ public class PersonService {
       if (!medicalRecordsService.existsFromPerson(personConcerned)) {
 
         //Update birthdate
-        if (!jsonMedicalRecord.getBirthdate().equals(personConcerned.getBirthDate()) && !jsonMedicalRecord.getBirthdate().isBlank()) {
-          personConcerned.setBirthDate(jsonMedicalRecord.getBirthdate());
-          personConcerned = save(personConcerned);
-        }
+        personConcerned = updateBirthDateFromJsonMedicalRecords(jsonMedicalRecord);
 
         //write new medications
-        List<String> medicationToAdd = jsonMedicalRecord.getMedications();
         if (Iterables.size(medicationsFromPerson) == 0) {
-          for (String medication : medicationToAdd) {
-            Medication medicationToAssign = new Medication();
-            if (!medicalRecordsService.getMedicationExistence(medication)) {
-              medicationToAssign = medicalRecordsService.saveMedication(medication);
-            } else {
-              medicationToAssign = medicalRecordsService.getMedication(medication);
-            }
-            PersonsMedication personsMedicationToSave = new PersonsMedication();
-            personsMedicationToSave.setPerson(personConcerned);
-            personsMedicationToSave.setMedication(medicationToAssign);
-
-            personsMedicationToSave = medicalRecordsService.savePersonsMedication(personsMedicationToSave);
-          }
+          medicalRecordsService.createMedicationsFromJsonPerson(jsonMedicalRecord, personConcerned);
         }
 
         //write new allergies
-        List<String> allergiesToAdd = jsonMedicalRecord.getAllergies();
         if (Iterables.size(allergiesFromPerson) == 0) {
-          for (String allergy : allergiesToAdd) {
-            Allergy allergyToAssign = new Allergy();
-            if (!medicalRecordsService.getAllergyExistence(allergy)) {
-              allergyToAssign = medicalRecordsService.saveAllergy(allergy);
-            } else {
-              allergyToAssign = medicalRecordsService.getAllergyByName(allergy);
-            }
-            PersonsAllergy personsAllergyToSave = new PersonsAllergy();
-            personsAllergyToSave.setAllergy(allergyToAssign);
-            personsAllergyToSave.setPerson(personConcerned);
-
-            personsAllergyToSave = medicalRecordsService.savePersonsAllergy(personsAllergyToSave);
-          }
+          medicalRecordsService.createAllergiesFromJsonPerson(jsonMedicalRecord, personConcerned);
         }
 
         return jsonMedicalRecord;
@@ -478,4 +459,9 @@ public class PersonService {
       return null;
     }
   }
+
+  public JsonMedicalRecord updateMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+
+  }
+
 }
