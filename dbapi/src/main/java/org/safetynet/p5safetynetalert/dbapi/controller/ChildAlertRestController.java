@@ -18,6 +18,6 @@ public class ChildAlertRestController {
   @GetMapping("")
   public ChildFromAddressDTO getChildrenFromAddress(
       @RequestParam("address") String address) throws Exception {
-    return childAlertService.getChildFromAddress(address);
+    return childAlertService.getChildrenFromAddress(address);
   }
 }

@@ -1,9 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.MedicalRecordsDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonForFireDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.*;
 import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +22,8 @@ public class AddressService {
   private PersonsMedicationService personsMedicationService;
   @Autowired
   private PersonsAllergyService personsAllergyService;
+  @Autowired
+  private AgeCalculatorService ageCalculatorService;
 
   public Optional<Address> getAddress(final Integer id) {
     return addressRepository.findById(id);
@@ -52,10 +52,71 @@ public class AddressService {
 
   public Collection<Person> getPersons(Collection<Address> addresses) {
     Collection<Person> persons = new ArrayList<>();
-    for(Address address : addresses){
+    for (Address address : addresses) {
       persons.addAll(address.getPersons());
     }
     return persons;
+  }
+
+  public List<ChildDTO> getChildrenDTO(Address address) throws Exception {
+    List<ChildDTO> listOfChildren = new ArrayList<>();
+    Collection<Person> persons = address.getPersons();
+    for (Person person : persons) {
+      if (!ageCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
+        listOfChildren.add(
+            new ChildDTO(
+                person.getFirstName(),
+                person.getLastName(),
+                ageCalculatorService.getAge(person.getBirthDate())
+            )
+        );
+      }
+    }
+    return listOfChildren;
+  }
+
+  public List<PersonDTO> getPersonsDTO(Address address) throws Exception {
+    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
+    Collection<Person> persons = address.getPersons();
+    for (Person person : persons) {
+      listOfPersonsDTO.add(
+          new PersonDTO(
+              person.getFirstName(),
+              person.getLastName(),
+              person.getPhone(),
+              person.getBirthDate(),
+              new AddressDTO(
+                  address.getRoad(),
+                  address.getCity(),
+                  address.getZipCode()
+              )
+          )
+      );
+    }
+    return listOfPersonsDTO;
+  }
+
+  public List<PersonDTO> getAdultsDTO(Address address) throws Exception {
+    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
+    Collection<Person> persons = address.getPersons();
+    for (Person person : persons) {
+      if (ageCalculatorService.isStrictlyOverEighteen(person.getBirthDate())) {
+        listOfPersonsDTO.add(
+            new PersonDTO(
+                person.getFirstName(),
+                person.getLastName(),
+                person.getPhone(),
+                person.getBirthDate(),
+                new AddressDTO(
+                    address.getRoad(),
+                    address.getCity(),
+                    address.getZipCode()
+                )
+            )
+        );
+      }
+    }
+    return listOfPersonsDTO;
   }
 
   public FireDTO getPersonFromAddressInFire(String road) {

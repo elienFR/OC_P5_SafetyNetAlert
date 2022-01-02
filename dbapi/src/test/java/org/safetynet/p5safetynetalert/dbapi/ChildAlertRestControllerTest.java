@@ -32,7 +32,7 @@ public class ChildAlertRestControllerTest {
   @BeforeEach
   public void iniTest() throws Exception {
     ChildFromAddressDTO children = new ChildFromAddressDTO();
-    when(childAlertService.getChildFromAddress("test")).thenReturn(children);
+    when(childAlertService.getChildrenFromAddress("test")).thenReturn(children);
   }
 
   @Test

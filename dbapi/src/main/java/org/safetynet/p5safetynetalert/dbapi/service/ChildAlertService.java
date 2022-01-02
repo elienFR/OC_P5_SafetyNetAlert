@@ -17,8 +17,6 @@ import java.util.List;
 public class ChildAlertService {
   @Autowired
   AddressService addressService;
-  @Autowired
-  AgeCalculatorService ageCalculatorService;
 
   /**
    * This method returns a list of children (anyone aged 18 or under) living at a specific road.
@@ -29,42 +27,10 @@ public class ChildAlertService {
    * @return a ChildFromAddressDTO (see description)
    * @throws Exception
    */
-  public ChildFromAddressDTO getChildFromAddress(String road) throws Exception {
-    List<ChildDTO> childrenToAdd = new ArrayList<>();
-    List<PersonDTO> adultsToAdd = new ArrayList<>();
-
+  public ChildFromAddressDTO getChildrenFromAddress(String road) throws Exception {
     Address address = addressService.findByRoad(road);
-
-
-      Collection<Person> persons = address.getPersons();
-      for (Person person : persons) {
-        String birthDate = person.getBirthDate();
-        if (!ageCalculatorService.isStrictlyOverEighteen(birthDate)) {
-          childrenToAdd.add(
-              new ChildDTO(
-                  person.getFirstName(),
-                  person.getLastName(),
-                  ageCalculatorService.getAge(person.getBirthDate())
-              )
-          );
-        } else {
-          adultsToAdd.add(
-              new PersonDTO(
-                  person.getFirstName(),
-                  person.getLastName(),
-                  person.getPhone(),
-                  person.getBirthDate(),
-                  new AddressDTO(
-                      address.getRoad(),
-                      address.getCity(),
-                      address.getZipCode()
-                  )
-              )
-          );
-        }
-      }
-
-
+    List<ChildDTO> childrenToAdd = addressService.getChildrenDTO(address);
+    List<PersonDTO> adultsToAdd = addressService.getAdultsDTO(address);
     ChildFromAddressDTO childFromAddressDTO = new ChildFromAddressDTO();
     childFromAddressDTO.setChildrenAtAddress(childrenToAdd);
     childFromAddressDTO.setOtherAdultsAtAddress(adultsToAdd);
