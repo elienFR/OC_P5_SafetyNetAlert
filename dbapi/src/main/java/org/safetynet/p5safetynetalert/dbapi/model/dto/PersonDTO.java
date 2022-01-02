@@ -10,6 +10,7 @@ public class PersonDTO {
   private String birthDate;
   private AddressDTO address;
 
+  public PersonDTO(){}
   public PersonDTO(String firstName, String lastName, String phone, String birthDate, AddressDTO address) {
     this.firstName = firstName;
     this.lastName = lastName;

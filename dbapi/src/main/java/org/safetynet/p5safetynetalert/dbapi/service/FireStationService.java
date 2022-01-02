@@ -71,7 +71,7 @@ public class FireStationService {
   }
 
 
-  public PhonesDTO getPhonesFromFireStationNumber(String number) {
+  public PhonesDTO getPhonesFromFireStationNumberTEST(String number) {
     Set<String> phonesToAdd = new TreeSet<>();
 
     FireStation fireStation = getFireStationByNumber(number);
@@ -92,6 +92,23 @@ public class FireStationService {
     } else {
       return null;
     }
-
   }
+
+  public PhonesDTO getPhonesFromFireStationNumber(String number) {
+    FireStation fireStation = getFireStationByNumber(number);
+    if (fireStation != null) {
+      Collection<String> phoneNumbers =
+        personService.getPhones(
+          addressService.getPersons(
+            fireStation.getAddresses()
+          )
+        );
+      PhonesDTO phonesDTO = new PhonesDTO();
+      phonesDTO.setPhonesList(phoneNumbers);
+      return phonesDTO;
+    } else {
+      return null;
+    }
+  }
+
 }

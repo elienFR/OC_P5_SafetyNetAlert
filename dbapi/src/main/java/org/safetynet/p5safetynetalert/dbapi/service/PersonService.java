@@ -94,8 +94,18 @@ public class PersonService {
     }
   }
 
+  public Collection<String> getPhones(Collection<Person> persons){
+    Collection<String> phoneCollection = new ArrayList<>();
+    for(Person person : persons){
+      phoneCollection.add(
+        person.getPhone()
+      );
+    }
+    return phoneCollection;
+  }
+
   /**
-   * This url returns the name, address, age, email address and medical history (drugs,
+   * This method returns the name, address, age, email address and medical history (drugs,
    * dosage, allergies) of each inhabitant. If more than one person has the same last name, they
    * all appear.
    *
@@ -163,19 +173,19 @@ public class PersonService {
     List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
     Collection<Person> persons = address.getPersons();
     for (Person person : persons) {
-      listOfPersonsDTO.add(
-        new PersonDTO(
-          person.getFirstName(),
-          person.getLastName(),
-          person.getPhone(),
-          person.getBirthDate(),
-          new AddressDTO(
-            address.getRoad(),
-            address.getCity(),
-            address.getZipCode()
-          )
-        )
-      );
+      AddressDTO addressDTO = new AddressDTO();
+      addressDTO.setRoad(address.getRoad());
+      addressDTO.setCity(address.getCity());
+      addressDTO.setZip(address.getZipCode());
+
+      PersonDTO personDTO = new PersonDTO();
+      personDTO.setFirstName(person.getFirstName());
+      personDTO.setLastName(person.getLastName());
+      personDTO.setPhone(person.getPhone());
+      personDTO.setBirthDate(person.getBirthDate());
+      personDTO.setAddress(addressDTO);
+
+      listOfPersonsDTO.add(personDTO);
     }
     return listOfPersonsDTO;
   }
@@ -191,19 +201,20 @@ public class PersonService {
   private Collection<PersonDTO> getPersonDTOsFromPersons(Collection<Person> persons) {
     Collection<PersonDTO> personDTOCollection = new ArrayList<>();
     for (Person person : persons) {
-      personDTOCollection.add(
-        new PersonDTO(
-          person.getFirstName(),
-          person.getLastName(),
-          person.getPhone(),
-          person.getBirthDate(),
-          new AddressDTO(
-            person.getAddress().getRoad(),
-            person.getAddress().getCity(),
-            person.getAddress().getZipCode()
-          )
-        )
-      );
+      Address address = person.getAddress();
+      AddressDTO addressDTO = new AddressDTO();
+      addressDTO.setRoad(address.getRoad());
+      addressDTO.setCity(address.getCity());
+      addressDTO.setZip(address.getZipCode());
+
+      PersonDTO personDTO = new PersonDTO();
+      personDTO.setFirstName(person.getFirstName());
+      personDTO.setLastName(person.getLastName());
+      personDTO.setPhone(person.getPhone());
+      personDTO.setBirthDate(person.getBirthDate());
+      personDTO.setAddress(addressDTO);
+
+      personDTOCollection.add(personDTO);
     }
     return personDTOCollection;
   }
