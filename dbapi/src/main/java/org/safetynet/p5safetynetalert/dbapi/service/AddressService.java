@@ -24,6 +24,10 @@ public class AddressService {
   private PersonsAllergyService personsAllergyService;
   @Autowired
   private AgeCalculatorService ageCalculatorService;
+  @Autowired
+  private MedicalRecordsService medicalRecordsService;
+  @Autowired
+  private PersonService personService;
 
   public Optional<Address> getAddress(final Integer id) {
     return addressRepository.findById(id);
@@ -120,37 +124,12 @@ public class AddressService {
   }
 
   public FireDTO getPersonFromAddressInFire(String road) {
-    List<PersonForFireDTO> personToAdd = new ArrayList<>();
     Address address = findByRoad(road);
 
-    Collection<Person> persons = address.getPersons();
-    for (Person person : persons) {
-      List<String> medicationsListToAdd = new ArrayList<>();
-      List<String> allergiesToAdd = new ArrayList<>();
-      MedicalRecordsDTO medicalRecordsDTOs = new MedicalRecordsDTO();
-
-      Iterable<PersonsMedication> personsMedications = person.getPersonsMedications();
-      for (PersonsMedication personsMedication : personsMedications) {
-        medicationsListToAdd.add(personsMedication.getMedication().getName());
-      }
-
-      Iterable<PersonsAllergy> personsAllergies = person.getPersonsAllergies();
-      for (PersonsAllergy personsAllergy : personsAllergies) {
-        allergiesToAdd.add(personsAllergy.getAllergy().getName());
-      }
-
-      medicalRecordsDTOs.setMedications(medicationsListToAdd);
-      medicalRecordsDTOs.setAllergies(allergiesToAdd);
-
-      personToAdd.add(
-          new PersonForFireDTO(
-              person.getFirstName(),
-              person.getLastName(),
-              person.getPhone(),
-              medicalRecordsDTOs
-          ));
-    }
-
+    Collection<PersonForFireDTO> personToAdd =
+        personService.getPersonsFromAddressInFire(
+            address.getPersons()
+        );
 
     FireDTO fireDTO = new FireDTO();
     fireDTO.setFireStationNumber(address.getFireStation().getNumber());

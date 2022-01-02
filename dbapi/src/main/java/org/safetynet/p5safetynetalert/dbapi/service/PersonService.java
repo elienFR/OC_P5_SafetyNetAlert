@@ -3,11 +3,8 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 import com.sun.istack.NotNull;
 import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.model.PersonsMedication;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.MedicalRecordsDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.Person;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonInfoDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsInfoDTO;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +27,8 @@ public class PersonService {
   private PersonsMedicationService personsMedicationService;
   @Autowired
   private PersonsAllergyService personsAllergyService;
+  @Autowired
+  private MedicalRecordsService medicalRecordsService;
 
   public Optional<Person> getPerson(final Integer id) {
     return personRepository.findById(id);
@@ -82,9 +81,9 @@ public class PersonService {
     return person.getEmail();
   }
 
-  public List<String> getEmails(Iterable<Person> persons){
+  public List<String> getEmails(Iterable<Person> persons) {
     List<String> emails = new ArrayList<>();
-    for(Person person : persons){
+    for (Person person : persons) {
       emails.add(person.getEmail());
     }
     return emails;
@@ -105,10 +104,9 @@ public class PersonService {
   ) {
     if ((firstName != null && lastName != null) || (!firstName.equals("") && !lastName.equals(""))) {
       Iterable<Person> persons;
-      if(firstName == null || firstName.equals("")){
+      if (firstName == null || firstName.equals("")) {
         persons = getAllPersonsByLastName(lastName);
-      }
-      else {
+      } else {
         persons = getAllPersonsByFirstNameAndLastName(firstName, lastName);
       }
 
@@ -141,4 +139,19 @@ public class PersonService {
       return new PersonsInfoDTO();
     }
   }
+
+  public Collection<PersonForFireDTO> getPersonsFromAddressInFire(Collection<Person> persons) {
+    List<PersonForFireDTO> personToAdd = new ArrayList<>();
+    for (Person person : persons) {
+      personToAdd.add(
+          new PersonForFireDTO(
+              person.getFirstName(),
+              person.getLastName(),
+              person.getPhone(),
+              medicalRecordsService.getMedicalRecordsDTOFromPerson(person)
+          ));
+    }
+    return personToAdd;
+  }
+
 }
