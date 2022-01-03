@@ -21,7 +21,7 @@ public class FloodRestController {
 
   @GetMapping("/stations")
   public FloodPersonsListDTO getPersonsFloodDTOFromFireStations(
-    @RequestParam Collection<String> stations) {
+    @RequestParam("stations") Collection<String> stations) {
     FloodPersonsListDTO floodPersonsListDTO =
       floodService.getPersonsFloodDTOFromFireStation(stations);
     if(floodPersonsListDTO != null) {

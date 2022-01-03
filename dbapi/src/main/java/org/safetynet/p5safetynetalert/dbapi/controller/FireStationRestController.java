@@ -19,7 +19,7 @@ public class FireStationRestController {
 
   @GetMapping("")
   public PersonsFromFireStationDTO getPersonsFromFireStationId(@RequestParam("stationNumber") String id) {
-    PersonsFromFireStationDTO persons = fireStationService.getPersonsFromFireStationNumber(id);
+    PersonsFromFireStationDTO persons = fireStationService.getPersonsAndCount(id);
     if (persons != null) {
       return persons;
     } else {

@@ -1,14 +1,11 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.AddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonForFloodDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PhonesDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
-import org.safetynet.p5safetynetalert.dbapi.model.Person;
 import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +40,7 @@ public class FireStationService {
    * @param number is the number of the fire station
    * @return see description
    */
-  public PersonsFromFireStationDTO getPersonsFromFireStationNumber(String number) {
+  public PersonsFromFireStationDTO getPersonsAndCount(String number) {
     FireStation fireStation = getFireStationByNumber(number);
     if (fireStation != null) {
       Collection<PersonDTO> personsList = personService.getPersonDTOsFromAddresses(
@@ -70,26 +67,13 @@ public class FireStationService {
     }
   }
 
-
-  public PhonesDTO getPhonesFromFireStationNumberTEST(String number) {
-    Set<String> phonesToAdd = new TreeSet<>();
-
+  public Collection<PersonForFloodDTO> getPersonsForFlood (String number){
     FireStation fireStation = getFireStationByNumber(number);
-    if (fireStation != null) {
-      Collection<Address> addresses = fireStation.getAddresses();
-      for (Address address : addresses) {
-        Collection<Person> persons = address.getPersons();
-        for (Person person : persons) {
-          String phoneToAdd = person.getPhone();
-          if (!phonesToAdd.contains(phoneToAdd)) {
-            phonesToAdd.add(person.getPhone());
-          }
-        }
-      }
-      PhonesDTO phonesDTO = new PhonesDTO();
-      phonesDTO.setPhonesList(phonesToAdd);
-      return phonesDTO;
-    } else {
+    if(fireStation != null){
+      Collection<PersonForFloodDTO> personForFloodDTOCollection =
+        personService.getPersonsForFlood(fireStation.getAddresses());
+      return personForFloodDTOCollection;
+    }else{
       return null;
     }
   }

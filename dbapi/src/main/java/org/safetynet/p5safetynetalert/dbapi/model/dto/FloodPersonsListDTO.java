@@ -8,5 +8,4 @@ import java.util.Collection;
 public class FloodPersonsListDTO {
   private final String title = "A list of persons concerned by the selected fire station.";
   Collection<PersonForFloodDTO> persons;
-
 }

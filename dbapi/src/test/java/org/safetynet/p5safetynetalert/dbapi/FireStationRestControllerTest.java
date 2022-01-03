@@ -32,7 +32,7 @@ public class FireStationRestControllerTest {
   @BeforeEach
   public void initTest() {
     PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
-    when(fireStationServiceMock.getPersonsFromFireStationNumber("1")).thenReturn(persons);
+    when(fireStationServiceMock.getPersonsAndCount("1")).thenReturn(persons);
   }
 
   @Test

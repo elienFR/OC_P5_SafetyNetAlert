@@ -31,26 +31,24 @@ public class PersonService {
   @Autowired
   private MedicalRecordsService medicalRecordsService;
 
-  public Optional<Person> getPerson(final Integer id) {
+  private Optional<Person> getPerson(final Integer id) {
     return personRepository.findById(id);
   }
 
-  public Iterable<Person> getPersons() {
+  private Iterable<Person> getPersons() {
     return personRepository.findAll();
   }
 
-  public Iterable<Person> getAllPersonsByFirstNameAndLastName(String firstName, String lastName) {
+  private Iterable<Person> getAllPersonsByFirstNameAndLastName(String firstName, String lastName) {
     return personRepository.findAllByFirstNameAndLastName(firstName, lastName);
   }
 
-  public Iterable<Person> getAllPersonsByLastName(String lastName) {
+  private Iterable<Person> getAllPersonsByLastName(String lastName) {
     return personRepository.findAllByLastName(lastName);
   }
 
   public MedicalRecordsDTO getMedicalRecords(Person person) {
     MedicalRecordsDTO medicalRecordsDTO = new MedicalRecordsDTO();
-
-    Iterable<PersonsMedication> personsMedications = person.getPersonsMedications();
 
     List<String> medications = new ArrayList<>(
       personsMedicationService.getMedicationsFromPersonsMedications(
@@ -69,16 +67,16 @@ public class PersonService {
     return medicalRecordsDTO;
   }
 
-  public Person savePerson(Person person) {
+  private Person savePerson(Person person) {
     Person savedPerson = personRepository.save(person);
     return savedPerson;
   }
 
-  public int getAge(Person person) {
+  private int getAge(Person person) {
     return ageService.getAge(person.getBirthDate());
   }
 
-  public String getEmail(Person person) {
+  private String getEmail(Person person) {
     return person.getEmail();
   }
 
@@ -94,9 +92,9 @@ public class PersonService {
     }
   }
 
-  public Collection<String> getPhones(Collection<Person> persons){
+  public Collection<String> getPhones(Collection<Person> persons) {
     Collection<String> phoneCollection = new ArrayList<>();
-    for(Person person : persons){
+    for (Person person : persons) {
       phoneCollection.add(
         person.getPhone()
       );
@@ -254,4 +252,40 @@ public class PersonService {
     return childrenList;
   }
 
+  public Collection<PersonForFloodDTO> getPersonsForFlood(Collection<Address> addresses) {
+    Collection<PersonForFloodDTO> personsToReturn = new ArrayList<>();
+
+    for (Address address : addresses) {
+      Collection<Person> personsToAdd = address.getPersons();
+      personsToReturn.addAll(
+        convertPersonsToPersonForFloodDTOs(personsToAdd)
+      );
+    }
+
+    return personsToReturn;
+  }
+
+  private Collection<PersonForFloodDTO> convertPersonsToPersonForFloodDTOs(Collection<Person> persons) {
+    Collection<PersonForFloodDTO> personForFloodDTOCollection = new ArrayList<>();
+    for (Person person : persons) {
+      personForFloodDTOCollection.add(
+        convertPersonToPersonForFloodDTO(person)
+      );
+    }
+    return personForFloodDTOCollection;
+  }
+
+  private PersonForFloodDTO convertPersonToPersonForFloodDTO(Person person) {
+    PersonForFloodDTO personForFloodDTO = new PersonForFloodDTO();
+
+    personForFloodDTO.setFirstName(person.getFirstName());
+    personForFloodDTO.setLastName(person.getLastName());
+    personForFloodDTO.setPhone(person.getPhone());
+    personForFloodDTO.setAge(ageService.getAge(person.getBirthDate()));
+    personForFloodDTO.setMedicalRecords(
+      getMedicalRecords(person)
+    );
+
+    return personForFloodDTO;
+  }
 }
