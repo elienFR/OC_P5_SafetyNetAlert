@@ -9,7 +9,6 @@ import javax.persistence.Id;
 
 @Data
 public class JsonPerson {
-  private Integer id;
   private String firstName;
   private String lastName;
   private String address;

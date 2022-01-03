@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FloodPersonsListDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.FloodService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.FloodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

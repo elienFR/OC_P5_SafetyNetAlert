@@ -1,10 +1,8 @@
-package org.safetynet.p5safetynetalert.dbapi;
+package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.safetynet.p5safetynetalert.dbapi.controller.FloodRestController;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FloodPersonsListDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.FloodService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.FloodService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

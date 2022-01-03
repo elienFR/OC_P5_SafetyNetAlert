@@ -1,10 +1,9 @@
-package org.safetynet.p5safetynetalert.dbapi;
+package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.controller.PhoneAlertRestController;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PhonesDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

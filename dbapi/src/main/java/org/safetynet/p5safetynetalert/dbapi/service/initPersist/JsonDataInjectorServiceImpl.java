@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service.initPersist;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.*;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonData;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;

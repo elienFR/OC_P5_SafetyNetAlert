@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.safetynet.p5safetynetalert.dbapi.model.dto.EmailListDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.EmailService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

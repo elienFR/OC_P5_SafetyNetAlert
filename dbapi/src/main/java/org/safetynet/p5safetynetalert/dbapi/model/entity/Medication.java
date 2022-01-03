@@ -1,6 +1,4 @@
-package org.safetynet.p5safetynetalert.dbapi.model;
-
-import lombok.Data;
+package org.safetynet.p5safetynetalert.dbapi.model.entity;
 
 import javax.persistence.*;
 import java.util.Collection;

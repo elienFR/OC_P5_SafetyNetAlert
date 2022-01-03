@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PhonesDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.FireStationService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;

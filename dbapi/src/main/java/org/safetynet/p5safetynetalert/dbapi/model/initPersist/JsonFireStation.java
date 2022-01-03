@@ -9,7 +9,6 @@ import javax.persistence.Id;
 
 @Data
 public class JsonFireStation {
-  private Integer id;
   private String address;
   private String station;
 }

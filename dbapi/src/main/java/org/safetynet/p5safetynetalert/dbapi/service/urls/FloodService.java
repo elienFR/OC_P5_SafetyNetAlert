@@ -1,9 +1,8 @@
-package org.safetynet.p5safetynetalert.dbapi.service;
+package org.safetynet.p5safetynetalert.dbapi.service.urls;
 
-import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FloodPersonsListDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonForFloodDTO;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

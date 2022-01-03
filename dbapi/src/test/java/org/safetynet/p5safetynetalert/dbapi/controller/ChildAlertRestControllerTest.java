@@ -1,10 +1,9 @@
-package org.safetynet.p5safetynetalert.dbapi;
+package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.controller.EmailRestController;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.EmailListDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.EmailService;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.ChildAlertService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,8 +16,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(EmailRestController.class)
-public class EmailRestControllerTest {
+@WebMvcTest(ChildAlertRestController.class)
+public class ChildAlertRestControllerTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -27,24 +26,24 @@ public class EmailRestControllerTest {
   private JsonDataInjectorService jsonDataInjectorService;
 
   @MockBean
-  private EmailService emailService;
+  private ChildAlertService childAlertService;
 
   @BeforeEach
-  public void initTests() {
-    EmailListDTO emailListDTO = new EmailListDTO();
-    when(emailService.getAllEmailFromCityInhabitants("testCity")).thenReturn(emailListDTO);
+  public void iniTest() throws Exception {
+    ChildFromAddressDTO children = new ChildFromAddressDTO();
+    when(childAlertService.getChildrenFromAddress("test")).thenReturn(children);
   }
 
   @Test
-  public void getAllEmailFromCityInhabitantsTest() throws Exception {
+  public void getChildrenFromAddress() throws Exception {
     //GIVEN
     //in initTest()
-    //city mocked is "testCity"
+    //road used is "test"
 
     //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-        .get("/communityEmail")
-        .param("city","testCity")
+        .get("/childAlert")
+        .param("address", "test")
         .contentType(MediaType.APPLICATION_JSON);
 
     //THEN
@@ -52,35 +51,18 @@ public class EmailRestControllerTest {
   }
 
   @Test
-  public void getAllEmailFromCityInhabitantsTest404() throws Exception {
+  public void getChildrenFromAddress400() throws Exception {
     //GIVEN
     //in initTest()
-    //city mocked is "testCity"
+    //road used is "test"
 
     //WHEN
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-        .get("/communityEmail")
-        .param("city","testCity1")
-        .contentType(MediaType.APPLICATION_JSON);
-
-    //THEN
-    mockMvc.perform(builder).andExpect(status().isNotFound());
-  }
-
-  @Test
-  public void getAllEmailFromCityInhabitantsTest400() throws Exception {
-    //GIVEN
-    //in initTest()
-    //city mocked is "testCity"
-
-    //WHEN
-    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-        .get("/communityEmail")
-        .param("citi","testCity")
+        .get("/childAlert")
+        .param("addressBadRequest", "test")
         .contentType(MediaType.APPLICATION_JSON);
 
     //THEN
     mockMvc.perform(builder).andExpect(status().isBadRequest());
   }
-
 }

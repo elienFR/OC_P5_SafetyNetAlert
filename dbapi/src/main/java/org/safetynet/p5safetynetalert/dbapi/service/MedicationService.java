@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.Medication;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.Medication;
 import org.safetynet.p5safetynetalert.dbapi.repository.MedicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

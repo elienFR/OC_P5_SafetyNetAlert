@@ -1,4 +1,4 @@
-package org.safetynet.p5safetynetalert.dbapi;
+package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;

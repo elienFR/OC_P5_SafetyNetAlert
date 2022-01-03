@@ -1,7 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.model.dto;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.Person;
 
 @Data
 public class ChildDTO {

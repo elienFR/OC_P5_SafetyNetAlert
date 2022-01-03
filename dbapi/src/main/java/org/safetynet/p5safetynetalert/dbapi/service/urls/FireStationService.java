@@ -1,12 +1,17 @@
-package org.safetynet.p5safetynetalert.dbapi.service;
+package org.safetynet.p5safetynetalert.dbapi.service.urls;
 
 import lombok.Data;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonForFloodDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PhonesDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.FireStation;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.FireStation;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
 import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
+import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.AgeService;
+import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +32,10 @@ public class FireStationService {
 
   private FireStation getFireStationByNumber(final String number) {
     return fireStationRepository.findByNumber(number);
+  }
+
+  public FireStation save(FireStation fireStation) {
+    return fireStationRepository.save(fireStation);
   }
 
   /**
@@ -67,17 +76,30 @@ public class FireStationService {
     }
   }
 
-  public Collection<PersonForFloodDTO> getPersonsForFlood (String number){
+  /**
+   * This returns a Collection of PersonsFloodDTO from a fireStation number
+   *
+   * @param number is the number of the station
+   * @return A Collection of PersonFloodDTO
+   */
+  public Collection<PersonForFloodDTO> getPersonsForFlood(String number) {
     FireStation fireStation = getFireStationByNumber(number);
-    if(fireStation != null){
+    if (fireStation != null) {
       Collection<PersonForFloodDTO> personForFloodDTOCollection =
         personService.getPersonsForFlood(fireStation.getAddresses());
       return personForFloodDTOCollection;
-    }else{
+    } else {
       return null;
     }
   }
 
+  /**
+   * This method extracts an Iterable of String containing all the phone numbers possessed by people
+   * indirectly connected to a fire station.
+   *
+   * @param number It is the number of the fire station.
+   * @return A PhonesDTO Object, see description.
+   */
   public PhonesDTO getPhonesFromFireStationNumber(String number) {
     FireStation fireStation = getFireStationByNumber(number);
     if (fireStation != null) {
@@ -95,4 +117,22 @@ public class FireStationService {
     }
   }
 
+  public JsonFireStation saveJsonFireStation(JsonFireStation jsonFireStation) {
+    FireStation savedFireStation = new FireStation(jsonFireStation.getStation());
+    Address savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", savedFireStation);
+    FireStation fireStationInDB = getFireStationByNumber(jsonFireStation.getStation());
+    if (fireStationInDB == null) {
+      save(savedFireStation);
+    } else {
+      savedAddress.setFireStation(fireStationInDB);
+    }
+    Address addressInDB = addressService.getByRoad(jsonFireStation.getAddress());
+    if (addressInDB == null) {
+      addressService.save(savedAddress);
+    }
+    return jsonFireStation;
+  }
+
+  public JsonFireStation updateAddress(JsonFireStation jsonFireStation) {
+  }
 }

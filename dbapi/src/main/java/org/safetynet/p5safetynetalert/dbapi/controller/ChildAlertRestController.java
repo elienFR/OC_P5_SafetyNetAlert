@@ -1,7 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.ChildAlertService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.ChildAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

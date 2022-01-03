@@ -1,7 +1,9 @@
-package org.safetynet.p5safetynetalert.dbapi.service;
+package org.safetynet.p5safetynetalert.dbapi.service.urls;
 
-import org.safetynet.p5safetynetalert.dbapi.model.Address;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
+import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

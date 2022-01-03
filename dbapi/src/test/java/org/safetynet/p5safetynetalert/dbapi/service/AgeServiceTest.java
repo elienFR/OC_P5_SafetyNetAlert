@@ -1,4 +1,4 @@
-package org.safetynet.p5safetynetalert.dbapi;
+package org.safetynet.p5safetynetalert.dbapi.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,11 +1,7 @@
-package org.safetynet.p5safetynetalert.dbapi.model;
-
-import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
+package org.safetynet.p5safetynetalert.dbapi.model.entity;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Table(name = "addresses")

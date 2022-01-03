@@ -1,8 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import org.safetynet.p5safetynetalert.dbapi.model.Person;
-import org.safetynet.p5safetynetalert.dbapi.model.PersonsAllergy;
-import org.safetynet.p5safetynetalert.dbapi.model.PersonsMedication;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsAllergy;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsMedication;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.MedicalRecordsDTO;
 import org.springframework.stereotype.Service;
 

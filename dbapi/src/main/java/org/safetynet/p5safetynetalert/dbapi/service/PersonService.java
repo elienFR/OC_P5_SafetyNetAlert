@@ -2,10 +2,9 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 
 import com.sun.istack.NotNull;
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.Address;
-import org.safetynet.p5safetynetalert.dbapi.model.PersonsMedication;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
-import org.safetynet.p5safetynetalert.dbapi.model.Person;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @Service
@@ -30,14 +28,6 @@ public class PersonService {
   private PersonsAllergyService personsAllergyService;
   @Autowired
   private MedicalRecordsService medicalRecordsService;
-
-  private Optional<Person> getPerson(final Integer id) {
-    return personRepository.findById(id);
-  }
-
-  private Iterable<Person> getPersons() {
-    return personRepository.findAll();
-  }
 
   private Iterable<Person> getAllPersonsByFirstNameAndLastName(String firstName, String lastName) {
     return personRepository.findAllByFirstNameAndLastName(firstName, lastName);
@@ -67,17 +57,8 @@ public class PersonService {
     return medicalRecordsDTO;
   }
 
-  private Person savePerson(Person person) {
-    Person savedPerson = personRepository.save(person);
-    return savedPerson;
-  }
-
   private int getAge(Person person) {
     return ageService.getAge(person.getBirthDate());
-  }
-
-  private String getEmail(Person person) {
-    return person.getEmail();
   }
 
   public List<String> getEmails(Collection<Person> persons) {
