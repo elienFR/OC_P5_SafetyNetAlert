@@ -121,7 +121,7 @@ public class FireStationService {
     }
   }
 
-  public JsonFireStation saveJsonFireStation(JsonFireStation jsonFireStation) {
+  public JsonFireStation saveAddressFireStationMapping(JsonFireStation jsonFireStation) {
     FireStation savedFireStation = new FireStation(jsonFireStation.getStation());
     Address savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", savedFireStation);
     FireStation fireStationInDB = getByNumber(jsonFireStation.getStation());
@@ -137,7 +137,7 @@ public class FireStationService {
     return jsonFireStation;
   }
 
-  public JsonFireStation updateAddress(JsonFireStation jsonFireStation) {
+  public JsonFireStation updateAddressFireStationMapping(JsonFireStation jsonFireStation) {
     String road = jsonFireStation.getAddress();
     String fireStationNumber = jsonFireStation.getStation();
     FireStation fireStationToUpdate = null;
@@ -162,6 +162,22 @@ public class FireStationService {
       } else {
         return null;
       }
+      return jsonFireStation;
+    } else {
+      return null;
+    }
+  }
+
+
+  public JsonFireStation eraseAddressFireStationMapping(JsonFireStation jsonFireStation) {
+    String road = jsonFireStation.getAddress();
+
+    if (addressService.existsByRoad(road)) {
+      Address addressToUnMap = addressService.getByRoad(road);
+      addressToUnMap.setFireStation(null);
+      addressService.save(addressToUnMap);
+
+      jsonFireStation.setStation(null);
       return jsonFireStation;
     } else {
       return null;

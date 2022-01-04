@@ -1,9 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
-import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,25 +22,46 @@ public class FireStationRestController {
       return persons;
     } else {
       throw new ResponseStatusException(
-          HttpStatus.NOT_FOUND, "entity not found"
+        HttpStatus.NOT_FOUND, "entity not found"
       );
     }
   }
 
   @PostMapping("")
-  public JsonFireStation postFireStationAddressMapping (@RequestBody JsonFireStation jsonFireStation) {
-    return fireStationService.saveJsonFireStation(jsonFireStation);
+  public JsonFireStation postFireStationAddressMapping(@RequestBody JsonFireStation jsonFireStation) {
+    return fireStationService.saveAddressFireStationMapping(jsonFireStation);
   }
 
   @PutMapping("")
-  public JsonFireStation putFireStationAddressMapping (@RequestBody JsonFireStation jsonFireStation){
-    if(jsonFireStation != null){
-      JsonFireStation updatedJsonFireStation =  fireStationService.updateAddress(jsonFireStation);
-      if(updatedJsonFireStation != null){
+  public JsonFireStation putFireStationAddressMapping(
+    @RequestBody JsonFireStation jsonFireStation) {
+    if (jsonFireStation != null) {
+      JsonFireStation updatedJsonFireStation = fireStationService.updateAddressFireStationMapping(jsonFireStation);
+      if (updatedJsonFireStation != null) {
         return updatedJsonFireStation;
       } else {
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "no such address or fire station found"
+        );
+      }
+    } else {
+      throw new ResponseStatusException(
+        HttpStatus.NO_CONTENT, "no content provided"
+      );
+    }
+  }
+
+  @DeleteMapping("")
+  public JsonFireStation deleteFireStationAddressMapping(
+    @RequestBody JsonFireStation jsonFireStation) {
+    if (jsonFireStation != null) {
+      JsonFireStation deletedJsonFireStation = fireStationService
+        .eraseAddressFireStationMapping(jsonFireStation);
+      if (deletedJsonFireStation != null) {
+        return deletedJsonFireStation;
+      } else {
+        throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "no such address"
         );
       }
     } else {
