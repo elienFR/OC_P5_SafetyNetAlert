@@ -36,7 +36,19 @@ public class FireStationRestController {
 
   @PutMapping("")
   public JsonFireStation putFireStationAddressMapping (@RequestBody JsonFireStation jsonFireStation){
-    return fireStationService.updateAddress(jsonFireStation);
-
+    if(jsonFireStation != null){
+      JsonFireStation updatedJsonFireStation =  fireStationService.updateAddress(jsonFireStation);
+      if(updatedJsonFireStation != null){
+        return updatedJsonFireStation;
+      } else {
+        throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "no such address or fire station found"
+        );
+      }
+    } else {
+      throw new ResponseStatusException(
+        HttpStatus.NO_CONTENT, "no content provided"
+      );
+    }
   }
 }

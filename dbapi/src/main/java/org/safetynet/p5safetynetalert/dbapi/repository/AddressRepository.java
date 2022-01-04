@@ -13,4 +13,6 @@ public interface AddressRepository extends CrudRepository<Address, Integer> {
   Address findByRoad(String road);
 
   Collection<Address> findAllByCity(String city);
+
+  boolean existsByRoad(String road);
 }

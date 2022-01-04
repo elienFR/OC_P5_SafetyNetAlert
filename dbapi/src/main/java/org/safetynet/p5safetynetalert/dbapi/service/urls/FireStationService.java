@@ -30,12 +30,16 @@ public class FireStationService {
   @Autowired
   private PersonService personService;
 
-  private FireStation getFireStationByNumber(final String number) {
+  private FireStation getByNumber(final String number) {
     return fireStationRepository.findByNumber(number);
   }
 
   public FireStation save(FireStation fireStation) {
     return fireStationRepository.save(fireStation);
+  }
+
+  public boolean existsByNumber(String number) {
+    return fireStationRepository.existsByNumber(number);
   }
 
   /**
@@ -50,7 +54,7 @@ public class FireStationService {
    * @return see description
    */
   public PersonsFromFireStationDTO getPersonsAndCount(String number) {
-    FireStation fireStation = getFireStationByNumber(number);
+    FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<PersonDTO> personsList = personService.getPersonDTOsFromAddresses(
         fireStation.getAddresses()
@@ -83,7 +87,7 @@ public class FireStationService {
    * @return A Collection of PersonFloodDTO
    */
   public Collection<PersonForFloodDTO> getPersonsForFlood(String number) {
-    FireStation fireStation = getFireStationByNumber(number);
+    FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<PersonForFloodDTO> personForFloodDTOCollection =
         personService.getPersonsForFlood(fireStation.getAddresses());
@@ -101,7 +105,7 @@ public class FireStationService {
    * @return A PhonesDTO Object, see description.
    */
   public PhonesDTO getPhonesFromFireStationNumber(String number) {
-    FireStation fireStation = getFireStationByNumber(number);
+    FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<String> phoneNumbers =
         personService.getPhones(
@@ -120,7 +124,7 @@ public class FireStationService {
   public JsonFireStation saveJsonFireStation(JsonFireStation jsonFireStation) {
     FireStation savedFireStation = new FireStation(jsonFireStation.getStation());
     Address savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", savedFireStation);
-    FireStation fireStationInDB = getFireStationByNumber(jsonFireStation.getStation());
+    FireStation fireStationInDB = getByNumber(jsonFireStation.getStation());
     if (fireStationInDB == null) {
       save(savedFireStation);
     } else {
@@ -134,5 +138,33 @@ public class FireStationService {
   }
 
   public JsonFireStation updateAddress(JsonFireStation jsonFireStation) {
+    String road = jsonFireStation.getAddress();
+    String fireStationNumber = jsonFireStation.getStation();
+    FireStation fireStationToUpdate = null;
+
+    //If the fire station has properly been filled
+    if (fireStationNumber != null) {
+      if (!fireStationNumber.isBlank()) {
+        //If it does not already exists in DB
+        if (!existsByNumber(fireStationNumber)) {
+          fireStationToUpdate = save(new FireStation(fireStationNumber));
+        }
+      }
+    } else {
+      return null;
+    }
+
+    if (road != null) {
+      if (addressService.existsByRoad(road)) {
+        Address updatedAddress = addressService.getByRoad(road);
+        updatedAddress.setFireStation(fireStationToUpdate);
+        addressService.save(updatedAddress);
+      } else {
+        return null;
+      }
+      return jsonFireStation;
+    } else {
+      return null;
+    }
   }
 }

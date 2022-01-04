@@ -6,5 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FireStationRepository extends CrudRepository<FireStation, Integer> {
-  public FireStation findByNumber(String s);
+  FireStation findByNumber(String s);
+
+  Boolean existsByNumber(String number);
 }

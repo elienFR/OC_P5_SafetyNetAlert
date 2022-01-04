@@ -33,6 +33,10 @@ public class AddressService {
     return addressRepository.findByRoad(road);
   }
 
+  public boolean existsByRoad(String road) {
+    return addressRepository.existsByRoad(road);
+  }
+
   public Address save(Address savedAddress) {
     return addressRepository.save(savedAddress);
   }
@@ -73,6 +77,7 @@ public class AddressService {
 
     return listOfChildren;
   }
+
 
 
 }
