@@ -30,17 +30,40 @@ public class PersonRestController {
     if (newJsonPerson != null) {
       JsonPerson postedJsonPerson = personService.createPerson(newJsonPerson);
       if (postedJsonPerson != null) {
-        return newJsonPerson;
+        return postedJsonPerson;
       } else {
         throw new ResponseStatusException(
-          HttpStatus.NO_CONTENT, "No first name And/Or LastName Provided"
+          HttpStatus.BAD_REQUEST, "No first name And/Or LastName Provided"
         );
       }
-
     } else {
       throw new ResponseStatusException(
-        HttpStatus.NO_CONTENT, "No content"
+        HttpStatus.NO_CONTENT, "No body content"
       );
+    }
+  }
+
+  /**
+   * This method is called with a PUT request on /person endpoint. It updates a person in DB.
+   *
+   * @param putJsonPerson the json person object you want to update in database.
+   * @return the serialized updated person.
+   */
+  @PutMapping("")
+  public JsonPerson putPerson(@RequestBody JsonPerson putJsonPerson) {
+    if (putJsonPerson == null) {
+      throw new ResponseStatusException(
+        HttpStatus.NO_CONTENT, "No body content."
+      );
+    } else {
+      JsonPerson updatedJsonPerson = personService.updatePerson(putJsonPerson);
+      if (updatedJsonPerson == null) {
+        throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "You must at least furnish a valid first name and last name couple."
+        );
+      } else {
+        return updatedJsonPerson;
+      }
     }
   }
 

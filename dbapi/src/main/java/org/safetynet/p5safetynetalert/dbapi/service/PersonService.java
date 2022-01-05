@@ -50,6 +50,10 @@ public class PersonService {
     return personRepository.save(person);
   }
 
+  private Person getByFirstNameAndLastName(String firstName, String lastName) {
+    return personRepository.findByFirstNameAndLastName(firstName, lastName);
+  }
+
   private Iterable<Person> getAllPersonsByFirstNameAndLastName(String firstName, String lastName) {
     return personRepository.findAllByFirstNameAndLastName(firstName, lastName);
   }
@@ -262,6 +266,22 @@ public class PersonService {
     return listOfChildren;
   }
 
+  public Collection<Person> getPersonsFromAddress(Address address) {
+    return address.getPersons();
+  }
+
+  public Collection<Person> getPersonsFromAddresses(Collection<Address> addresses) {
+    if (addresses == null || addresses.size() == 0) {
+      return null;
+    } else {
+      Collection<Person> persons = new ArrayList<>();
+      for (Address address : addresses) {
+        persons.addAll(address.getPersons());
+      }
+      return persons;
+    }
+  }
+
   private PersonForFloodDTO convertPersonToPersonForFloodDTO(Person person) {
     PersonForFloodDTO personForFloodDTO = new PersonForFloodDTO();
 
@@ -337,4 +357,34 @@ public class PersonService {
     }
   }
 
+  /**
+   * This method update an existing person. Ii checks if the person already exists. If it does not
+   * it will return null. If it does, it will update it with the information found in putJsonPerson
+   * parameter.
+   *
+   * @param putJsonPerson is the JsonPerson you want to update
+   * @return null or a JsonPersonObject which has been updated. See description.
+   */
+  public JsonPerson updatePerson(JsonPerson putJsonPerson) {
+    //if the person to update exists.
+    if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(putJsonPerson))) {
+      //Recover person from DB
+      Person personToUpdate = getByFirstNameAndLastName(
+        putJsonPerson.getFirstName(), putJsonPerson.getLastName());
+
+      personToUpdate.setPhone(putJsonPerson.getPhone());
+      personToUpdate.setEmail(putJsonPerson.getEmail());
+
+      //check address difference
+      if(!personToUpdate.getAddress().getRoad()
+      &&)
+
+
+
+      save(personToUpdate);
+      return putJsonPerson;
+    } else {
+      return null;
+    }
+  }
 }

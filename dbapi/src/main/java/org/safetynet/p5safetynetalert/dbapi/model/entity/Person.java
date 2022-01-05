@@ -10,15 +10,10 @@ public class Person {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
-
   private String firstName;
-
   private String lastName;
-
   private String birthDate;
-
   private String phone;
-
   private String email;
 
   @ManyToOne(fetch = FetchType.LAZY)

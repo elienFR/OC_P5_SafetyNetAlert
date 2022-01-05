@@ -30,7 +30,7 @@ public class FireService {
 
     fireDTO.setPersonsList(
       personService.getPersonsForFireDTOFromAddressInFire(
-        addressService.getPersons(address))
+        personService.getPersonsFromAddress(address))
     );
     fireDTO.setFireStationNumber(address.getFireStation().getNumber());
 

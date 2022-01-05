@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 public interface PersonRepository extends CrudRepository<Person, Integer> {
   Person findByFirstNameAndLastNameAndBirthDate(String firstName, String lastName, String birthDate);
 
+  Person findByFirstNameAndLastName(String firstName, String lastName);
+
   Iterable<Person> findAllByFirstNameAndLastName(String firstName, String lastName);
 
   Iterable<Person> findAllByLastName(String lastName);

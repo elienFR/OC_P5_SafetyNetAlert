@@ -126,7 +126,7 @@ public class FireStationService {
     if (fireStation != null) {
       Collection<String> phoneNumbers =
         personService.getPhones(
-          addressService.getPersons(
+          personService.getPersonsFromAddresses(
             fireStation.getAddresses()
           )
         );

@@ -68,20 +68,4 @@ public class AddressService {
     }
   }
 
-  public Collection<Person> getPersons(Address address){
-    return address.getPersons();
-  }
-
-  public Collection<Person> getPersons(Collection<Address> addresses) {
-    if (addresses == null || addresses.size() == 0) {
-      return null;
-    } else {
-      Collection<Person> persons = new ArrayList<>();
-      for (Address address : addresses) {
-        persons.addAll(address.getPersons());
-      }
-      return persons;
-    }
-  }
-
 }

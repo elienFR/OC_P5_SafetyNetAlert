@@ -32,7 +32,7 @@ public class EmailService {
     } else {
       emailListDTO.setEmailList(
         personService.getEmails(
-          addressService.getPersons(
+          personService.getPersonsFromAddresses(
             addresses)));
       emailListDTO.setCityName(city);
 
