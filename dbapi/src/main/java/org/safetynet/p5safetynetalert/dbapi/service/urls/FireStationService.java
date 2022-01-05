@@ -43,15 +43,13 @@ public class FireStationService {
   }
 
   /**
-   * This method should return a list of people covered by the corresponding fire station.
-   * So, if the station number = 1, it must return the inhabitants covered by the station number 1.
-   * The list includes the following specific information: first name, last name, address,
-   * telephone number.
-   * It provides a count of adults, and a count of children (anyone aged 18 or over less)
-   * in the service area.
+   * This method returns a PersonsFromFireStationDTO covered by the corresponding fire station.
+   * If fire station is null then it returns a null object.
+   * If fire station is properly recorded it returns the PersonsFromFireStationDTO that contains
+   * a list of persons covered by the fire station and the number of adult and children.
    *
    * @param number is the number of the fire station
-   * @return see description
+   * @return a PersonsFromFireStationDTO if method is successful. null if it is not.
    */
   public PersonsFromFireStationDTO getPersonsAndCount(String number) {
     FireStation fireStation = getByNumber(number);
@@ -121,34 +119,72 @@ public class FireStationService {
     }
   }
 
+  /**
+   * This method adds a mapping between an address and a fire station. The jsonFireStation object may have
+   * no fire station registered or a null one. If so, then only an address is created.
+   * And for the purpose of the exercise, this address is only composed of the road string.
+   * The city and the zip code are hard coded to refer to Culver 97541.
+   *
+   * @param jsonFireStation is the posted object composed of road string
+   *                        and fire station number to map.
+   * @return the jsonFireStation object furnished if methods is successful, and null if any error occurs.
+   */
   public JsonFireStation saveAddressFireStationMapping(JsonFireStation jsonFireStation) {
-    FireStation savedFireStation = new FireStation(jsonFireStation.getStation());
-    Address savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", savedFireStation);
-    FireStation fireStationInDB = getByNumber(jsonFireStation.getStation());
-    if (fireStationInDB == null) {
-      save(savedFireStation);
-    } else {
-      savedAddress.setFireStation(fireStationInDB);
-    }
-    Address addressInDB = addressService.getByRoad(jsonFireStation.getAddress());
-    if (addressInDB == null) {
+    //We consider address/road MUST not be null or blank here
+    String fireStationNumber = jsonFireStation.getStation();
+    String road = jsonFireStation.getAddress();
+
+    // If a proper address road is registered in json object
+    if (road != null && !road.isBlank()) {
+      Address savedAddress;
+      if (addressService.existsByRoad(road)) {
+        savedAddress = addressService.getByRoad(road);
+      } else {
+        savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", null);
+      }
+
+      // If a proper fire station is registered in json object
+      if (fireStationNumber != null && !fireStationNumber.isBlank()) {
+        if (existsByNumber(fireStationNumber)) {
+          savedAddress.setFireStation(
+            getByNumber(fireStationNumber)
+          );
+        } else {
+          FireStation newFireStation = save(new FireStation(fireStationNumber));
+          savedAddress.setFireStation(newFireStation);
+        }
+      } else { //Is similar to create a new address without fire station.
+        savedAddress.setFireStation(null);
+      }
+
       addressService.save(savedAddress);
+
+      return jsonFireStation;
+    } else {
+      return null;
     }
-    return jsonFireStation;
   }
 
+  /**
+   * This method updates the mapping between an address and its fire station.
+   * If the address (road) does not exist in database, then it returns a null object.
+   * If the fire station does not exist in DB, then it creates it and update the mapping.
+   *
+   * @param jsonFireStation is the posted object composed of road string
+   *                        and fire station number to map.
+   * @return A null object if the address given does not exist. Or return the given jsonFireStation
+   * Object if method was successful.
+   */
   public JsonFireStation updateAddressFireStationMapping(JsonFireStation jsonFireStation) {
     String road = jsonFireStation.getAddress();
     String fireStationNumber = jsonFireStation.getStation();
     FireStation fireStationToUpdate = null;
 
     //If the fire station has properly been filled
-    if (fireStationNumber != null) {
-      if (!fireStationNumber.isBlank()) {
-        //If it does not already exists in DB
-        if (!existsByNumber(fireStationNumber)) {
-          fireStationToUpdate = save(new FireStation(fireStationNumber));
-        }
+    if (fireStationNumber != null && !fireStationNumber.isBlank()) {
+      //If it does not already exist in DB
+      if (!existsByNumber(fireStationNumber)) {
+        fireStationToUpdate = save(new FireStation(fireStationNumber));
       }
     } else {
       return null;
@@ -168,7 +204,16 @@ public class FireStationService {
     }
   }
 
-
+  /**
+   * This method deletes the mapping between an address and its mapped fire station.
+   * If the address given does not exit it returns a null object. If it is executed successfully
+   * then it returns the new mapping that is an address mapped to null fire station.
+   *
+   * @param jsonFireStation is the posted object composed of road string
+   *                        and fire station number to map.
+   * @return Null if the address is wrong. A JsonFireStation with a null fire station if executed
+   * successfully.
+   */
   public JsonFireStation eraseAddressFireStationMapping(JsonFireStation jsonFireStation) {
     String road = jsonFireStation.getAddress();
 

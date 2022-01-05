@@ -15,6 +15,19 @@ public class FireStationRestController {
   @Autowired
   FireStationService fireStationService;
 
+  /**
+   * This method responses to a get call to /firestation. It returns a list of people in serialized
+   * json covered by the corresponding fire station.
+   * So, if the station number = 1, it must return the inhabitants covered by the station number 1.
+   * The list includes the following specific information: first name, last name, address,
+   * telephone number.
+   * It provides a count of adults, and a count of children (anyone aged 18 or over less)
+   * in the service area.
+   *
+   * @param id It is the parameter of the station
+   * @return 404 not found if the station does not exist. Or a list a explained in the method
+   * description.
+   */
   @GetMapping("")
   public PersonsFromFireStationDTO getPersonsFromFireStationId(@RequestParam("stationNumber") String id) {
     PersonsFromFireStationDTO persons = fireStationService.getPersonsAndCount(id);
@@ -29,7 +42,20 @@ public class FireStationRestController {
 
   @PostMapping("")
   public JsonFireStation postFireStationAddressMapping(@RequestBody JsonFireStation jsonFireStation) {
-    return fireStationService.saveAddressFireStationMapping(jsonFireStation);
+    if(jsonFireStation != null) {
+      JsonFireStation postedJsonFireStation = fireStationService.saveAddressFireStationMapping(jsonFireStation);
+      if (postedJsonFireStation != null) {
+        return postedJsonFireStation;
+      } else {
+        throw new ResponseStatusException(
+          HttpStatus.NO_CONTENT, "no address provided"
+        );
+      }
+    } else {
+      throw new ResponseStatusException(
+        HttpStatus.NO_CONTENT, "no content provided"
+      );
+    }
   }
 
   @PutMapping("")
