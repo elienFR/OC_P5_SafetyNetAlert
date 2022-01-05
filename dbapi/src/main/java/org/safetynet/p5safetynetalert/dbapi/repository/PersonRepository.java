@@ -11,4 +11,6 @@ public interface PersonRepository extends CrudRepository<Person, Integer> {
   Iterable<Person> findAllByFirstNameAndLastName(String firstName, String lastName);
 
   Iterable<Person> findAllByLastName(String lastName);
+
+  boolean existsByFirstNameAndLastName(String firstName, String lastName);
 }

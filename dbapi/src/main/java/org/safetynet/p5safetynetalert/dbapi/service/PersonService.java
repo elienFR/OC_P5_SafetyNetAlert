@@ -5,6 +5,7 @@ import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,26 @@ public class PersonService {
   private PersonsAllergyService personsAllergyService;
   @Autowired
   private MedicalRecordsService medicalRecordsService;
+  @Autowired
+  private AddressService addressService;
+
+  /**
+   * This method checks if a person already exists in the database according to its first name and
+   * last name
+   *
+   * @param person is the person object to check in database
+   * @return true if the person exists, and false if it does not.
+   */
+  public boolean existsByFirstNameAndLastName(Person person) {
+    return personRepository.existsByFirstNameAndLastName(
+      person.getFirstName(),
+      person.getLastName()
+    );
+  }
+
+  public Person save(Person person) {
+    return personRepository.save(person);
+  }
 
   private Iterable<Person> getAllPersonsByFirstNameAndLastName(String firstName, String lastName) {
     return personRepository.findAllByFirstNameAndLastName(firstName, lastName);
@@ -134,7 +155,8 @@ public class PersonService {
     }
   }
 
-  public Collection<PersonForFireDTO> getPersonsForFireDTOFromAddressInFire(Collection<Person> persons) {
+  public Collection<PersonForFireDTO> getPersonsForFireDTOFromAddressInFire(
+    Collection<Person> persons) {
     List<PersonForFireDTO> personToAdd = new ArrayList<>();
     for (Person person : persons) {
       personToAdd.add(
@@ -177,38 +199,8 @@ public class PersonService {
     return listOfPersonsDTO;
   }
 
-  private Collection<PersonDTO> getPersonDTOsFromPersons(Collection<Person> persons) {
-    Collection<PersonDTO> personDTOCollection = new ArrayList<>();
-    for (Person person : persons) {
-      Address address = person.getAddress();
-      AddressDTO addressDTO = new AddressDTO();
-      addressDTO.setRoad(address.getRoad());
-      addressDTO.setCity(address.getCity());
-      addressDTO.setZip(address.getZipCode());
-
-      PersonDTO personDTO = new PersonDTO();
-      personDTO.setFirstName(person.getFirstName());
-      personDTO.setLastName(person.getLastName());
-      personDTO.setPhone(person.getPhone());
-      personDTO.setBirthDate(person.getBirthDate());
-      personDTO.setAddress(addressDTO);
-
-      personDTOCollection.add(personDTO);
-    }
-    return personDTOCollection;
-  }
-
-  private Collection<PersonDTO> getAdultsFromPersons(Collection<Person> persons) throws Exception {
-    Collection<PersonDTO> personsDTOs = getPersonDTOsFromPersons(persons);
-    for (PersonDTO personDTO : personsDTOs) {
-      if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
-        personsDTOs.remove(personDTO);
-      }
-    }
-    return personsDTOs;
-  }
-
-  public Collection<PersonDTO> getAdultsFromPersonsDTOs(Collection<PersonDTO> personsDTOs) throws Exception {
+  public Collection<PersonDTO> getAdultsFromPersonsDTOs(
+    Collection<PersonDTO> personsDTOs) throws Exception {
     Collection<PersonDTO> adultsList = new ArrayList<>();
     for (PersonDTO personDTO : personsDTOs) {
       if (ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
@@ -218,7 +210,8 @@ public class PersonService {
     return adultsList;
   }
 
-  public Collection<ChildDTO> getChildrenFromPersonsDTOs(Collection<PersonDTO> personDTOs) throws Exception {
+  public Collection<ChildDTO> getChildrenFromPersonsDTOs(
+    Collection<PersonDTO> personDTOs) throws Exception {
     Collection<ChildDTO> childrenList = new ArrayList<>();
     for (PersonDTO personDTO : personDTOs) {
       if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
@@ -233,7 +226,8 @@ public class PersonService {
     return childrenList;
   }
 
-  public Collection<PersonForFloodDTO> getPersonsForFlood(Collection<Address> addresses) {
+  public Collection<PersonForFloodDTO> getPersonsForFlood(
+    Collection<Address> addresses) {
     Collection<PersonForFloodDTO> personsToReturn = new ArrayList<>();
 
     for (Address address : addresses) {
@@ -246,7 +240,8 @@ public class PersonService {
     return personsToReturn;
   }
 
-  private Collection<PersonForFloodDTO> convertPersonsToPersonForFloodDTOs(Collection<Person> persons) {
+  private Collection<PersonForFloodDTO> convertPersonsToPersonForFloodDTOs(
+    Collection<Person> persons) {
     Collection<PersonForFloodDTO> personForFloodDTOCollection = new ArrayList<>();
     for (Person person : persons) {
       personForFloodDTOCollection.add(
@@ -254,6 +249,17 @@ public class PersonService {
       );
     }
     return personForFloodDTOCollection;
+  }
+
+  public Collection<PersonDTO> getAdultsDTO(Address address) throws Exception {
+    Collection<PersonDTO> listOfAdults = getAdultsFromPersonsDTOs(getPersonDTOsFromAddress(address));
+    return listOfAdults;
+  }
+
+  public Collection<ChildDTO> getChildrenDTO(Address address) throws Exception {
+    Collection<ChildDTO> listOfChildren = getChildrenFromPersonsDTOs(getPersonDTOsFromAddress(address));
+
+    return listOfChildren;
   }
 
   private PersonForFloodDTO convertPersonToPersonForFloodDTO(Person person) {
@@ -269,4 +275,66 @@ public class PersonService {
 
     return personForFloodDTO;
   }
+
+  /**
+   * Convert a JsonPerson into a Person Object. For the purpose of the exercise the address given
+   * is always in Culver with zip code 97451 and the birthdate is null (provided by a medicalrecord
+   * object).
+   *
+   * @param jsonPerson is the JsonPerson Object to convert
+   * @return a Peron object with null birthdate and an address located in Culver 97451.
+   */
+  private Person convertJsonPersonIntoPerson(JsonPerson jsonPerson) {
+    Person person = new Person();
+    person.setFirstName(jsonPerson.getFirstName());
+    person.setLastName(jsonPerson.getLastName());
+    person.setPhone(jsonPerson.getPhone());
+    person.setEmail(jsonPerson.getEmail());
+    person.setBirthDate(null);
+
+    Address addressToSet = new Address();
+    addressToSet.setRoad(jsonPerson.getAddress());
+    addressToSet.setCity(jsonPerson.getCity());
+    addressToSet.setZipCode(jsonPerson.getZip());
+    person.setAddress(addressToSet);
+    return person;
+  }
+
+  /**
+   * This method create a Person into the database from a JsonPerson.
+   * This Person has a null birthdate and an address always located in culver,
+   * that is because of the properties of a JsonPerson. See convertJsonPersonIntoPerson method for
+   * more information about this.
+   * This method also saves the address if it does not exist already.
+   * And it checks if the person already exists (according to first and last name)
+   *
+   * @param newJsonPerson is the JsonPerson to add into DB.
+   * @return the save JsonPerson
+   */
+  public JsonPerson createPerson(JsonPerson newJsonPerson) {
+    Person person = convertJsonPersonIntoPerson(newJsonPerson);
+    if (person.getFirstName() != null && person.getLastName() != null
+      && !person.getFirstName().isBlank() && !person.getLastName().isBlank()) {
+      //check that person does not
+      if (!existsByFirstNameAndLastName(person)) {
+        //check that address does not exist
+        if (!addressService.existsByRoadAndCityAndZipCode(person.getAddress())) {
+          addressService.save(person.getAddress());
+        } else {
+          person.setAddress(
+            addressService.getByRoadAndCityAndZipCode(person.getAddress())
+          );
+        }
+        save(person);
+        return newJsonPerson;
+      } else {
+        return null;
+        //todo : throw exception to say person already exists
+      }
+    } else {
+      return null;
+      //todo : throw a exception to stipulate to furnish at least a first name AND a last name.
+    }
+  }
+
 }

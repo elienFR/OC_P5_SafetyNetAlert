@@ -3,6 +3,7 @@ package org.safetynet.p5safetynetalert.dbapi.service.urls;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,8 @@ import org.springframework.stereotype.Service;
 public class ChildAlertService {
   @Autowired
   AddressService addressService;
+  @Autowired
+  PersonService personService;
 
   /**
    * This method returns a list of children (anyone aged 18 or under) living at a specific road.
@@ -25,8 +28,8 @@ public class ChildAlertService {
 
     ChildFromAddressDTO childFromAddressDTO = new ChildFromAddressDTO();
 
-    childFromAddressDTO.setChildrenAtAddress(addressService.getChildrenDTO(address));
-    childFromAddressDTO.setOtherAdultsAtAddress(addressService.getAdultsDTO(address));
+    childFromAddressDTO.setChildrenAtAddress(personService.getChildrenDTO(address));
+    childFromAddressDTO.setOtherAdultsAtAddress(personService.getAdultsDTO(address));
 
     return childFromAddressDTO;
   }

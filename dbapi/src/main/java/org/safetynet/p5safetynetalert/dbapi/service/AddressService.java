@@ -25,9 +25,20 @@ public class AddressService {
   private AgeService ageService;
   @Autowired
   private MedicalRecordsService medicalRecordsService;
-  @Autowired
-  private PersonService personService;
 
+  /**
+   * This method get an Address object from DB according to its road, city and Zip Code.
+   *
+   * @param address is the address object looked in DB
+   * @return the object from db (with its id)
+   */
+  public Address getByRoadAndCityAndZipCode(Address address) {
+    return addressRepository.findByRoadAndCityAndZipCode(
+      address.getRoad(),
+      address.getCity(),
+      address.getZipCode()
+    );
+  }
 
   public Address getByRoad(final String road) {
     return addressRepository.findByRoad(road);
@@ -35,6 +46,14 @@ public class AddressService {
 
   public boolean existsByRoad(String road) {
     return addressRepository.existsByRoad(road);
+  }
+
+  public boolean existsByRoadAndCityAndZipCode(Address address) {
+    return addressRepository.existsByRoadAndCityAndZipCode(
+      address.getRoad(),
+      address.getCity(),
+      address.getZipCode()
+    );
   }
 
   public Address save(Address savedAddress) {
@@ -64,20 +83,5 @@ public class AddressService {
       return persons;
     }
   }
-
-  public Collection<PersonDTO> getAdultsDTO(Address address) throws Exception {
-    Collection<PersonDTO> listOfAdults = personService
-      .getAdultsFromPersonsDTOs(personService.getPersonDTOsFromAddress(address));
-    return listOfAdults;
-  }
-
-  public Collection<ChildDTO> getChildrenDTO(Address address) throws Exception {
-    Collection<ChildDTO> listOfChildren = personService
-      .getChildrenFromPersonsDTOs(personService.getPersonDTOsFromAddress(address));
-
-    return listOfChildren;
-  }
-
-
 
 }
