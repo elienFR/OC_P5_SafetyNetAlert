@@ -30,14 +30,33 @@ public class FireStationService {
   @Autowired
   private PersonService personService;
 
+  /**
+   * Return a fireStation object according to its number in DB.
+   *
+   * @param number the number of the Firestation
+   * @return see description
+   */
   private FireStation getByNumber(final String number) {
     return fireStationRepository.findByNumber(number);
   }
 
+  /**
+   * Save a FireStation in DB
+   *
+   * @param fireStation is the object to be saved.
+   * @return the saved object.
+   */
   public FireStation save(FireStation fireStation) {
     return fireStationRepository.save(fireStation);
   }
 
+  /**
+   * Check if a fire station already exists with a given number. True means exists and false means
+   * it does not.
+   *
+   * @param number is the number to be checked
+   * @return a boolean with true for existence and false for nonexistence.
+   */
   public boolean existsByNumber(String number) {
     return fireStationRepository.existsByNumber(number);
   }
