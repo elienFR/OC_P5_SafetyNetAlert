@@ -29,7 +29,20 @@ public class FireStationRestController {
 
   @PostMapping("")
   public JsonFireStation postFireStationAddressMapping(@RequestBody JsonFireStation jsonFireStation) {
-    return fireStationService.saveAddressFireStationMapping(jsonFireStation);
+    if(jsonFireStation != null) {
+      JsonFireStation postedJsonFireStation = fireStationService.saveAddressFireStationMapping(jsonFireStation);
+      if (postedJsonFireStation != null) {
+        return postedJsonFireStation;
+      } else {
+        throw new ResponseStatusException(
+          HttpStatus.NO_CONTENT, "no address provided"
+        );
+      }
+    } else {
+      throw new ResponseStatusException(
+        HttpStatus.NO_CONTENT, "no content provided"
+      );
+    }
   }
 
   @PutMapping("")
