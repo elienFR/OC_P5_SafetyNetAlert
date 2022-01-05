@@ -1,8 +1,10 @@
 package org.safetynet.p5safetynetalert.dbapi.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import lombok.Data;
 
 @Data
+@JsonFilter("filtredynamique")
 public class PersonDTO {
   private String firstName;
   private String lastName;

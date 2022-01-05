@@ -375,11 +375,18 @@ public class PersonService {
       personToUpdate.setPhone(putJsonPerson.getPhone());
       personToUpdate.setEmail(putJsonPerson.getEmail());
 
+      Address addressToUpdate = new Address();
+      addressToUpdate.setRoad(putJsonPerson.getAddress());
+      addressToUpdate.setCity(putJsonPerson.getCity());
+      addressToUpdate.setZipCode(putJsonPerson.getZip());
       //check address difference
-      if(!personToUpdate.getAddress().getRoad()
-      &&)
-
-
+      if (!addressService.existsByRoadAndCityAndZipCode(addressToUpdate)
+      ) {
+        addressToUpdate = addressService.save(addressToUpdate);
+      } else {
+        addressToUpdate.setId(addressService.getByRoadAndCityAndZipCode(addressToUpdate).getId());
+      }
+      personToUpdate.setAddress(addressToUpdate);
 
       save(personToUpdate);
       return putJsonPerson;

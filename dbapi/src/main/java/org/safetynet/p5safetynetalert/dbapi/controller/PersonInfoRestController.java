@@ -20,10 +20,9 @@ public class PersonInfoRestController {
   @Autowired
   PersonService personService;
 
-  //TODO : need to fix the required = false firstName that does not work. ie : server throws an 500 error when the firstName parameter is not specified.
   @GetMapping("")
   public PersonsInfoDTO getPersonInfoFromFirstAndLastName(
-      @RequestParam(value = "firstName",required = false) String firstName,
+      @RequestParam(value = "firstName") String firstName,
       @NotNull @NotBlank @RequestParam(value = "lastName") String lastName
   ) {
     PersonsInfoDTO personsInfoDTO = personService
