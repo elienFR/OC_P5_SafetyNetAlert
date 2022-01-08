@@ -27,5 +27,8 @@ public class PersonsMedicationService {
 
     return medications;
   }
-  
+
+  public void delete(Iterable<PersonsMedication> personsMedications) {
+    personsMedicationRepository.deleteAll(personsMedications);
+  }
 }

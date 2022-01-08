@@ -394,4 +394,30 @@ public class PersonService {
       return null;
     }
   }
+
+  /**
+   * This method deletes a person from database. We consider a person is unique by
+   * its first name and last name combination.
+   *
+   * @param jsonPerson is the deserialized jsonObject
+   * @return the jsonObject of deleted person if method is executed successfully.
+   */
+  public JsonPerson delete(JsonPerson jsonPerson) {
+    if(jsonPerson.getFirstName()!=null && jsonPerson.getLastName() != null){
+      if(existsByFirstNameAndLastName(convertJsonPersonIntoPerson(jsonPerson))){
+        Person personToDelete = personRepository
+          .findByFirstNameAndLastName(jsonPerson.getFirstName(), jsonPerson.getLastName());
+
+        personsAllergyService.delete(personToDelete.getPersonsAllergies());
+        personsMedicationService.delete(personToDelete.getPersonsMedications());
+        personRepository.delete(personToDelete);
+
+        return jsonPerson;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 }

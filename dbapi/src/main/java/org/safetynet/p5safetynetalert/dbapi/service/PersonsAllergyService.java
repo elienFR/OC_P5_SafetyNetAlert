@@ -26,4 +26,8 @@ public class PersonsAllergyService {
 
     return allergies;
   }
+
+  public void delete(Iterable<PersonsAllergy> personsAllergies) {
+    personsAllergyRepository.deleteAll(personsAllergies);
+  }
 }

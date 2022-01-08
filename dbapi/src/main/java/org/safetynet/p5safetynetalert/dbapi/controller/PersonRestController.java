@@ -33,7 +33,7 @@ public class PersonRestController {
         return postedJsonPerson;
       } else {
         throw new ResponseStatusException(
-          HttpStatus.BAD_REQUEST, "No first name And/Or LastName Provided"
+          HttpStatus.CONFLICT, "No first name And/Or LastName Provided or person already exists"
         );
       }
     } else {
@@ -67,5 +67,30 @@ public class PersonRestController {
     }
   }
 
+  /**
+   * This method is called with a DELETE request on /person endpoint. It deletes a person in DB.
+   *
+   * @param jsonPerson the json person object you want to update in database.
+   * @return the serialized updated person.
+   */
+  @DeleteMapping("")
+  public void deletePerson(@RequestBody JsonPerson jsonPerson) {
+    if (jsonPerson == null) {
+      throw new ResponseStatusException(
+        HttpStatus.NO_CONTENT, "No jsonBody provided"
+      );
+    } else {
+     JsonPerson personToDelete = personService.delete(jsonPerson);
+      if (personToDelete == null) {
+        throw new ResponseStatusException(
+          HttpStatus.NOT_FOUND, "person has not been found"
+        );
+      } else {
+        throw new ResponseStatusException(
+          HttpStatus.OK, "Person properly deleted"
+        );
+      }
+    }
+  }
 
 }
