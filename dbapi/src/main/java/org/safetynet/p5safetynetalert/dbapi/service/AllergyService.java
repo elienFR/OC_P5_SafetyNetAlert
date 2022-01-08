@@ -6,6 +6,7 @@ import org.safetynet.p5safetynetalert.dbapi.repository.AllergyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -27,9 +28,15 @@ public class AllergyService {
     allergyRepository.deleteById(id);
   }
 
-  public Allergy saveAllergy(Allergy allergy) {
-    Allergy savedAllergy = allergyRepository.save(allergy);
-    return savedAllergy;
+  public Allergy save(Allergy allergy) {
+    return allergyRepository.save(allergy);
   }
 
+  public boolean exists(String allergy) {
+    return allergyRepository.existsByName(allergy);
+  }
+
+  public Iterable<Allergy> saveAll(List<Allergy> allergiesToCreate) {
+    return allergyRepository.saveAll(allergiesToCreate);
+  }
 }

@@ -17,14 +17,6 @@ public class AddressService {
 
   @Autowired
   private AddressRepository addressRepository;
-  @Autowired
-  private PersonsMedicationService personsMedicationService;
-  @Autowired
-  private PersonsAllergyService personsAllergyService;
-  @Autowired
-  private AgeService ageService;
-  @Autowired
-  private MedicalRecordsService medicalRecordsService;
 
   /**
    * This method get an Address object from DB according to its road, city and Zip Code.

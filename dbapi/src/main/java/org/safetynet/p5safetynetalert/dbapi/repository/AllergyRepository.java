@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AllergyRepository extends CrudRepository<Allergy, Integer> {
   public Allergy findByName(String name);
-  }
+
+  boolean existsByName(String allergy);
+}

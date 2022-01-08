@@ -7,8 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.beans.PersistenceDelegate;
-
 
 @RestController
 @RequestMapping("/person")
@@ -56,7 +54,7 @@ public class PersonRestController {
         HttpStatus.NO_CONTENT, "No body content."
       );
     } else {
-      JsonPerson updatedJsonPerson = personService.updatePerson(putJsonPerson);
+      JsonPerson updatedJsonPerson = personService.updatePersonWithJsonPerson(putJsonPerson);
       if (updatedJsonPerson == null) {
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "You must at least furnish a valid first name and last name couple."

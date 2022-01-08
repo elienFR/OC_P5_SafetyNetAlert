@@ -5,6 +5,7 @@ import lombok.Data;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class PersonService {
 
   /**
    * This method checks if a person already exists in the database according to its first name and
-   * last name
+   * last name giving a person object.
    *
    * @param person is the person object to check in database
    * @return true if the person exists, and false if it does not.
@@ -46,11 +47,27 @@ public class PersonService {
     );
   }
 
+  /**
+   * This method checks if a person already exists in the database according to its first name and
+   * last name.
+   *
+   * @param firstName is the person first name
+   * @param lastName  is the person last name
+   * @return true if the person exists, and false if it does not.
+   */
+  public boolean existsByFirstNameAndLastName(String firstName, String lastName) {
+    return personRepository.existsByFirstNameAndLastName(
+      firstName,
+      lastName
+    );
+  }
+
+
   public Person save(Person person) {
     return personRepository.save(person);
   }
 
-  private Person getByFirstNameAndLastName(String firstName, String lastName) {
+  public Person getByFirstNameAndLastName(String firstName, String lastName) {
     return personRepository.findByFirstNameAndLastName(firstName, lastName);
   }
 
@@ -62,25 +79,6 @@ public class PersonService {
     return personRepository.findAllByLastName(lastName);
   }
 
-  public MedicalRecordsDTO getMedicalRecords(Person person) {
-    MedicalRecordsDTO medicalRecordsDTO = new MedicalRecordsDTO();
-
-    List<String> medications = new ArrayList<>(
-      personsMedicationService.getMedicationsFromPersonsMedications(
-        person.getPersonsMedications()
-      )
-    );
-
-    List<String> allergies = new ArrayList<>(
-      personsAllergyService.getAllergiesFromPersonsMedications(
-        person.getPersonsAllergies()
-      )
-    );
-
-    medicalRecordsDTO.setMedications(medications);
-    medicalRecordsDTO.setAllergies(allergies);
-    return medicalRecordsDTO;
-  }
 
   private int getAge(Person person) {
     return ageService.getAge(person.getBirthDate());
@@ -139,7 +137,7 @@ public class PersonService {
         );
         personInfoDTO.setMail(person.getEmail());
         personInfoDTO.setMedicalRecords(
-          getMedicalRecords(person)
+          medicalRecordsService.getMedicalRecords(person)
         );
 
         personsInfoDTOToAdd.add(personInfoDTO);
@@ -290,7 +288,7 @@ public class PersonService {
     personForFloodDTO.setPhone(person.getPhone());
     personForFloodDTO.setAge(ageService.getAge(person.getBirthDate()));
     personForFloodDTO.setMedicalRecords(
-      getMedicalRecords(person)
+      medicalRecordsService.getMedicalRecords(person)
     );
 
     return personForFloodDTO;
@@ -365,7 +363,7 @@ public class PersonService {
    * @param putJsonPerson is the JsonPerson you want to update
    * @return null or a JsonPersonObject which has been updated. See description.
    */
-  public JsonPerson updatePerson(JsonPerson putJsonPerson) {
+  public JsonPerson updatePersonWithJsonPerson(JsonPerson putJsonPerson) {
     //if the person to update exists.
     if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(putJsonPerson))) {
       //Recover person from DB
@@ -395,6 +393,7 @@ public class PersonService {
     }
   }
 
+
   /**
    * This method deletes a person from database. We consider a person is unique by
    * its first name and last name combination.
@@ -403,8 +402,8 @@ public class PersonService {
    * @return the jsonObject of deleted person if method is executed successfully.
    */
   public JsonPerson delete(JsonPerson jsonPerson) {
-    if(jsonPerson.getFirstName()!=null && jsonPerson.getLastName() != null){
-      if(existsByFirstNameAndLastName(convertJsonPersonIntoPerson(jsonPerson))){
+    if (jsonPerson.getFirstName() != null && jsonPerson.getLastName() != null) {
+      if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(jsonPerson))) {
         Person personToDelete = personRepository
           .findByFirstNameAndLastName(jsonPerson.getFirstName(), jsonPerson.getLastName());
 
@@ -416,6 +415,24 @@ public class PersonService {
       } else {
         return null;
       }
+    } else {
+      return null;
+    }
+  }
+
+  public JsonMedicalRecord createMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+    if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(),
+      jsonMedicalRecord.getLastName())) {
+
+      Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(),
+        jsonMedicalRecord.getLastName());
+
+      if(!personConcerned.getBirthDate().equals(jsonMedicalRecord.getBirthdate())){
+        personConcerned.setBirthDate(jsonMedicalRecord.getBirthdate());
+        save(personConcerned);
+      }
+
+      return jsonMedicalRecord;
     } else {
       return null;
     }

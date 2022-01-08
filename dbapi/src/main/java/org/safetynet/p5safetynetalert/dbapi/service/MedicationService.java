@@ -6,6 +6,7 @@ import org.safetynet.p5safetynetalert.dbapi.repository.MedicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -27,9 +28,21 @@ public class MedicationService {
     medicationRepository.deleteById(id);
   }
 
-  public Medication saveMedication(Medication medication) {
-    Medication savedMedication = medicationRepository.save(medication);
-    return savedMedication;
+  public Medication save(Medication medication) {
+    return medicationRepository.save(medication);
   }
 
+  public Iterable<Medication> saveAll (Iterable<Medication> medications) {
+    return medicationRepository.saveAll(medications);
+  }
+
+  /**
+   * Check if an allergy already exists in the database
+   *
+   * @param medication
+   * @return True if it exists.
+   */
+  public boolean exists(String medication) {
+    return medicationRepository.existsByName(medication);
+  }
 }
