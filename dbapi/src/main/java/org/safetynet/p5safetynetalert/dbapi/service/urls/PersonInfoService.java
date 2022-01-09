@@ -23,6 +23,16 @@ public class PersonInfoService {
   @Autowired
   private MedicalRecordsService medicalRecordsService;
 
+
+  /**
+   * This method returns the name, address, age, email address and medical history (drugs,
+   * dosage, allergies) of each inhabitant. If more than one person has the same last name, they
+   * all appear.
+   *
+   * @param firstName it is the first name of the person you desire the info
+   * @param lastName  not null - not blank - it is the last name of the person you desire the info
+   * @return an object PersonsInfoDTO (see description)
+   */
   public PersonsInfoDTO getPersonInfoFromFirstAndOrLastName(String firstName, String lastName) {
     PersonsInfoDTO personsInfoDTO = new PersonsInfoDTO();
     Person personToConvert = personService.getByFirstNameAndLastName(firstName, lastName);
@@ -49,6 +59,12 @@ public class PersonInfoService {
     }
   }
 
+  /**
+   * This method converts a person object into a PersonInfoDTO Object
+   *
+   * @param person is the person to be converted
+   * @return a PersonInfoDTO Object
+   */
   private PersonInfoDTO convertPersonIntoPersonInfoDTO(Person person) {
     PersonInfoDTO personInfoDTO = new PersonInfoDTO();
 

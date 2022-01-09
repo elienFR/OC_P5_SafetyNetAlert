@@ -114,56 +114,6 @@ public class PersonService {
     return phoneCollection;
   }
 
-//  /**
-//   * This method returns the name, address, age, email address and medical history (drugs,
-//   * dosage, allergies) of each inhabitant. If more than one person has the same last name, they
-//   * all appear.
-//   *
-//   * @param firstName it is the first name of the person you desire the info
-//   * @param lastName  not null - not blank - it is the last name of the person you desire the info
-//   * @return an object PersonsInfoDTO (see description)
-//   */
-//  public PersonsInfoDTO getPersonInfoFromFirstAndOrLastName(String firstName, @NotNull @NotBlank String lastName) {
-//    if ((firstName != null && lastName != null) || (!firstName.equals("") && !lastName.equals(""))) {
-//      Iterable<Person> persons;
-//      if (firstName == null || firstName.isBlank()) {
-//        persons = getAllPersonsByLastName(lastName);
-//      } else {
-//        persons = getAllPersonsByFirstNameAndLastName(firstName, lastName);
-//      }
-//
-//      List<PersonInfoDTO> personsInfoDTOToAdd = new ArrayList<>();
-//      for (Person person : persons) {
-//        PersonInfoDTO personInfoDTO = new PersonInfoDTO();
-//
-//        personInfoDTO.setFirstName(person.getFirstName());
-//        personInfoDTO.setLastName(person.getLastName());
-//        personInfoDTO.setAge(getAge(person)
-//        );
-//        personInfoDTO.setMail(person.getEmail());
-//        personInfoDTO.setMedicalRecords(
-//          medicalRecordsService.getMedicalRecords(person)
-//        );
-//
-//        personsInfoDTOToAdd.add(personInfoDTO);
-//      }
-//
-//      PersonsInfoDTO personsInfoDTO = new PersonsInfoDTO();
-//      personsInfoDTO.setPersonsInfoDTO(personsInfoDTOToAdd);
-//
-//      //checks if at least one person exists
-//      if (personsInfoDTOToAdd.size() > 0) {
-//        return personsInfoDTO;
-//      } else {
-//        return null;
-//      }
-//    } else {
-//      return new PersonsInfoDTO();
-//    }
-//  }
-
-
-
   public Collection<PersonForFireDTO> getPersonsForFireDTOFromAddressInFire(
     Collection<Person> persons) {
     List<PersonForFireDTO> personToAdd = new ArrayList<>();
@@ -275,6 +225,12 @@ public class PersonService {
     return address.getPersons();
   }
 
+  /**
+   * This method returns a Collection of Person found in a specific address.
+   *
+   * @param addresses A Collection of addresses object used to get persons from.
+   * @return A collection of persons from a collection of addresses.
+   */
   public Collection<Person> getPersonsFromAddresses(Collection<Address> addresses) {
     if (addresses == null || addresses.size() == 0) {
       return null;
@@ -287,6 +243,12 @@ public class PersonService {
     }
   }
 
+  /**
+   * This method converts a Person object into a PersonForFloodDTO Object
+   *
+   * @param person A Person object to be converted.
+   * @return A PersonForFloodDTO Object from a Peron Object.
+   */
   private PersonForFloodDTO convertPersonToPersonForFloodDTO(Person person) {
     PersonForFloodDTO personForFloodDTO = new PersonForFloodDTO();
 
@@ -426,6 +388,13 @@ public class PersonService {
     }
   }
 
+  /**
+   * Update the birthdate of a person to new values in DB from the person, and the birthdate found
+   * in a jsonMedicalRecord object.
+   *
+   * @param jsonMedicalRecord A jsonMedicalRecord object used to find the person in DB.
+   * @return A Person object with a null birthdate.
+   */
   public Person updateBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
 
@@ -436,6 +405,12 @@ public class PersonService {
     return personConcerned;
   }
 
+  /**
+   * Set the birthdate of a person to null in DB from the person found in a jsonMedicalRecord object.
+   *
+   * @param jsonMedicalRecord A jsonMedicalRecord object used to find the person in DB.
+   * @return A Person object with a null birthdate.
+   */
   private Person deleteBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
     personConcerned.setBirthDate(null);
@@ -443,6 +418,14 @@ public class PersonService {
     return personConcerned;
   }
 
+  /**
+   * This method creates a medical record for a specific person found from a jsonMedicalRecord. It
+   * works only if the person provided in jsonMedicalRecord already exists and it has no birthdate
+   * and no allergies and no medications already informed in DB.
+   *
+   * @param jsonMedicalRecord Java Object corresponding to a json Medical Record entity.
+   * @return it returns a java object that can be serialized into a jsonMedicalRecord
+   */
   public JsonMedicalRecord createMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
 
@@ -476,8 +459,13 @@ public class PersonService {
     }
   }
 
-
-
+  /**
+   * This method updates a medical record for a specific person found from a jsonMedicalRecord. It
+   * works only if the person provided in jsonMedicalRecord already exists.
+   *
+   * @param jsonMedicalRecord Java Object corresponding to a json Medical Record entity.
+   * @return it returns a java object that can be serialized into a jsonMedicalRecord
+   */
   public JsonMedicalRecord updateMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
       Person personConcerned;
@@ -501,6 +489,13 @@ public class PersonService {
     }
   }
 
+  /**
+   * This method deletes a medical record for a specific person found from a jsonMedicalRecord. It
+   * works only if the person provided in jsonMedicalRecord already exists.
+   *
+   * @param jsonMedicalRecord Java Object corresponding to a json Medical Record entity.
+   * @return it returns a java object that can be serialized into a jsonMedicalRecord.
+   */
   public JsonMedicalRecord deleteMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
       Person personConcerned;
@@ -515,16 +510,8 @@ public class PersonService {
       MedicalRecordsDTO deletedMedicalRecordsDTO = medicalRecordsService.getMedicalRecords(personConcerned);
 
       List<String> deletedMedications = new ArrayList<>();
-//      deletedMedications.add("");
-//      for(String medication : deletedMedicalRecordsDTO.getMedications()){
-//        deletedMedications.add(medication);
-//      }
 
       List<String> deletedAllergies = new ArrayList<>();
-//      deletedAllergies.add("");
-//      for(String allergies : deletedMedicalRecordsDTO.getAllergies()){
-//        deletedAllergies.add(allergies);
-//      }
 
       jsonMedicalRecord.setBirthdate("");
       jsonMedicalRecord.setMedications(deletedMedications);
@@ -536,6 +523,5 @@ public class PersonService {
       return null;
     }
   }
-
 
 }
