@@ -1,7 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.Medication;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsMedication;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonsMedicationRepository;
@@ -18,7 +17,7 @@ public class PersonsMedicationService {
   @Autowired
   private PersonsMedicationRepository personsMedicationRepository;
 
-  public Iterable<Medication> getAllByPerson(Person person) {
+  public Iterable<PersonsMedication> getAllFromPerson(Person person) {
     return personsMedicationRepository.findAllByPerson(person);
   }
 
@@ -42,4 +41,10 @@ public class PersonsMedicationService {
   public PersonsMedication save(PersonsMedication personsMedication) {
     return personsMedicationRepository.save(personsMedication);
   }
+
+  public void deleteAllFromPerson(Person person) {
+    Iterable<PersonsMedication> personsMedicationsToDelete = getAllFromPerson(person);
+    personsMedicationRepository.deleteAll(personsMedicationsToDelete);
+  }
+
 }

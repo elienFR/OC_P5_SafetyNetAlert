@@ -1,6 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsAllergy;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonsAllergyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,5 +33,14 @@ public class PersonsAllergyService {
 
   public PersonsAllergy save(PersonsAllergy personsAllergy) {
     return personsAllergyRepository.save(personsAllergy);
+  }
+
+  public Iterable<PersonsAllergy> getAllFromPerson(Person person) {
+    return personsAllergyRepository.findAllByPerson(person);
+  }
+
+  public void deleteAllFromPerson(Person person) {
+    Iterable<PersonsAllergy> personsAllergiesToDelete = getAllFromPerson(person);
+    personsAllergyRepository.deleteAll(personsAllergiesToDelete);
   }
 }

@@ -427,6 +427,13 @@ public class PersonService {
     return personConcerned;
   }
 
+  private Person deleteBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+    Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
+    personConcerned.setBirthDate(null);
+    personConcerned = save(personConcerned);
+    return personConcerned;
+  }
+
   public JsonMedicalRecord createMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
 
@@ -460,8 +467,65 @@ public class PersonService {
     }
   }
 
-  public JsonMedicalRecord updateMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
 
+
+  public JsonMedicalRecord updateMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+    if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
+      Person personConcerned;
+
+      //update birthdate
+      personConcerned = updateBirthDateFromJsonMedicalRecords(jsonMedicalRecord);
+
+      //delete existing medication
+      medicalRecordsService.deletePersonsMedicationsFromPerson(personConcerned);
+      //update medications
+      medicalRecordsService.createMedicationsFromJsonPerson(jsonMedicalRecord, personConcerned);
+      //delete existing allergies
+      medicalRecordsService.deletePersonsAllergiesFromPerson(personConcerned);
+      //update allergies
+      medicalRecordsService.createAllergiesFromJsonPerson(jsonMedicalRecord, personConcerned);
+
+      return jsonMedicalRecord;
+
+    } else {
+      return null;
+    }
+  }
+
+  public JsonMedicalRecord deleteMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+    if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
+      Person personConcerned;
+
+      //delete birthdate
+      personConcerned = deleteBirthDateFromJsonMedicalRecords(jsonMedicalRecord);
+      //delete existing medication
+      medicalRecordsService.deletePersonsMedicationsFromPerson(personConcerned);
+      //delete existing allergies
+      medicalRecordsService.deletePersonsAllergiesFromPerson(personConcerned);
+
+      MedicalRecordsDTO deletedMedicalRecordsDTO = medicalRecordsService.getMedicalRecords(personConcerned);
+
+      List<String> deletedMedications = new ArrayList<>();
+//      deletedMedications.add("");
+//      for(String medication : deletedMedicalRecordsDTO.getMedications()){
+//        deletedMedications.add(medication);
+//      }
+
+      List<String> deletedAllergies = new ArrayList<>();
+//      deletedAllergies.add("");
+//      for(String allergies : deletedMedicalRecordsDTO.getAllergies()){
+//        deletedAllergies.add(allergies);
+//      }
+
+      jsonMedicalRecord.setBirthdate("");
+      jsonMedicalRecord.setMedications(deletedMedications);
+      jsonMedicalRecord.setAllergies(deletedAllergies);
+
+      return jsonMedicalRecord;
+
+    } else {
+      return null;
+    }
   }
 
 }

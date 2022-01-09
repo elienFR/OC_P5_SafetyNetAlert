@@ -115,8 +115,9 @@ public class MedicalRecordsService {
   }
 
   public void createMedicationsFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
-      List<String> medicationToAdd = jsonMedicalRecord.getMedications();
-      for (String medication : medicationToAdd) {
+    Iterable<String> medicationToAdd = jsonMedicalRecord.getMedications();
+    for (String medication : medicationToAdd) {
+      if (medication != null && !medication.isBlank()) {
         Medication medicationToAssign = new Medication();
         if (!getMedicationExistence(medication)) {
           medicationToAssign = saveMedication(medication);
@@ -129,23 +130,34 @@ public class MedicalRecordsService {
 
         personsMedicationToSave = savePersonsMedication(personsMedicationToSave);
       }
+    }
 
   }
 
   public void createAllergiesFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
-    List<String> allergiesToAdd = jsonMedicalRecord.getAllergies();
+    Iterable<String> allergiesToAdd = jsonMedicalRecord.getAllergies();
     for (String allergy : allergiesToAdd) {
-      Allergy allergyToAssign;
-      if (!getAllergyExistence(allergy)) {
-        allergyToAssign = saveAllergy(allergy);
-      } else {
-        allergyToAssign = getAllergyByName(allergy);
-      }
-      PersonsAllergy personsAllergyToSave = new PersonsAllergy();
-      personsAllergyToSave.setAllergy(allergyToAssign);
-      personsAllergyToSave.setPerson(person);
+      if (allergy != null && !allergy.isBlank()) {
+        Allergy allergyToAssign;
+        if (!getAllergyExistence(allergy)) {
+          allergyToAssign = saveAllergy(allergy);
+        } else {
+          allergyToAssign = getAllergyByName(allergy);
+        }
+        PersonsAllergy personsAllergyToSave = new PersonsAllergy();
+        personsAllergyToSave.setAllergy(allergyToAssign);
+        personsAllergyToSave.setPerson(person);
 
-      personsAllergyToSave = savePersonsAllergy(personsAllergyToSave);
+        personsAllergyToSave = savePersonsAllergy(personsAllergyToSave);
+      }
     }
+  }
+
+  public void deletePersonsMedicationsFromPerson(Person person) {
+    personsMedicationService.deleteAllFromPerson(person);
+  }
+
+  public void deletePersonsAllergiesFromPerson(Person person) {
+    personsAllergyService.deleteAllFromPerson(person);
   }
 }

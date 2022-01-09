@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PersonsMedicationRepository extends CrudRepository<PersonsMedication, Integer> {
-  Iterable<Medication> findAllByPerson(Person person);
+  Iterable<PersonsMedication> findAllByPerson(Person person);
 }
