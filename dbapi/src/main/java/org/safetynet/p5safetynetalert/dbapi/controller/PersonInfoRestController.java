@@ -3,6 +3,7 @@ package org.safetynet.p5safetynetalert.dbapi.controller;
 import com.sun.istack.NotNull;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsInfoDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.PersonInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +19,14 @@ import javax.validation.constraints.NotBlank;
 public class PersonInfoRestController {
 
   @Autowired
-  PersonService personService;
+  private PersonInfoService personInfoService;
 
   @GetMapping("")
   public PersonsInfoDTO getPersonInfoFromFirstAndLastName(
       @RequestParam(value = "firstName") String firstName,
       @NotNull @NotBlank @RequestParam(value = "lastName") String lastName
   ) {
-    PersonsInfoDTO personsInfoDTO = personService
+    PersonsInfoDTO personsInfoDTO = personInfoService
         .getPersonInfoFromFirstAndOrLastName(firstName, lastName);
     if(personsInfoDTO != null) {
       return personsInfoDTO;

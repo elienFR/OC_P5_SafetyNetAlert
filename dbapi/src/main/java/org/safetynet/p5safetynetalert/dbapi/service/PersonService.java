@@ -70,6 +70,16 @@ public class PersonService {
     return personRepository.findByFirstNameAndLastName(firstName, lastName);
   }
 
+  /**
+   * Return an Iterable of Person that have the same last name
+   *
+   * @param lastName is the last name used to find persons
+   * @return see description
+   */
+  public Iterable<Person> getAllByName(String lastName) {
+    return personRepository.findAllByLastName(lastName);
+  }
+
   private Iterable<Person> getAllPersonsByFirstNameAndLastName(String firstName, String lastName) {
     return personRepository.findAllByFirstNameAndLastName(firstName, lastName);
   }
@@ -104,56 +114,55 @@ public class PersonService {
     return phoneCollection;
   }
 
-  /**
-   * This method returns the name, address, age, email address and medical history (drugs,
-   * dosage, allergies) of each inhabitant. If more than one person has the same last name, they
-   * all appear.
-   *
-   * @param firstName it is the first name of the person you desire the info
-   * @param lastName  not null - not blank - it is the last name of the person you desire the info
-   * @return an object PersonsInfoDTO (see description)
-   */
-  public PersonsInfoDTO getPersonInfoFromFirstAndOrLastName(
-    String firstName,
-    @NotNull @NotBlank String lastName
-  ) {
-    if ((firstName != null && lastName != null) || (!firstName.equals("") && !lastName.equals(""))) {
-      Iterable<Person> persons;
-      if (firstName == null || firstName.equals("")) {
-        persons = getAllPersonsByLastName(lastName);
-      } else {
-        persons = getAllPersonsByFirstNameAndLastName(firstName, lastName);
-      }
+//  /**
+//   * This method returns the name, address, age, email address and medical history (drugs,
+//   * dosage, allergies) of each inhabitant. If more than one person has the same last name, they
+//   * all appear.
+//   *
+//   * @param firstName it is the first name of the person you desire the info
+//   * @param lastName  not null - not blank - it is the last name of the person you desire the info
+//   * @return an object PersonsInfoDTO (see description)
+//   */
+//  public PersonsInfoDTO getPersonInfoFromFirstAndOrLastName(String firstName, @NotNull @NotBlank String lastName) {
+//    if ((firstName != null && lastName != null) || (!firstName.equals("") && !lastName.equals(""))) {
+//      Iterable<Person> persons;
+//      if (firstName == null || firstName.isBlank()) {
+//        persons = getAllPersonsByLastName(lastName);
+//      } else {
+//        persons = getAllPersonsByFirstNameAndLastName(firstName, lastName);
+//      }
+//
+//      List<PersonInfoDTO> personsInfoDTOToAdd = new ArrayList<>();
+//      for (Person person : persons) {
+//        PersonInfoDTO personInfoDTO = new PersonInfoDTO();
+//
+//        personInfoDTO.setFirstName(person.getFirstName());
+//        personInfoDTO.setLastName(person.getLastName());
+//        personInfoDTO.setAge(getAge(person)
+//        );
+//        personInfoDTO.setMail(person.getEmail());
+//        personInfoDTO.setMedicalRecords(
+//          medicalRecordsService.getMedicalRecords(person)
+//        );
+//
+//        personsInfoDTOToAdd.add(personInfoDTO);
+//      }
+//
+//      PersonsInfoDTO personsInfoDTO = new PersonsInfoDTO();
+//      personsInfoDTO.setPersonsInfoDTO(personsInfoDTOToAdd);
+//
+//      //checks if at least one person exists
+//      if (personsInfoDTOToAdd.size() > 0) {
+//        return personsInfoDTO;
+//      } else {
+//        return null;
+//      }
+//    } else {
+//      return new PersonsInfoDTO();
+//    }
+//  }
 
-      List<PersonInfoDTO> personsInfoDTOToAdd = new ArrayList<>();
-      for (Person person : persons) {
-        PersonInfoDTO personInfoDTO = new PersonInfoDTO();
 
-        personInfoDTO.setFirstName(person.getFirstName());
-        personInfoDTO.setLastName(person.getLastName());
-        personInfoDTO.setAge(getAge(person)
-        );
-        personInfoDTO.setMail(person.getEmail());
-        personInfoDTO.setMedicalRecords(
-          medicalRecordsService.getMedicalRecords(person)
-        );
-
-        personsInfoDTOToAdd.add(personInfoDTO);
-      }
-
-      PersonsInfoDTO personsInfoDTO = new PersonsInfoDTO();
-      personsInfoDTO.setPersonsInfoDTO(personsInfoDTOToAdd);
-
-      //checks if at least one person exists
-      if (personsInfoDTOToAdd.size() > 0) {
-        return personsInfoDTO;
-      } else {
-        return null;
-      }
-    } else {
-      return new PersonsInfoDTO();
-    }
-  }
 
   public Collection<PersonForFireDTO> getPersonsForFireDTOFromAddressInFire(
     Collection<Person> persons) {
@@ -527,5 +536,6 @@ public class PersonService {
       return null;
     }
   }
+
 
 }

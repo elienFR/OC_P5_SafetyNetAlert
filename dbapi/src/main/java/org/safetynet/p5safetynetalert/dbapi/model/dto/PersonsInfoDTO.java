@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class PersonsInfoDTO {
   private final String title = "Persons' Informations";
-  private Iterable<PersonInfoDTO> personsInfoDTO;
+  private PersonInfoDTO personsInfo;
+  private Iterable<PersonInfoDTO> personsFromTheSameFamily;
 }
