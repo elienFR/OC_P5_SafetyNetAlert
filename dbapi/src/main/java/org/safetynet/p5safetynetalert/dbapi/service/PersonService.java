@@ -1,10 +1,10 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
+import com.google.common.collect.Iterables;
 import com.sun.istack.NotNull;
 import lombok.Data;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
@@ -62,7 +62,6 @@ public class PersonService {
     );
   }
 
-
   public Person save(Person person) {
     return personRepository.save(person);
   }
@@ -78,7 +77,6 @@ public class PersonService {
   private Iterable<Person> getAllPersonsByLastName(String lastName) {
     return personRepository.findAllByLastName(lastName);
   }
-
 
   private int getAge(Person person) {
     return ageService.getAge(person.getBirthDate());
@@ -393,7 +391,6 @@ public class PersonService {
     }
   }
 
-
   /**
    * This method deletes a person from database. We consider a person is unique by
    * its first name and last name combination.
@@ -421,18 +418,62 @@ public class PersonService {
   }
 
   public JsonMedicalRecord createMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
-    if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(),
-      jsonMedicalRecord.getLastName())) {
+    if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
 
-      Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(),
-        jsonMedicalRecord.getLastName());
+      Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
+      Iterable<String> medicationsFromPerson = medicalRecordsService.getMedicalRecords(personConcerned).getMedications();
+      Iterable<String> allergiesFromPerson = medicalRecordsService.getMedicalRecords(personConcerned).getAllergies();
 
-      if(!personConcerned.getBirthDate().equals(jsonMedicalRecord.getBirthdate())){
-        personConcerned.setBirthDate(jsonMedicalRecord.getBirthdate());
-        save(personConcerned);
+      //if there is no record we create it, else we drop the call.
+      if (!medicalRecordsService.existsFromPerson(personConcerned)) {
+
+        //Update birthdate
+        if (!jsonMedicalRecord.getBirthdate().equals(personConcerned.getBirthDate()) && !jsonMedicalRecord.getBirthdate().isBlank()) {
+          personConcerned.setBirthDate(jsonMedicalRecord.getBirthdate());
+          personConcerned = save(personConcerned);
+        }
+
+        //write new medications
+        List<String> medicationToAdd = jsonMedicalRecord.getMedications();
+        if (Iterables.size(medicationsFromPerson) == 0) {
+          for (String medication : medicationToAdd) {
+            Medication medicationToAssign = new Medication();
+            if (!medicalRecordsService.getMedicationExistence(medication)) {
+              medicationToAssign = medicalRecordsService.saveMedication(medication);
+            } else {
+              medicationToAssign = medicalRecordsService.getMedication(medication);
+            }
+            PersonsMedication personsMedicationToSave = new PersonsMedication();
+            personsMedicationToSave.setPerson(personConcerned);
+            personsMedicationToSave.setMedication(medicationToAssign);
+
+            personsMedicationToSave = medicalRecordsService.savePersonsMedication(personsMedicationToSave);
+          }
+        }
+
+        //write new allergies
+        List<String> allergiesToAdd = jsonMedicalRecord.getAllergies();
+        if (Iterables.size(allergiesFromPerson) == 0) {
+          for (String allergy : allergiesToAdd) {
+            Allergy allergyToAssign = new Allergy();
+            if (!medicalRecordsService.getAllergyExistence(allergy)) {
+              allergyToAssign = medicalRecordsService.saveAllergy(allergy);
+            } else {
+              allergyToAssign = medicalRecordsService.getAllergyByName(allergy);
+            }
+            PersonsAllergy personsAllergyToSave = new PersonsAllergy();
+            personsAllergyToSave.setAllergy(allergyToAssign);
+            personsAllergyToSave.setPerson(personConcerned);
+
+            personsAllergyToSave = medicalRecordsService.savePersonsAllergy(personsAllergyToSave);
+          }
+        }
+
+        return jsonMedicalRecord;
+
+      } else {
+        return null;
       }
-
-      return jsonMedicalRecord;
     } else {
       return null;
     }

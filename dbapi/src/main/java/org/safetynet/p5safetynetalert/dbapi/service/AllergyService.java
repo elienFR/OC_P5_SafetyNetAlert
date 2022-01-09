@@ -20,7 +20,7 @@ public class AllergyService {
     return allergyRepository.findById(id);
   }
 
-  public Iterable<Allergy> getAllergyes() {
+  public Iterable<Allergy> getAllergies() {
     return allergyRepository.findAll();
   }
 
@@ -38,5 +38,13 @@ public class AllergyService {
 
   public Iterable<Allergy> saveAll(List<Allergy> allergiesToCreate) {
     return allergyRepository.saveAll(allergiesToCreate);
+  }
+
+  public boolean existsByName(String allergy) {
+    return allergyRepository.existsByName(allergy);
+  }
+
+  public Allergy getByName(String allergy) {
+    return allergyRepository.findByName(allergy);
   }
 }

@@ -6,7 +6,6 @@ import org.safetynet.p5safetynetalert.dbapi.repository.MedicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Data
@@ -42,7 +41,11 @@ public class MedicationService {
    * @param medication
    * @return True if it exists.
    */
-  public boolean exists(String medication) {
+  public boolean existsByName(String medication) {
     return medicationRepository.existsByName(medication);
+  }
+
+  public Medication getByName(String meds) {
+    return medicationRepository.findByName(meds);
   }
 }

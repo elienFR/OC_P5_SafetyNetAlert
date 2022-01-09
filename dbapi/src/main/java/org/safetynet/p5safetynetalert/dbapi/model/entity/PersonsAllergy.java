@@ -27,4 +27,12 @@ public class PersonsAllergy {
   public Allergy getAllergy() {
     return allergy;
   }
+
+  public void setPerson(Person person) {
+    this.person = person;
+  }
+
+  public void setAllergy(Allergy allergy) {
+    this.allergy = allergy;
+  }
 }

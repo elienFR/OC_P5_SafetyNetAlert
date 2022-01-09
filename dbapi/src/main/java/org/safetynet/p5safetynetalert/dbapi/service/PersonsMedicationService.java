@@ -37,4 +37,9 @@ public class PersonsMedicationService {
   public void delete(Iterable<PersonsMedication> personsMedications) {
     personsMedicationRepository.deleteAll(personsMedications);
   }
+
+
+  public PersonsMedication save(PersonsMedication personsMedication) {
+    return personsMedicationRepository.save(personsMedication);
+  }
 }

@@ -1,8 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
+import com.google.common.collect.Iterables;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.MedicalRecordsDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +13,13 @@ import java.util.List;
 public class MedicalRecordsService {
 
   @Autowired
-  PersonsMedicationService personsMedicationService;
+  private PersonsMedicationService personsMedicationService;
   @Autowired
-  PersonsAllergyService personsAllergyService;
+  private PersonsAllergyService personsAllergyService;
+  @Autowired
+  private MedicationService medicationService;
+  @Autowired
+  private AllergyService allergyService;
 
   public MedicalRecordsDTO getMedicalRecords(Person person) {
     MedicalRecordsDTO medicalRecordsDTO = new MedicalRecordsDTO();
@@ -65,4 +69,47 @@ public class MedicalRecordsService {
     return medicalRecordsDTOs;
   }
 
+  public boolean existsFromPerson(Person person) {
+    Iterable<String> medications = getMedicalRecords(person).getMedications();
+    Iterable<String> allergies = getMedicalRecords(person).getAllergies();
+    return !((person.getBirthDate() == null || person.getBirthDate().equals(""))
+      && (medications == null || Iterables.size(medications) == 0)
+      && (allergies == null || Iterables.size(allergies) == 0));
+  }
+
+  public boolean getMedicationExistence(String medication) {
+    return medicationService.existsByName(medication);
+  }
+
+  public Medication saveMedication(String medication) {
+    Medication medicationToSave = new Medication();
+    medicationToSave.setName(medication);
+    return medicationService.save(medicationToSave);
+  }
+
+  public Medication getMedication(String medication) {
+    return medicationService.getByName(medication);
+  }
+
+  public PersonsMedication savePersonsMedication(PersonsMedication personsMedication) {
+    return personsMedicationService.save(personsMedication);
+  }
+
+  public boolean getAllergyExistence(String allergy) {
+    return allergyService.existsByName(allergy);
+  }
+
+  public Allergy saveAllergy(String allergy) {
+    Allergy allergyToSave = new Allergy();
+    allergyToSave.setName(allergy);
+    return allergyService.save(allergyToSave);
+  }
+
+  public Allergy getAllergyByName(String allergy) {
+    return allergyService.getByName(allergy);
+  }
+
+  public PersonsAllergy savePersonsAllergy(PersonsAllergy personsAllergy) {
+    return personsAllergyService.save(personsAllergy);
+  }
 }

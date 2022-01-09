@@ -31,4 +31,12 @@ public class PersonsMedication {
   public Medication getMedication() {
     return medication;
   }
+
+  public void setPerson(Person person) {
+    this.person = person;
+  }
+
+  public void setMedication(Medication medication) {
+    this.medication = medication;
+  }
 }

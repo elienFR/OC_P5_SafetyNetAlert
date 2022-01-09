@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Service
 public class PersonsAllergyService {
 
@@ -29,5 +28,9 @@ public class PersonsAllergyService {
 
   public void delete(Iterable<PersonsAllergy> personsAllergies) {
     personsAllergyRepository.deleteAll(personsAllergies);
+  }
+
+  public PersonsAllergy save(PersonsAllergy personsAllergy) {
+    return personsAllergyRepository.save(personsAllergy);
   }
 }
