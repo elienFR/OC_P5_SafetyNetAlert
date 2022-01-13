@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service.urls;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
@@ -14,6 +16,8 @@ public class ChildAlertService {
   @Autowired
   PersonService personService;
 
+  private static final Logger LOGGER = LogManager.getLogger(ChildAlertService.class);
+
   /**
    * This method returns a list of children (anyone aged 18 or under) living at a specific road.
    * The list includes each child's first and last name, age, and a list of others
@@ -26,11 +30,14 @@ public class ChildAlertService {
   public ChildFromAddressDTO getChildrenFromAddress(String road) throws Exception {
     Address address = addressService.getByRoad(road);
 
-    ChildFromAddressDTO childFromAddressDTO = new ChildFromAddressDTO();
-
-    childFromAddressDTO.setChildrenAtAddress(personService.getChildrenDTO(address));
-    childFromAddressDTO.setOtherAdultsAtAddress(personService.getAdultsDTO(address));
-
-    return childFromAddressDTO;
+    if (address == null) {
+      LOGGER.debug("Address returned is null");
+      return null;
+    } else {
+      ChildFromAddressDTO childFromAddressDTO = new ChildFromAddressDTO();
+      childFromAddressDTO.setChildrenAtAddress(personService.getChildrenDTO(address));
+      childFromAddressDTO.setOtherAdultsAtAddress(personService.getAdultsDTO(address));
+      return childFromAddressDTO;
+    }
   }
 }

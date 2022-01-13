@@ -1,14 +1,14 @@
 package org.safetynet.p5safetynetalert.dbapi.service.initPersist;
 
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonData;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +35,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
   PersonsMedicationRepository personsMedicationRepository;
   @Autowired
   PersonsAllergyRepository personsAllergyRepository;
-  private Logger logger = LoggerFactory.getLogger(JsonDataInjectorServiceImpl.class);
+  private static final Logger LOGGER = LogManager.getLogger(JsonDataInjectorServiceImpl.class);
   private JsonData jsonData;
 
   /**
@@ -49,28 +49,31 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    */
   @Override
   public void initDb() {
-    logger.info("Starting database initialisation.");
+    LOGGER.debug("Starting database initialisation.");
 
     //Extracting file
     jsonData = jsonFileExtractorService.fromFile(fileName);
 
-    importAllergies();
-    importFireStations();
-    importAddresses();
-    importMedications();
-    importPersons();
-    importPersonsMedications();
-    importPersonsAllergies();
-
-    logger.info("Database initialisation complete.");
-
+    if (jsonData == null) {
+      LOGGER.error("The object jsonData from json file is null.");
+      throw new NullPointerException("JsonData is null. information cannot be imported.");
+    } else {
+      importAllergies();
+      importFireStations();
+      importAddresses();
+      importMedications();
+      importPersons();
+      importPersonsMedications();
+      importPersonsAllergies();
+      LOGGER.debug("Database initialisation complete.");
+    }
   }
 
   /**
    * script that import allergies from a jsondata object
    */
   private void importAllergies() {
-    logger.info("importing allergies...");
+    LOGGER.debug("importing allergies...");
     Set<String> mySet = new TreeSet<>();
     List<Allergy> myList = new ArrayList<>();
 
@@ -102,7 +105,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    * script that import addresses from a jsondata object
    */
   private void importAddresses() {
-    logger.info("importing addresses...");
+    LOGGER.debug("importing addresses...");
 
     //Comparison set to verify uniqueness of address
     Set<String> comparisonSet = new TreeSet<>();
@@ -135,7 +138,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    * script that import persons from a jsondata object
    */
   private void importPersons() {
-    logger.info("importing persons...");
+    LOGGER.debug("importing persons...");
 
     Set<String> mySet = new TreeSet<>();
     for (JsonPerson jsonPerson : jsonData.getPersons().getPersons()) {
@@ -175,7 +178,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    * script that import fire stations from a json data object
    */
   private void importFireStations() {
-    logger.info("importing fire stations...");
+    LOGGER.debug("importing fire stations...");
 
     Set<String> mySet = new TreeSet<>();
     for (JsonFireStation jsonFireStation : jsonData.getFireStations().getFirestations()) {
@@ -190,7 +193,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    * script that import medications from a json data object
    */
   private void importMedications() {
-    logger.info("importing medications...");
+    LOGGER.debug("importing medications...");
 
     Set<String> mySet = new TreeSet<>();
     List<Medication> myList = new ArrayList<>();
@@ -222,7 +225,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    * script that import persons medications from a json data object
    */
   private void importPersonsMedications() {
-    logger.info("importing person's medications...");
+    LOGGER.debug("importing person's medications...");
 
     Set<String> mySet = new TreeSet<>();
     //Analyse each line in data.json concerning Medical records
@@ -254,7 +257,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
    * Scrip that import person's allergies from a json data object
    */
   private void importPersonsAllergies() {
-    logger.info("importing person's allergies...");
+    LOGGER.debug("importing person's allergies...");
 
     Set<String> mySet = new TreeSet<>();
     //Analyse each line in data.json concerning Medical records

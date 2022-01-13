@@ -1,6 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
@@ -15,6 +17,7 @@ import java.util.Collection;
 @Service
 public class AddressService {
 
+  private static final Logger LOGGER = LogManager.getLogger(AddressService.class);
   @Autowired
   private AddressRepository addressRepository;
 
@@ -33,7 +36,13 @@ public class AddressService {
   }
 
   public Address getByRoad(final String road) {
-    return addressRepository.findByRoad(road);
+    Address address = addressRepository.findByRoad(road);
+    if (address == null) {
+      LOGGER.debug("Address not found in DB.");
+      return null;
+    } else {
+      return address;
+    }
   }
 
   public boolean existsByRoad(String road) {
