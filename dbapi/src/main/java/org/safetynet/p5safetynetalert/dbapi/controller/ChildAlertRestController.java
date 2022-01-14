@@ -18,25 +18,34 @@ public class ChildAlertRestController {
 
   private static final Logger LOGGER = LogManager.getLogger(ChildAlertRestController.class);
   @Autowired
-  ChildAlertService childAlertService;
+  private ChildAlertService childAlertService;
 
+  /**
+   * This url returns a list of children (anyone aged 18 or under) living at this address.
+   * The list includes each child's first and last name, age, and a list of others
+   * household members. If there is no child, this url returns an empty string.
+   *
+   * @param address This String is the road you want to extract email from.
+   * @return a serialized object. see description
+   */
   @GetMapping("")
   public ChildFromAddressDTO getChildrenFromAddress(
-    @RequestParam("address") String address) throws Exception {
+    @RequestParam("address") String address) {
     LOGGER.info("GET Request on /childAlert?address=" + address);
     if (address == null) {
-      LOGGER.error("No address provided");
+      LOGGER.debug("No address provided");
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "No content provided"
       );
     } else {
       ChildFromAddressDTO childFromAddressDTO = childAlertService.getChildrenFromAddress(address);
       if (childFromAddressDTO == null) {
-        LOGGER.info("Address is not in the database.");
+        LOGGER.debug("Address is not in the database.");
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Address Not Found."
         );
       } else {
+        LOGGER.debug("Child(ren) and resident(s) properly serialized.");
         return childFromAddressDTO;
       }
     }

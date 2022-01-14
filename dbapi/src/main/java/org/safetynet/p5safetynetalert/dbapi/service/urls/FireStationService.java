@@ -1,6 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi.service.urls;
 
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonForFloodDTO;
@@ -21,6 +23,7 @@ import java.util.*;
 @Service
 public class FireStationService {
 
+  private static final Logger LOGGER = LogManager.getLogger(FireStationService.class);
   @Autowired
   private FireStationRepository fireStationRepository;
   @Autowired
@@ -47,7 +50,13 @@ public class FireStationService {
    * @return the saved object.
    */
   public FireStation save(FireStation fireStation) {
-    return fireStationRepository.save(fireStation);
+    if (fireStation == null) {
+      LOGGER.warn("Fire station given is null");
+      return null;
+    } else {
+      LOGGER.debug("Fire station properly saved.");
+      return fireStationRepository.save(fireStation);
+    }
   }
 
   /**
@@ -71,28 +80,24 @@ public class FireStationService {
    * @return a PersonsFromFireStationDTO if method is successful. null if it is not.
    */
   public PersonsFromFireStationDTO getPersonsAndCount(String number) {
+    LOGGER.debug("Loading persons from fire station and their number...");
     FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<PersonDTO> personsList = personService.getPersonDTOsFromAddresses(
-        fireStation.getAddresses()
-      );
+        fireStation.getAddresses());
 
-      Integer adultCount = null;
-      Integer childrenCount = null;
-      try {
-        adultCount = ageService.countAdultsAndChildren(personsList).get("adults");
-        childrenCount = ageService.countAdultsAndChildren(personsList).get("children");
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
+      int adultCount = ageService.countAdultsAndChildren(personsList).get("adults");
+      int childrenCount = ageService.countAdultsAndChildren(personsList).get("children");
 
       PersonsFromFireStationDTO listOfPersons = new PersonsFromFireStationDTO();
       listOfPersons.setPersonsList(personsList);
       listOfPersons.setAdultCount(adultCount);
       listOfPersons.setChildrenCount(childrenCount);
 
+      LOGGER.debug("Persons from fire station properly loaded.");
       return listOfPersons;
     } else {
+      LOGGER.debug("Fire station is null.");
       return null;
     }
   }
@@ -104,12 +109,14 @@ public class FireStationService {
    * @return A Collection of PersonFloodDTO
    */
   public Collection<PersonForFloodDTO> getPersonsForFlood(String number) {
+    LOGGER.debug("Creating a collection of flood person DTO.");
     FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<PersonForFloodDTO> personForFloodDTOCollection =
         personService.getPersonsForFlood(fireStation.getAddresses());
       return personForFloodDTOCollection;
     } else {
+      LOGGER.warn("The fire station is null.");
       return null;
     }
   }
@@ -122,6 +129,7 @@ public class FireStationService {
    * @return A PhonesDTO Object, see description.
    */
   public PhonesDTO getPhonesFromFireStationNumber(String number) {
+    LOGGER.debug("Getting list of phones from a fire station...");
     FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<String> phoneNumbers =
@@ -132,8 +140,10 @@ public class FireStationService {
         );
       PhonesDTO phonesDTO = new PhonesDTO();
       phonesDTO.setPhonesList(phoneNumbers);
+      LOGGER.debug("List of phone retrieved.");
       return phonesDTO;
     } else {
+      LOGGER.debug("No fire station found in DB with number" + number);
       return null;
     }
   }
@@ -149,6 +159,7 @@ public class FireStationService {
    * @return the jsonFireStation object furnished if methods is successful, and null if any error occurs.
    */
   public JsonFireStation saveAddressFireStationMapping(JsonFireStation jsonFireStation) {
+    LOGGER.debug("Saving new fire station...");
     //We consider address/road MUST not be null or blank here
     String fireStationNumber = jsonFireStation.getStation();
     String road = jsonFireStation.getAddress();
@@ -159,6 +170,7 @@ public class FireStationService {
       if (addressService.existsByRoad(road)) {
         savedAddress = addressService.getByRoad(road);
       } else {
+        LOGGER.debug("Saving new address because it does not already exists.");
         savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", null);
       }
 
@@ -169,17 +181,20 @@ public class FireStationService {
             getByNumber(fireStationNumber)
           );
         } else {
+          LOGGER.debug("Creating new fire station because it does not already exists.");
           FireStation newFireStation = save(new FireStation(fireStationNumber));
           savedAddress.setFireStation(newFireStation);
         }
       } else { //Is similar to create a new address without fire station.
+        LOGGER.warn("Fire station number in json is null or blank.");
         savedAddress.setFireStation(null);
       }
 
       addressService.save(savedAddress);
-
+      LOGGER.debug("Fire station properly saved.");
       return jsonFireStation;
     } else {
+      LOGGER.warn("Address in json is null or blank.");
       return null;
     }
   }
@@ -195,6 +210,7 @@ public class FireStationService {
    * Object if method was successful.
    */
   public JsonFireStation updateAddressFireStationMapping(JsonFireStation jsonFireStation) {
+    LOGGER.debug("Updating fire station in DB...");
     String road = jsonFireStation.getAddress();
     String fireStationNumber = jsonFireStation.getStation();
     FireStation fireStationToUpdate = null;
@@ -206,6 +222,7 @@ public class FireStationService {
         fireStationToUpdate = save(new FireStation(fireStationNumber));
       }
     } else {
+      LOGGER.warn("Fire station from json file is null or blank.");
       return null;
     }
 
@@ -217,8 +234,10 @@ public class FireStationService {
       } else {
         return null;
       }
+      LOGGER.debug("Fire station update is properly executed.");
       return jsonFireStation;
     } else {
+      LOGGER.warn("Address given in json fire station is null");
       return null;
     }
   }
@@ -234,6 +253,7 @@ public class FireStationService {
    * successfully.
    */
   public JsonFireStation eraseAddressFireStationMapping(JsonFireStation jsonFireStation) {
+    LOGGER.debug("Deleting fire station in DB...");
     String road = jsonFireStation.getAddress();
 
     if (addressService.existsByRoad(road)) {
@@ -242,8 +262,10 @@ public class FireStationService {
       addressService.save(addressToUnMap);
 
       jsonFireStation.setStation(null);
+      LOGGER.debug("Fire station properly deleted.");
       return jsonFireStation;
     } else {
+      LOGGER.warn("The mapping you want to delete does not exist in DB.");
       return null;
     }
   }

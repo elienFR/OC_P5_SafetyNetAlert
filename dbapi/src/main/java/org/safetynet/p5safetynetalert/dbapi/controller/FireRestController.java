@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.FireService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/fire")
 public class FireRestController {
 
+  private static final Logger LOGGER = LogManager.getLogger(FireRestController.class);
   @Autowired
   private FireService fireService;
 
@@ -28,18 +31,17 @@ public class FireRestController {
    */
   @GetMapping("")
   public FireDTO getPersonsFromAddressInFire(
-      @RequestParam("address") String road) {
-//    FireDTO fireDTO = addressService.getFireDTOFromAddressInFire(road);
+    @RequestParam("address") String road) {
+    LOGGER.info("GET Request on /fire?address=" + road);
     FireDTO fireDTO = fireService.getFireDTOFromAddressInFire(road);
-
-    if(fireDTO != null){
+    if (fireDTO != null) {
+      LOGGER.debug("FireDTO properly serialized.");
       return fireDTO;
-    }else{
+    } else {
+      LOGGER.debug("The serialized object is null.");
       throw new ResponseStatusException(
-          HttpStatus.NOT_FOUND, "address not found"
+        HttpStatus.NOT_FOUND, "address not found"
       );
     }
-
   }
-
 }

@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service.urls;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonInfoDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsInfoDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
@@ -11,11 +13,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Service
 public class PersonInfoService {
 
+  private static final Logger LOGGER = LogManager.getLogger(PersonInfoService.class);
   @Autowired
   private PersonService personService;
   @Autowired
@@ -34,6 +36,7 @@ public class PersonInfoService {
    * @return an object PersonsInfoDTO (see description)
    */
   public PersonsInfoDTO getPersonInfoFromFirstAndOrLastName(String firstName, String lastName) {
+    LOGGER.debug("A person Info DTO is being created...");
     PersonsInfoDTO personsInfoDTO = new PersonsInfoDTO();
     Person personToConvert = personService.getByFirstNameAndLastName(firstName, lastName);
     if (personToConvert != null) {
@@ -44,8 +47,8 @@ public class PersonInfoService {
       //create its family relatives
       Collection<PersonInfoDTO> familyRelativesInPersonDTO = new ArrayList<>();
       Iterable<Person> familyRelativesInPerson = personService.getAllByName(lastName);
-      for(Person person : familyRelativesInPerson){
-        if(!person.getFirstName().equals(personToConvert.getFirstName())){
+      for (Person person : familyRelativesInPerson) {
+        if (!person.getFirstName().equals(personToConvert.getFirstName())) {
           familyRelativesInPersonDTO.add(convertPersonIntoPersonInfoDTO(person));
         }
       }
@@ -55,6 +58,7 @@ public class PersonInfoService {
       return personsInfoDTO;
 
     } else {
+      LOGGER.warn("Person to convert is null.");
       return null;
     }
   }
@@ -66,6 +70,7 @@ public class PersonInfoService {
    * @return a PersonInfoDTO Object
    */
   private PersonInfoDTO convertPersonIntoPersonInfoDTO(Person person) {
+    LOGGER.debug("Converting a person into a PersonInfoDTO");
     PersonInfoDTO personInfoDTO = new PersonInfoDTO();
 
     personInfoDTO.setFirstName(person.getFirstName());

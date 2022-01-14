@@ -3,6 +3,8 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 import com.google.common.collect.Iterables;
 import com.sun.istack.NotNull;
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
@@ -20,6 +22,7 @@ import java.util.List;
 @Service
 public class PersonService {
 
+  private static final Logger LOGGER = LogManager.getLogger(PersonService.class);
   @Autowired
   private PersonRepository personRepository;
   @Autowired
@@ -41,6 +44,7 @@ public class PersonService {
    * @return true if the person exists, and false if it does not.
    */
   public boolean existsByFirstNameAndLastName(Person person) {
+    LOGGER.debug("Finding person id DB...");
     return personRepository.existsByFirstNameAndLastName(
       person.getFirstName(),
       person.getLastName()
@@ -56,17 +60,32 @@ public class PersonService {
    * @return true if the person exists, and false if it does not.
    */
   public boolean existsByFirstNameAndLastName(String firstName, String lastName) {
+    LOGGER.debug("Finding person id DB...");
     return personRepository.existsByFirstNameAndLastName(
       firstName,
       lastName
     );
   }
 
+  /**
+   * This method saves a person in DB.
+   *
+   * @param person is the person you want to save.
+   * @return the person saved in DB.
+   */
   public Person save(Person person) {
     return personRepository.save(person);
   }
 
+  /**
+   * This method returns a person from DB with its first name and its last name.
+   *
+   * @param firstName is the first name of the person you look for.
+   * @param lastName  is the last name of the person you look for.
+   * @return a Person object with corresponding first name and last name.
+   */
   public Person getByFirstNameAndLastName(String firstName, String lastName) {
+    LOGGER.debug("Finding person id DB...");
     return personRepository.findByFirstNameAndLastName(firstName, lastName);
   }
 
@@ -77,45 +96,46 @@ public class PersonService {
    * @return see description
    */
   public Iterable<Person> getAllByName(String lastName) {
+    LOGGER.debug("Finding persons id DB with their last name...");
     return personRepository.findAllByLastName(lastName);
   }
 
-  private Iterable<Person> getAllPersonsByFirstNameAndLastName(String firstName, String lastName) {
-    return personRepository.findAllByFirstNameAndLastName(firstName, lastName);
-  }
-
-  private Iterable<Person> getAllPersonsByLastName(String lastName) {
-    return personRepository.findAllByLastName(lastName);
-  }
-
-  private int getAge(Person person) {
-    return ageService.getAge(person.getBirthDate());
-  }
-
+  /**
+   * This method returns all the email contained in a collection of persons.
+   *
+   * @param persons is the collection of person
+   * @return is a list of String containing emails.
+   */
   public List<String> getEmails(Collection<Person> persons) {
+    LOGGER.debug("Getting email list from a collection of persons.");
     if (persons == null || persons.size() == 0) {
+      LOGGER.debug("The collection of persons is null.");
       return null;
     } else {
       List<String> emails = new ArrayList<>();
       for (Person person : persons) {
         emails.add(person.getEmail());
       }
+      LOGGER.debug("Emails properly got.");
       return emails;
     }
   }
 
   public Collection<String> getPhones(Collection<Person> persons) {
+    LOGGER.debug("Creating a list of phones...");
     Collection<String> phoneCollection = new ArrayList<>();
     for (Person person : persons) {
       phoneCollection.add(
         person.getPhone()
       );
     }
+    LOGGER.debug("List of phones created.");
     return phoneCollection;
   }
 
   public Collection<PersonForFireDTO> getPersonsForFireDTOFromAddressInFire(
     Collection<Person> persons) {
+    LOGGER.debug("Loading collection of PersonForFireDTOs...");
     List<PersonForFireDTO> personToAdd = new ArrayList<>();
     for (Person person : persons) {
       personToAdd.add(
@@ -126,6 +146,7 @@ public class PersonService {
           medicalRecordsService.getMedicalRecordsDTOFromPerson(person)
         ));
     }
+    LOGGER.debug("Collection of PersonForFireDTOs properly loaded.");
     return personToAdd;
   }
 
@@ -150,16 +171,24 @@ public class PersonService {
     return listOfPersonsDTO;
   }
 
+  /**
+   * This method loads a collection of persons from a collection of addresses.
+   *
+   * @param addresses is the collection of addresses.
+   * @return a collection of persons.
+   */
   public Collection<PersonDTO> getPersonDTOsFromAddresses(Collection<Address> addresses) {
+    LOGGER.debug("Loading the collection of PersonDTOs from the collection of addresses...");
     List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
     for (Address address : addresses) {
       listOfPersonsDTO.addAll(getPersonDTOsFromAddress(address));
     }
+    LOGGER.debug("Collection of PersonsDTOs properly loaded.");
     return listOfPersonsDTO;
   }
 
   public Collection<PersonDTO> getAdultsFromPersonsDTOs(
-    Collection<PersonDTO> personsDTOs) throws Exception {
+    Collection<PersonDTO> personsDTOs) {
     Collection<PersonDTO> adultsList = new ArrayList<>();
     for (PersonDTO personDTO : personsDTOs) {
       if (ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
@@ -170,7 +199,7 @@ public class PersonService {
   }
 
   public Collection<ChildDTO> getChildrenFromPersonsDTOs(
-    Collection<PersonDTO> personDTOs) throws Exception {
+    Collection<PersonDTO> personDTOs) {
     Collection<ChildDTO> childrenList = new ArrayList<>();
     for (PersonDTO personDTO : personDTOs) {
       if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
@@ -185,8 +214,16 @@ public class PersonService {
     return childrenList;
   }
 
+  /**
+   * This method collects each Person from a collection of addresses and add them in a collection of
+   * PersonForFloodDTOs.
+   *
+   * @param addresses is the collection of addresses
+   * @return see description.
+   */
   public Collection<PersonForFloodDTO> getPersonsForFlood(
     Collection<Address> addresses) {
+    LOGGER.debug("Creating the collection of PersonForFloodDTOs...");
     Collection<PersonForFloodDTO> personsToReturn = new ArrayList<>();
 
     for (Address address : addresses) {
@@ -195,7 +232,7 @@ public class PersonService {
         convertPersonsToPersonForFloodDTOs(personsToAdd)
       );
     }
-
+    LOGGER.debug("Collection of PersonForFloodDTOs created.");
     return personsToReturn;
   }
 
@@ -210,19 +247,38 @@ public class PersonService {
     return personForFloodDTOCollection;
   }
 
-  public Collection<PersonDTO> getAdultsDTO(Address address) throws Exception {
+  public Collection<PersonDTO> getAdultsDTO(Address address) {
     Collection<PersonDTO> listOfAdults = getAdultsFromPersonsDTOs(getPersonDTOsFromAddress(address));
     return listOfAdults;
   }
 
-  public Collection<ChildDTO> getChildrenDTO(Address address) throws Exception {
+  public Collection<ChildDTO> getChildrenDTO(Address address) {
     Collection<ChildDTO> listOfChildren = getChildrenFromPersonsDTOs(getPersonDTOsFromAddress(address));
 
     return listOfChildren;
   }
 
+  /**
+   * This method loads a collection of person form an address object.
+   *
+   * @param address is the object with which the collection of persons is created.
+   * @return a collection of persons.
+   */
   public Collection<Person> getPersonsFromAddress(Address address) {
-    return address.getPersons();
+    LOGGER.debug("Loading persons form address...");
+    Collection<Person> personCollection = address.getPersons();
+    if (address == null) {
+      LOGGER.debug("Address given is null.");
+      return null;
+    } else {
+      if (personCollection == null) {
+        LOGGER.debug("Collection of Person is null.");
+        return null;
+      } else {
+        LOGGER.debug("Persons properly loaded from address.");
+        return personCollection;
+      }
+    }
   }
 
   /**
@@ -232,13 +288,16 @@ public class PersonService {
    * @return A collection of persons from a collection of addresses.
    */
   public Collection<Person> getPersonsFromAddresses(Collection<Address> addresses) {
+    LOGGER.debug("Getting the collection of persons from the collection of addresses.");
     if (addresses == null || addresses.size() == 0) {
+      LOGGER.debug("The collection of addresses given is null or does not contain any addresses.");
       return null;
     } else {
       Collection<Person> persons = new ArrayList<>();
       for (Address address : addresses) {
         persons.addAll(address.getPersons());
       }
+      LOGGER.debug("The collection of persons has been properly extracted.");
       return persons;
     }
   }
@@ -299,6 +358,7 @@ public class PersonService {
    * @return the save JsonPerson
    */
   public JsonPerson createPerson(JsonPerson newJsonPerson) {
+    LOGGER.debug("Saving a new person in DB...");
     Person person = convertJsonPersonIntoPerson(newJsonPerson);
     if (person.getFirstName() != null && person.getLastName() != null
       && !person.getFirstName().isBlank() && !person.getLastName().isBlank()) {
@@ -313,14 +373,15 @@ public class PersonService {
           );
         }
         save(person);
+        LOGGER.debug("Person saved in DB.");
         return newJsonPerson;
       } else {
+        LOGGER.debug("Person already exists in DB.");
         return null;
-        //todo : throw exception to say person already exists
       }
     } else {
+      LOGGER.error("There are no name and last name in jsonPerson object provided.");
       return null;
-      //todo : throw a exception to stipulate to furnish at least a first name AND a last name.
     }
   }
 
@@ -333,6 +394,7 @@ public class PersonService {
    * @return null or a JsonPersonObject which has been updated. See description.
    */
   public JsonPerson updatePersonWithJsonPerson(JsonPerson putJsonPerson) {
+    LOGGER.debug("Updating an existing person...");
     //if the person to update exists.
     if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(putJsonPerson))) {
       //Recover person from DB
@@ -349,6 +411,7 @@ public class PersonService {
       //check address difference
       if (!addressService.existsByRoadAndCityAndZipCode(addressToUpdate)
       ) {
+        LOGGER.debug("A new address is being saved.");
         addressToUpdate = addressService.save(addressToUpdate);
       } else {
         addressToUpdate.setId(addressService.getByRoadAndCityAndZipCode(addressToUpdate).getId());
@@ -356,8 +419,10 @@ public class PersonService {
       personToUpdate.setAddress(addressToUpdate);
 
       save(personToUpdate);
+      LOGGER.debug("Person updated.");
       return putJsonPerson;
     } else {
+      LOGGER.debug("The person does not exists.");
       return null;
     }
   }
@@ -370,6 +435,7 @@ public class PersonService {
    * @return the jsonObject of deleted person if method is executed successfully.
    */
   public JsonPerson delete(JsonPerson jsonPerson) {
+    LOGGER.debug("Person is being delted...");
     if (jsonPerson.getFirstName() != null && jsonPerson.getLastName() != null) {
       if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(jsonPerson))) {
         Person personToDelete = personRepository
@@ -378,12 +444,14 @@ public class PersonService {
         personsAllergyService.delete(personToDelete.getPersonsAllergies());
         personsMedicationService.delete(personToDelete.getPersonsMedications());
         personRepository.delete(personToDelete);
-
+        LOGGER.debug("Person deleted.");
         return jsonPerson;
       } else {
+        LOGGER.error("The person does not exists in DB.");
         return null;
       }
     } else {
+      LOGGER.error("First name and last name not found in json object.");
       return null;
     }
   }
@@ -427,8 +495,13 @@ public class PersonService {
    * @return it returns a java object that can be serialized into a jsonMedicalRecord
    */
   public JsonMedicalRecord createMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
-    if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
-
+    LOGGER.debug("Creating medical record...");
+    if (
+      existsByFirstNameAndLastName(
+        jsonMedicalRecord.getFirstName(),
+        jsonMedicalRecord.getLastName()
+      )
+    ) {
       Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
       Iterable<String> medicationsFromPerson = medicalRecordsService.getMedicalRecords(personConcerned).getMedications();
       Iterable<String> allergiesFromPerson = medicalRecordsService.getMedicalRecords(personConcerned).getAllergies();
@@ -449,12 +522,14 @@ public class PersonService {
           medicalRecordsService.createAllergiesFromJsonPerson(jsonMedicalRecord, personConcerned);
         }
 
+        LOGGER.debug("Medical record created.");
         return jsonMedicalRecord;
-
       } else {
+        LOGGER.error("A medcal record already exists for that person.");
         return null;
       }
     } else {
+      LOGGER.error("The person does not exists.");
       return null;
     }
   }

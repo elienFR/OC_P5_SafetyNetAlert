@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
@@ -12,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/firestation")
 public class FireStationRestController {
 
+  private static final Logger LOGGER = LogManager.getLogger(FireRestController.class);
   @Autowired
   FireStationService fireStationService;
 
@@ -29,9 +32,12 @@ public class FireStationRestController {
    * description.
    */
   @GetMapping("")
-  public PersonsFromFireStationDTO getPersonsFromFireStationId(@RequestParam("stationNumber") String id) {
+  public PersonsFromFireStationDTO getPersonsFromFireStationId(
+    @RequestParam("stationNumber") String id) {
+    LOGGER.info("GET Request on /firestation?stationNumber="+id);
     PersonsFromFireStationDTO persons = fireStationService.getPersonsAndCount(id);
     if (persons != null) {
+      LOGGER.debug("Serialization completed.");
       return persons;
     } else {
       throw new ResponseStatusException(
@@ -40,29 +46,46 @@ public class FireStationRestController {
     }
   }
 
+  /**
+   * This method response to a Post call. It add a new fire station in the database
+   *
+   * @param jsonFireStation a json body that refers to a fire station.
+   * @return 200 OK if properly executed.
+   */
   @PostMapping("")
-  public JsonFireStation postFireStationAddressMapping(@RequestBody JsonFireStation jsonFireStation) {
+  public JsonFireStation postFireStationAddressMapping(
+    @RequestBody JsonFireStation jsonFireStation) {
+    LOGGER.info("POST request on /firestation");
     if(jsonFireStation != null) {
-      JsonFireStation postedJsonFireStation = fireStationService.saveAddressFireStationMapping(jsonFireStation);
+      JsonFireStation postedJsonFireStation = fireStationService
+        .saveAddressFireStationMapping(jsonFireStation);
       if (postedJsonFireStation != null) {
         return postedJsonFireStation;
       } else {
         throw new ResponseStatusException(
-          HttpStatus.NO_CONTENT, "no address provided"
+          HttpStatus.NO_CONTENT, "No address provided."
         );
       }
     } else {
       throw new ResponseStatusException(
-        HttpStatus.NO_CONTENT, "no content provided"
+        HttpStatus.NO_CONTENT, "No content provided."
       );
     }
   }
 
+  /**
+   * This method response to a Post call. It updates a fire station in the database.
+   *
+   * @param jsonFireStation a json body that refers to a fire station.
+   * @return 200 OK if properly executed.
+   */
   @PutMapping("")
   public JsonFireStation putFireStationAddressMapping(
     @RequestBody JsonFireStation jsonFireStation) {
+    LOGGER.info("PUT request on /firestation");
     if (jsonFireStation != null) {
-      JsonFireStation updatedJsonFireStation = fireStationService.updateAddressFireStationMapping(jsonFireStation);
+      JsonFireStation updatedJsonFireStation = fireStationService
+        .updateAddressFireStationMapping(jsonFireStation);
       if (updatedJsonFireStation != null) {
         return updatedJsonFireStation;
       } else {
@@ -77,9 +100,16 @@ public class FireStationRestController {
     }
   }
 
+  /**
+   * This method response to a Delete call. It deletes a fire station in the database.
+   *
+   * @param jsonFireStation a json body that refers to a fire station.
+   * @return 200 OK if properly executed.
+   */
   @DeleteMapping("")
   public JsonFireStation deleteFireStationAddressMapping(
     @RequestBody JsonFireStation jsonFireStation) {
+    LOGGER.info("DELETE request on /firestation");
     if (jsonFireStation != null) {
       JsonFireStation deletedJsonFireStation = fireStationService
         .eraseAddressFireStationMapping(jsonFireStation);

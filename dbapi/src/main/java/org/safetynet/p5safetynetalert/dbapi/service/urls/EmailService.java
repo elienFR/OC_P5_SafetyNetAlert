@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service.urls;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.EmailListDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
@@ -17,6 +19,8 @@ public class EmailService {
   @Autowired
   PersonService personService;
 
+  private static final Logger LOGGER = LogManager.getLogger(EmailService.class);
+
   /**
    * This method returns a list of each email of each inhabitant of a city encapsulated
    * in an EmailListDTO Object.
@@ -28,6 +32,7 @@ public class EmailService {
     EmailListDTO emailListDTO = new EmailListDTO();
     Collection<Address> addresses = addressService.getAllByCity(city);
     if (addresses == null || addresses.size()==0) {
+      LOGGER.debug("Addresses collection is null.");
       return null;
     } else {
       emailListDTO.setEmailList(
@@ -35,7 +40,7 @@ public class EmailService {
           personService.getPersonsFromAddresses(
             addresses)));
       emailListDTO.setCityName(city);
-
+      LOGGER.debug("Email successfully extracted.");
       return emailListDTO;
     }
   }

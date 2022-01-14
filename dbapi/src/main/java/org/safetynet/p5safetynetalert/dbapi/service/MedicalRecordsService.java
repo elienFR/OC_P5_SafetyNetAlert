@@ -1,6 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import com.google.common.collect.Iterables;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.MedicalRecordsDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
@@ -13,6 +15,7 @@ import java.util.List;
 @Service
 public class MedicalRecordsService {
 
+  private static final Logger LOGGER = LogManager.getLogger(MedicalRecordsService.class);
   @Autowired
   private PersonsMedicationService personsMedicationService;
   @Autowired
@@ -22,7 +25,14 @@ public class MedicalRecordsService {
   @Autowired
   private AllergyService allergyService;
 
+  /**
+   * This method returns the medical records DTO of a Person object.
+   *
+   * @param person is the person you want to retrieve the medical record DTO.
+   * @return see description.
+   */
   public MedicalRecordsDTO getMedicalRecords(Person person) {
+    LOGGER.debug("Fetching Medical records DTO from Person.");
     MedicalRecordsDTO medicalRecordsDTO = new MedicalRecordsDTO();
 
     List<String> medications = new ArrayList<>(
@@ -39,6 +49,7 @@ public class MedicalRecordsService {
 
     medicalRecordsDTO.setMedications(medications);
     medicalRecordsDTO.setAllergies(allergies);
+    LOGGER.debug("Medical records DTO fetched.");
     return medicalRecordsDTO;
   }
 

@@ -1,6 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import lombok.Data;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsMedication;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonsMedicationRepository;
@@ -14,6 +16,7 @@ import java.util.List;
 @Service
 public class PersonsMedicationService {
 
+  private static final Logger LOGGER = LogManager.getLogger(PersonsMedicationService.class);
   @Autowired
   private PersonsMedicationRepository personsMedicationRepository;
 
@@ -21,15 +24,21 @@ public class PersonsMedicationService {
     return personsMedicationRepository.findAllByPerson(person);
   }
 
+  /**
+   * This method creates a list of medication strings from a persons medications Iterable.
+   *
+   * @param personsMedications is the person's medications Iterable
+   * @return see description.
+   */
   public List<String> getMedicationsFromPersonsMedications(
       Iterable<PersonsMedication> personsMedications) {
-
+    LOGGER.debug("Getting persons' medications...");
     List<String> medications = new ArrayList<>();
 
     for(PersonsMedication personsMedication : personsMedications){
       medications.add(personsMedication.getMedication().getName());
     }
-
+    LOGGER.debug("Persons' medications got.");
     return medications;
   }
 

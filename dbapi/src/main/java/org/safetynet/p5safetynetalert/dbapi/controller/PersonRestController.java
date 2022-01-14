@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/person")
 public class PersonRestController {
 
+  private static final Logger LOGGER = LogManager.getLogger(PersonRestController.class);
   @Autowired
-  PersonService personService;
+  private PersonService personService;
 
   /**
    * This method is called with a post request on /person. It saves a new Person in DB thanks to a
@@ -26,6 +29,7 @@ public class PersonRestController {
   @PostMapping("")
   public JsonPerson postPerson(@RequestBody JsonPerson newJsonPerson) {
     if (newJsonPerson != null) {
+      LOGGER.info("POST request made on url /person.");
       JsonPerson postedJsonPerson = personService.createPerson(newJsonPerson);
       if (postedJsonPerson != null) {
         return postedJsonPerson;
@@ -49,6 +53,7 @@ public class PersonRestController {
    */
   @PutMapping("")
   public JsonPerson putPerson(@RequestBody JsonPerson putJsonPerson) {
+    LOGGER.info("PUT request made on url /person.");
     if (putJsonPerson == null) {
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "No body content."
@@ -73,6 +78,7 @@ public class PersonRestController {
    */
   @DeleteMapping("")
   public void deletePerson(@RequestBody JsonPerson jsonPerson) {
+    LOGGER.info("DELETE request made on url /person.");
     if (jsonPerson == null) {
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "No jsonBody provided"

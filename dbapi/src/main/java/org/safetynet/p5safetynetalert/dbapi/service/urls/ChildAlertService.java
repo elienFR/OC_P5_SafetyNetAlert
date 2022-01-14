@@ -27,7 +27,7 @@ public class ChildAlertService {
    * @return a ChildFromAddressDTO (see description)
    * @throws Exception
    */
-  public ChildFromAddressDTO getChildrenFromAddress(String road) throws Exception {
+  public ChildFromAddressDTO getChildrenFromAddress(String road) {
     Address address = addressService.getByRoad(road);
 
     if (address == null) {

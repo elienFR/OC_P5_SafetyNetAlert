@@ -1,5 +1,7 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import java.util.Map;
 
 @Service
 public class AgeService {
+
+  private static final Logger LOGGER = LogManager.getLogger(AgeService.class);
 
   /**
    * Parse a string patterned MM/dd/yyyy into a LocalDate
@@ -31,7 +35,7 @@ public class AgeService {
    * @return true if age is strictly superior to eighteen years old
    * @throws IllegalArgumentException when age is negative
    */
-  public boolean isStrictlyOverEighteen(String birthDate) throws Exception {
+  public boolean isStrictlyOverEighteen(String birthDate) {
     LocalDate formattedBirthDate = parseStringMMddYYYY(birthDate);
     return isStrictlyOverEighteen(formattedBirthDate);
   }
@@ -43,7 +47,7 @@ public class AgeService {
    * @return true if age is strictly superior to eighteen years old
    * @throws IllegalArgumentException when age is negative
    */
-  public boolean isStrictlyOverEighteen(LocalDate birthDate) throws Exception {
+  public boolean isStrictlyOverEighteen(LocalDate birthDate) {
     Period period = Period.between(birthDate, LocalDate.now());
     boolean isMajor = false;
     if (period.isNegative() || period.isZero()) {
@@ -68,7 +72,15 @@ public class AgeService {
     return period.getYears();
   }
 
-  public Map<String, Integer> countAdultsAndChildren(Collection<PersonDTO> persons) throws Exception {
+  /**
+   * This method returns a map with a key "children" and a key "adults". Each are associated with an
+   * integer value that represent the number found in the collection of PersonDTO given.
+   *
+   * @param persons is the collection of personDTO given
+   * @return a map as described in method description.
+   */
+  public Map<String, Integer> countAdultsAndChildren(Collection<PersonDTO> persons) {
+    LOGGER.debug("Start counting adults and children");
     Map<String,Integer> adultsAndChildrenCount = new HashMap<>();
     adultsAndChildrenCount.put("adults",0);
     adultsAndChildrenCount.put("children",0);
@@ -81,6 +93,7 @@ public class AgeService {
         adultsAndChildrenCount.put("children", current+1);
       }
     }
+    LOGGER.debug("Finished counting.");
     return adultsAndChildrenCount;
   }
 }

@@ -18,7 +18,7 @@ public class EmailRestController {
 
   private static final Logger LOGGER = LogManager.getLogger(EmailRestController.class);
   @Autowired
-  EmailService emailService;
+  private EmailService emailService;
 
   @GetMapping("")
   public EmailListDTO getAllEmailFromCityInhabitants(
@@ -26,12 +26,14 @@ public class EmailRestController {
   ) {
     LOGGER.info("GET Request on /communityEmail?city=" + city);
     if (city == null) {
+      LOGGER.debug("Given city is null.");
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "No content provided"
       );
     } else {
       EmailListDTO emailListDTO = emailService.getAllEmailFromCityInhabitants(city);
       if (emailListDTO != null) {
+        LOGGER.debug("Email list properly serialized.");
         return emailListDTO;
       } else {
         LOGGER.debug("This city is not in the database.");
