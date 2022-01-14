@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PersonsAllergyService {
+public class PersonsAllergyService implements IPersonsAllergyService {
 
   private static final Logger LOGGER = LogManager.getLogger(PersonsAllergyService.class);
   @Autowired
@@ -25,10 +25,10 @@ public class PersonsAllergyService {
    * @return see description.
    */
   public List<String> getAllergiesFromPersonsMedications(
-      Iterable<PersonsAllergy> personsAllergies) {
+    Iterable<PersonsAllergy> personsAllergies) {
     LOGGER.debug("Getting persons' allergies...");
     List<String> allergies = new ArrayList<>();
-    for(PersonsAllergy personsAllergy : personsAllergies){
+    for (PersonsAllergy personsAllergy : personsAllergies) {
       allergies.add(personsAllergy.getAllergy().getName());
     }
     LOGGER.debug("Persons' allergies got.");
@@ -39,14 +39,26 @@ public class PersonsAllergyService {
     personsAllergyRepository.deleteAll(personsAllergies);
   }
 
+  /**
+   * This method saves a person's allergy in DB.
+   *
+   * @param personsAllergy
+   * @return
+   */
+  @Override
   public PersonsAllergy save(PersonsAllergy personsAllergy) {
     return personsAllergyRepository.save(personsAllergy);
   }
 
-  public Iterable<PersonsAllergy> getAllFromPerson(Person person) {
+  private Iterable<PersonsAllergy> getAllFromPerson(Person person) {
     return personsAllergyRepository.findAllByPerson(person);
   }
 
+  /**
+   * Delete all allergies records from one person
+   * @param person person you want to delete allergies from.
+   */
+  @Override
   public void deleteAllFromPerson(Person person) {
     Iterable<PersonsAllergy> personsAllergiesToDelete = getAllFromPerson(person);
     personsAllergyRepository.deleteAll(personsAllergiesToDelete);

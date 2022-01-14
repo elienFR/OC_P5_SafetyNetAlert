@@ -14,7 +14,7 @@ import java.util.List;
 
 @Data
 @Service
-public class PersonsMedicationService {
+public class PersonsMedicationService implements IPersonsMedicationService {
 
   private static final Logger LOGGER = LogManager.getLogger(PersonsMedicationService.class);
   @Autowired
@@ -46,11 +46,22 @@ public class PersonsMedicationService {
     personsMedicationRepository.deleteAll(personsMedications);
   }
 
-
+  /**
+   * This method saves a person's medication in DB.
+   *
+   * @param personsMedication
+   * @return
+   */
+  @Override
   public PersonsMedication save(PersonsMedication personsMedication) {
     return personsMedicationRepository.save(personsMedication);
   }
 
+  /**
+   * Delete all medication records from one person
+   * @param person person you want to delete medication from.
+   */
+  @Override
   public void deleteAllFromPerson(Person person) {
     Iterable<PersonsMedication> personsMedicationsToDelete = getAllFromPerson(person);
     personsMedicationRepository.deleteAll(personsMedicationsToDelete);

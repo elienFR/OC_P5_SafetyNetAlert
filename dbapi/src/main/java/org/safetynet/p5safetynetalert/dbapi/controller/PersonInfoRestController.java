@@ -4,8 +4,7 @@ import com.sun.istack.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsInfoDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
-import org.safetynet.p5safetynetalert.dbapi.service.urls.PersonInfoService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.IPersonInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +21,7 @@ public class PersonInfoRestController {
 
   private static final Logger LOGGER = LogManager.getLogger(PersonInfoRestController.class);
   @Autowired
-  private PersonInfoService personInfoService;
+  private IPersonInfoService iPersonInfoService;
 
   @GetMapping("")
   public PersonsInfoDTO getPersonInfoFromFirstAndLastName(
@@ -30,7 +29,7 @@ public class PersonInfoRestController {
     @NotNull @NotBlank @RequestParam(value = "lastName") String lastName
   ) {
     LOGGER.info("GET request made on /personInfo?firstName=" + firstName + "&lastName=" + lastName);
-    PersonsInfoDTO personsInfoDTO = personInfoService
+    PersonsInfoDTO personsInfoDTO = iPersonInfoService
       .getPersonInfoFromFirstAndOrLastName(firstName, lastName);
     if (personsInfoDTO != null) {
       return personsInfoDTO;

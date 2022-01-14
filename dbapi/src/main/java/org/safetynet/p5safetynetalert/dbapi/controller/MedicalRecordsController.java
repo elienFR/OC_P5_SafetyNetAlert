@@ -1,10 +1,9 @@
 package org.safetynet.p5safetynetalert.dbapi.controller;
 
-import lombok.extern.java.Log;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
-import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
+import org.safetynet.p5safetynetalert.dbapi.service.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +15,7 @@ public class MedicalRecordsController {
 
   private static final Logger LOGGER = LogManager.getLogger(MedicalRecordsController.class);
   @Autowired
-  private PersonService personService;
+  private IPersonService iPersonService;
 
   /**
    * This method is called with a POST http request. It creates a new medical record.
@@ -29,7 +28,12 @@ public class MedicalRecordsController {
     @RequestBody JsonMedicalRecord jsonMedicalRecord) {
     LOGGER.info("POST request made on url /medicalRecord.");
     if (jsonMedicalRecord == null) {
-      JsonMedicalRecord jsonMedicalRecordToCreate = personService.createMedicalRecords(jsonMedicalRecord);
+      LOGGER.warn("No body provided.");
+      throw new ResponseStatusException(
+        HttpStatus.NO_CONTENT, "The request needs a body"
+      );
+    } else {
+      JsonMedicalRecord jsonMedicalRecordToCreate = iPersonService.createMedicalRecords(jsonMedicalRecord);
       if (jsonMedicalRecordToCreate == null) {
         LOGGER.warn("Medical record already exists.");
         throw new ResponseStatusException(
@@ -38,11 +42,6 @@ public class MedicalRecordsController {
       } else {
         return jsonMedicalRecordToCreate;
       }
-    } else {
-      LOGGER.warn("No body provided.");
-      throw new ResponseStatusException(
-        HttpStatus.NO_CONTENT, "The request needs a body"
-      );
     }
   }
 
@@ -53,7 +52,7 @@ public class MedicalRecordsController {
         HttpStatus.NO_CONTENT, "Body is needed in request"
       );
     } else {
-      JsonMedicalRecord jsonMedicalRecordUpdated = personService.updateMedicalRecords(jsonMedicalRecord);
+      JsonMedicalRecord jsonMedicalRecordUpdated = iPersonService.updateMedicalRecords(jsonMedicalRecord);
       if (jsonMedicalRecordUpdated == null) {
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Person not found"
@@ -71,7 +70,7 @@ public class MedicalRecordsController {
         HttpStatus.NO_CONTENT, "no body request"
       );
     } else {
-      JsonMedicalRecord jsonMedicalRecordToBeDeleted = personService.deleteMedicalRecords(jsonMedicalRecord);
+      JsonMedicalRecord jsonMedicalRecordToBeDeleted = iPersonService.deleteMedicalRecords(jsonMedicalRecord);
       if (jsonMedicalRecordToBeDeleted == null) {
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "Person not found."

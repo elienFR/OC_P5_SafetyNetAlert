@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @Service
-public class FloodService {
+public class FloodService implements IFLoodService{
 
   private static final Logger LOGGER = LogManager.getLogger(FloodService.class);
   @Autowired
-  private FireStationService fireStationService;
+  private IFireStationService iFireStationService;
 
   /**
    * This method returns a list of all the homes served by the fire station. This list includes the
@@ -24,8 +24,9 @@ public class FloodService {
    * and includes their medical history (medications, dosage and allergies) next to each name.
    *
    * @param stations is a collection of fire station.
-   * @return
+   * @return a FloodPersonsListDTO
    */
+  @Override
   public FloodPersonsListDTO getPersonsFloodDTOFromFireStation(Collection<String> stations) {
     LOGGER.debug("Creating Flood persons List DTO...");
     FloodPersonsListDTO floodPersonsListDTO = new FloodPersonsListDTO();
@@ -33,7 +34,7 @@ public class FloodService {
 
     for (String stationNumber : stations) {
       personForFloodDTOCollection.addAll(
-        fireStationService.getPersonsForFlood(stationNumber)
+        iFireStationService.getPersonsForFlood(stationNumber)
       );
     }
     floodPersonsListDTO.setPersons(personForFloodDTOCollection);

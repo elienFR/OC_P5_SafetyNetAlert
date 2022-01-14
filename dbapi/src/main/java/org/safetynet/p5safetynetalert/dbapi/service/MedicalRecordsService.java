@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class MedicalRecordsService {
+public class MedicalRecordsService implements IMedicalRecordsService {
 
   private static final Logger LOGGER = LogManager.getLogger(MedicalRecordsService.class);
   @Autowired
-  private PersonsMedicationService personsMedicationService;
+  private IPersonsMedicationService iPersonsMedicationService;
   @Autowired
-  private PersonsAllergyService personsAllergyService;
+  private IPersonsAllergyService iPersonsAllergyService;
   @Autowired
   private MedicationService medicationService;
   @Autowired
@@ -36,13 +36,13 @@ public class MedicalRecordsService {
     MedicalRecordsDTO medicalRecordsDTO = new MedicalRecordsDTO();
 
     List<String> medications = new ArrayList<>(
-      personsMedicationService.getMedicationsFromPersonsMedications(
+      iPersonsMedicationService.getMedicationsFromPersonsMedications(
         person.getPersonsMedications()
       )
     );
 
     List<String> allergies = new ArrayList<>(
-      personsAllergyService.getAllergiesFromPersonsMedications(
+      iPersonsAllergyService.getAllergiesFromPersonsMedications(
         person.getPersonsAllergies()
       )
     );
@@ -60,6 +60,7 @@ public class MedicalRecordsService {
    * @param person is the person you want to get the medical records from.
    * @return a MedicalRecordsDTO object linked to one person.
    */
+  @Override
   public MedicalRecordsDTO getMedicalRecordsDTOFromPerson(Person person) {
     List<String> medicationsListToAdd = new ArrayList<>();
     List<String> allergiesToAdd = new ArrayList<>();
@@ -104,7 +105,7 @@ public class MedicalRecordsService {
   }
 
   public PersonsMedication savePersonsMedication(PersonsMedication personsMedication) {
-    return personsMedicationService.save(personsMedication);
+    return iPersonsMedicationService.save(personsMedication);
   }
 
   public boolean getAllergyExistence(String allergy) {
@@ -122,7 +123,7 @@ public class MedicalRecordsService {
   }
 
   public PersonsAllergy savePersonsAllergy(PersonsAllergy personsAllergy) {
-    return personsAllergyService.save(personsAllergy);
+    return iPersonsAllergyService.save(personsAllergy);
   }
 
   public void createMedicationsFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
@@ -165,10 +166,10 @@ public class MedicalRecordsService {
   }
 
   public void deletePersonsMedicationsFromPerson(Person person) {
-    personsMedicationService.deleteAllFromPerson(person);
+    iPersonsMedicationService.deleteAllFromPerson(person);
   }
 
   public void deletePersonsAllergiesFromPerson(Person person) {
-    personsAllergyService.deleteAllFromPerson(person);
+    iPersonsAllergyService.deleteAllFromPerson(person);
   }
 }

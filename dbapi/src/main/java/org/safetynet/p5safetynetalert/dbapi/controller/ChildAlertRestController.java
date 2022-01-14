@@ -3,8 +3,7 @@ package org.safetynet.p5safetynetalert.dbapi.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.urls.ChildAlertService;
-import org.safetynet.p5safetynetalert.dbapi.service.urls.IChildAlert;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.IChildAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,7 @@ public class ChildAlertRestController {
 
   private static final Logger LOGGER = LogManager.getLogger(ChildAlertRestController.class);
   @Autowired
-  private IChildAlert IChildAlert;
+  private IChildAlertService iChildAlertService;
 
   /**
    * This url returns a list of children (anyone aged 18 or under) living at this address.
@@ -39,7 +38,7 @@ public class ChildAlertRestController {
         HttpStatus.NO_CONTENT, "No content provided"
       );
     } else {
-      ChildFromAddressDTO childFromAddressDTO = IChildAlert.getChildrenFromAddress(address);
+      ChildFromAddressDTO childFromAddressDTO = iChildAlertService.getChildrenFromAddress(address);
       if (childFromAddressDTO == null) {
         LOGGER.debug("Address is not in the database.");
         throw new ResponseStatusException(

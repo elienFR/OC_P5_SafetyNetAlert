@@ -5,16 +5,18 @@ import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.IAddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.IPersonService;
 import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ChildAlertService implements IChildAlert {
+public class ChildAlertService implements IChildAlertService {
   @Autowired
-  AddressService addressService;
+  private IAddressService iAddressService;
   @Autowired
-  PersonService personService;
+  private IPersonService iPersonService;
 
   private static final Logger LOGGER = LogManager.getLogger(ChildAlertService.class);
 
@@ -25,18 +27,18 @@ public class ChildAlertService implements IChildAlert {
    *
    * @param road it is the String of the road
    * @return a ChildFromAddressDTO (see description)
-   * @throws Exception
    */
+  @Override
   public ChildFromAddressDTO getChildrenFromAddress(String road) {
-    Address address = addressService.getByRoad(road);
+    Address address = iAddressService.getByRoad(road);
 
     if (address == null) {
       LOGGER.debug("Address returned is null");
       return null;
     } else {
       ChildFromAddressDTO childFromAddressDTO = new ChildFromAddressDTO();
-      childFromAddressDTO.setChildrenAtAddress(personService.getChildrenDTO(address));
-      childFromAddressDTO.setOtherAdultsAtAddress(personService.getAdultsDTO(address));
+      childFromAddressDTO.setChildrenAtAddress(iPersonService.getChildrenDTO(address));
+      childFromAddressDTO.setOtherAdultsAtAddress(iPersonService.getAdultsDTO(address));
       return childFromAddressDTO;
     }
   }

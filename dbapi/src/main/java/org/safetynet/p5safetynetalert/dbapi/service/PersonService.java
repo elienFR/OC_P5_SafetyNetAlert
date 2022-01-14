@@ -16,11 +16,12 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Data
 @Service
-public class PersonService {
+public class PersonService implements IPersonService {
 
   private static final Logger LOGGER = LogManager.getLogger(PersonService.class);
   @Autowired
@@ -84,13 +85,14 @@ public class PersonService {
    * @param lastName  is the last name of the person you look for.
    * @return a Person object with corresponding first name and last name.
    */
+  @Override
   public Person getByFirstNameAndLastName(String firstName, String lastName) {
     LOGGER.debug("Finding person id DB...");
     return personRepository.findByFirstNameAndLastName(firstName, lastName);
   }
 
   /**
-   * Return an Iterable of Person that have the same last name
+   * Return an Iterable of Persons that have the same last name
    *
    * @param lastName is the last name used to find persons
    * @return see description
@@ -106,6 +108,7 @@ public class PersonService {
    * @param persons is the collection of person
    * @return is a list of String containing emails.
    */
+  @Override
   public List<String> getEmails(Collection<Person> persons) {
     LOGGER.debug("Getting email list from a collection of persons.");
     if (persons == null || persons.size() == 0) {
@@ -121,9 +124,18 @@ public class PersonService {
     }
   }
 
+  /**
+   * This method returns a collection of string. Each one represent a phone number extracted from a
+   * collection of Persons.
+   *
+   * @param persons is the collection of persons.
+   * @return is the collection of phone' string.
+   */
+  @Override
   public Collection<String> getPhones(Collection<Person> persons) {
     LOGGER.debug("Creating a list of phones...");
-    Collection<String> phoneCollection = new ArrayList<>();
+    //we use HashSet so we do not get
+    Collection<String> phoneCollection = new HashSet<>();
     for (Person person : persons) {
       phoneCollection.add(
         person.getPhone()
@@ -133,7 +145,14 @@ public class PersonService {
     return phoneCollection;
   }
 
-  public Collection<PersonForFireDTO> getPersonsForFireDTOFromAddressInFire(
+  /**
+   * This method convert a collection of PersonForFireDTO from a collection of persons
+   *
+   * @param persons is the collection of persons
+   * @return is the collection of PersonForFireDTOs
+   */
+  @Override
+  public Collection<PersonForFireDTO> convertPersonsInPersonForFireDTO(
     Collection<Person> persons) {
     LOGGER.debug("Loading collection of PersonForFireDTOs...");
     List<PersonForFireDTO> personToAdd = new ArrayList<>();
@@ -177,6 +196,7 @@ public class PersonService {
    * @param addresses is the collection of addresses.
    * @return a collection of persons.
    */
+  @Override
   public Collection<PersonDTO> getPersonDTOsFromAddresses(Collection<Address> addresses) {
     LOGGER.debug("Loading the collection of PersonDTOs from the collection of addresses...");
     List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
@@ -221,6 +241,7 @@ public class PersonService {
    * @param addresses is the collection of addresses
    * @return see description.
    */
+  @Override
   public Collection<PersonForFloodDTO> getPersonsForFlood(
     Collection<Address> addresses) {
     LOGGER.debug("Creating the collection of PersonForFloodDTOs...");
@@ -247,11 +268,25 @@ public class PersonService {
     return personForFloodDTOCollection;
   }
 
+  /**
+   * This method returns a collection of adults DTO from an Address
+   *
+   * @param address is the address where to extract ChildrenDTO
+   * @return A collection of AdultDTO
+   */
+  @Override
   public Collection<PersonDTO> getAdultsDTO(Address address) {
     Collection<PersonDTO> listOfAdults = getAdultsFromPersonsDTOs(getPersonDTOsFromAddress(address));
     return listOfAdults;
   }
 
+  /**
+   * This method returns a collection of children DTO from an Address
+   *
+   * @param address is the address where to extract ChildrenDTO
+   * @return A collection of ChildDTO
+   */
+  @Override
   public Collection<ChildDTO> getChildrenDTO(Address address) {
     Collection<ChildDTO> listOfChildren = getChildrenFromPersonsDTOs(getPersonDTOsFromAddress(address));
 
@@ -264,6 +299,7 @@ public class PersonService {
    * @param address is the object with which the collection of persons is created.
    * @return a collection of persons.
    */
+  @Override
   public Collection<Person> getPersonsFromAddress(Address address) {
     LOGGER.debug("Loading persons form address...");
     Collection<Person> personCollection = address.getPersons();
@@ -287,6 +323,7 @@ public class PersonService {
    * @param addresses A Collection of addresses object used to get persons from.
    * @return A collection of persons from a collection of addresses.
    */
+  @Override
   public Collection<Person> getPersonsFromAddresses(Collection<Address> addresses) {
     LOGGER.debug("Getting the collection of persons from the collection of addresses.");
     if (addresses == null || addresses.size() == 0) {
@@ -357,6 +394,7 @@ public class PersonService {
    * @param newJsonPerson is the JsonPerson to add into DB.
    * @return the save JsonPerson
    */
+  @Override
   public JsonPerson createPerson(JsonPerson newJsonPerson) {
     LOGGER.debug("Saving a new person in DB...");
     Person person = convertJsonPersonIntoPerson(newJsonPerson);
@@ -393,6 +431,7 @@ public class PersonService {
    * @param putJsonPerson is the JsonPerson you want to update
    * @return null or a JsonPersonObject which has been updated. See description.
    */
+  @Override
   public JsonPerson updatePersonWithJsonPerson(JsonPerson putJsonPerson) {
     LOGGER.debug("Updating an existing person...");
     //if the person to update exists.
@@ -434,13 +473,13 @@ public class PersonService {
    * @param jsonPerson is the deserialized jsonObject
    * @return the jsonObject of deleted person if method is executed successfully.
    */
+  @Override
   public JsonPerson delete(JsonPerson jsonPerson) {
-    LOGGER.debug("Person is being delted...");
+    LOGGER.debug("Person is being deleted...");
     if (jsonPerson.getFirstName() != null && jsonPerson.getLastName() != null) {
       if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(jsonPerson))) {
         Person personToDelete = personRepository
           .findByFirstNameAndLastName(jsonPerson.getFirstName(), jsonPerson.getLastName());
-
         personsAllergyService.delete(personToDelete.getPersonsAllergies());
         personsMedicationService.delete(personToDelete.getPersonsMedications());
         personRepository.delete(personToDelete);
@@ -494,6 +533,7 @@ public class PersonService {
    * @param jsonMedicalRecord Java Object corresponding to a json Medical Record entity.
    * @return it returns a java object that can be serialized into a jsonMedicalRecord
    */
+  @Override
   public JsonMedicalRecord createMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     LOGGER.debug("Creating medical record...");
     if (
@@ -541,6 +581,7 @@ public class PersonService {
    * @param jsonMedicalRecord Java Object corresponding to a json Medical Record entity.
    * @return it returns a java object that can be serialized into a jsonMedicalRecord
    */
+  @Override
   public JsonMedicalRecord updateMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
       Person personConcerned;
@@ -571,6 +612,7 @@ public class PersonService {
    * @param jsonMedicalRecord Java Object corresponding to a json Medical Record entity.
    * @return it returns a java object that can be serialized into a jsonMedicalRecord.
    */
+  @Override
   public JsonMedicalRecord deleteMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     if (existsByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName())) {
       Person personConcerned;

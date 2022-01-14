@@ -15,7 +15,7 @@ import java.util.Collection;
 
 @Data
 @Service
-public class AddressService {
+public class AddressService implements IAddressService {
 
   private static final Logger LOGGER = LogManager.getLogger(AddressService.class);
   @Autowired
@@ -39,9 +39,10 @@ public class AddressService {
   /**
    * This method returns the address object from a String road
    *
-   * @param road
-   * @return
+   * @param road is a string of the road
+   * @return an address Object
    */
+  @Override
   public Address getByRoad(final String road) {
     LOGGER.debug("Requesting address...");
     Address address = addressRepository.findByRoad(road);
@@ -54,6 +55,14 @@ public class AddressService {
     }
   }
 
+  /**
+   * This method returns a boolean, true if the road exists in addresses DB exists, false if it does
+   * not.
+   *
+   * @param road is the string you look for in DB
+   * @return A boolean. see description.
+   */
+  @Override
   public boolean existsByRoad(String road) {
     return addressRepository.existsByRoad(road);
   }
@@ -79,6 +88,7 @@ public class AddressService {
    * @param savedAddress is the address object to save
    * @return the address object saved.
    */
+  @Override
   public Address save(Address savedAddress) {
     if (savedAddress == null) {
       LOGGER.debug("Address provided is null");
@@ -89,6 +99,13 @@ public class AddressService {
     }
   }
 
+  /**
+   * This method returns a collection of Addresses object from a city String
+   *
+   * @param city is the string of the city.
+   * @return A collection of Addresses object.
+   */
+  @Override
   public Collection<Address> getAllByCity(final String city) {
     LOGGER.debug("Loading All Addresses from city "+city);
     if (city == null || city.isBlank()) {

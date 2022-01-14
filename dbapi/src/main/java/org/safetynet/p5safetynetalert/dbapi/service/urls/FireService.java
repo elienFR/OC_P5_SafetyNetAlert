@@ -5,18 +5,19 @@ import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
-import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
+import org.safetynet.p5safetynetalert.dbapi.service.IAddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.IPersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FireService {
+public class FireService implements IFireService {
 
   private static final Logger LOGGER = LogManager.getLogger(FireService.class);
   @Autowired
-  private PersonService personService;
+  private IPersonService iPersonService;
   @Autowired
-  private AddressService addressService;
+  private IAddressService iAddressService;
 
   /**
    * This method returns the list of inhabitants living at the given address as well as the number of
@@ -26,13 +27,14 @@ public class FireService {
    * @param road is the road of the address you want to recover the people from.
    * @return an FireDTO object containing fire station and people for this address. (see description)
    */
+  @Override
   public FireDTO getFireDTOFromAddressInFire(String road) {
     LOGGER.debug("FireDTO creation...");
-    Address address = addressService.getByRoad(road);
+    Address address = iAddressService.getByRoad(road);
     FireDTO fireDTO = new FireDTO();
     fireDTO.setPersonsList(
-      personService.getPersonsForFireDTOFromAddressInFire(
-        personService.getPersonsFromAddress(address))
+      iPersonService.convertPersonsInPersonForFireDTO(
+        iPersonService.getPersonsFromAddress(address))
     );
     fireDTO.setFireStationNumber(address.getFireStation().getNumber());
     LOGGER.debug("FireDTO properly created");

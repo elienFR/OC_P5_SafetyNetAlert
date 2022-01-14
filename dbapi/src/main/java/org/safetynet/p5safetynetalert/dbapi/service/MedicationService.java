@@ -15,24 +15,12 @@ public class MedicationService {
   @Autowired
   private MedicationRepository medicationRepository;
 
-  public Optional<Medication> getMedication(final Integer id) {
-    return medicationRepository.findById(id);
-  }
-
   public Iterable<Medication> getMedications() {
     return medicationRepository.findAll();
   }
 
-  public void deleteMedication(final Integer id) {
-    medicationRepository.deleteById(id);
-  }
-
   public Medication save(Medication medication) {
     return medicationRepository.save(medication);
-  }
-
-  public Iterable<Medication> saveAll (Iterable<Medication> medications) {
-    return medicationRepository.saveAll(medications);
   }
 
   /**

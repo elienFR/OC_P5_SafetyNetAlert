@@ -5,6 +5,8 @@ import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.EmailListDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.IAddressService;
+import org.safetynet.p5safetynetalert.dbapi.service.IPersonService;
 import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,9 @@ import java.util.Collection;
 public class EmailService implements IEmailService {
 
   @Autowired
-  AddressService addressService;
+  IAddressService iAddressService;
   @Autowired
-  PersonService personService;
+  IPersonService iPersonService;
 
   private static final Logger LOGGER = LogManager.getLogger(EmailService.class);
 
@@ -28,16 +30,17 @@ public class EmailService implements IEmailService {
    * @param city is a String containing the city where emails are extracted from.
    * @return An EmailListDTO object, see description
    */
+  @Override
   public EmailListDTO getAllEmailFromCityInhabitants(String city) {
     EmailListDTO emailListDTO = new EmailListDTO();
-    Collection<Address> addresses = addressService.getAllByCity(city);
+    Collection<Address> addresses = iAddressService.getAllByCity(city);
     if (addresses == null || addresses.size()==0) {
       LOGGER.debug("Addresses collection is null.");
       return null;
     } else {
       emailListDTO.setEmailList(
-        personService.getEmails(
-          personService.getPersonsFromAddresses(
+        iPersonService.getEmails(
+          iPersonService.getPersonsFromAddresses(
             addresses)));
       emailListDTO.setCityName(city);
       LOGGER.debug("Email successfully extracted.");

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
-import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.IFireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +16,7 @@ public class FireStationRestController {
 
   private static final Logger LOGGER = LogManager.getLogger(FireRestController.class);
   @Autowired
-  FireStationService fireStationService;
+  private IFireStationService iFireStationService;
 
   /**
    * This method responses to a get call to /firestation. It returns a list of people in serialized
@@ -35,7 +35,7 @@ public class FireStationRestController {
   public PersonsFromFireStationDTO getPersonsFromFireStationId(
     @RequestParam("stationNumber") String id) {
     LOGGER.info("GET Request on /firestation?stationNumber="+id);
-    PersonsFromFireStationDTO persons = fireStationService.getPersonsAndCount(id);
+    PersonsFromFireStationDTO persons = iFireStationService.getPersonsAndCount(id);
     if (persons != null) {
       LOGGER.debug("Serialization completed.");
       return persons;
@@ -57,7 +57,7 @@ public class FireStationRestController {
     @RequestBody JsonFireStation jsonFireStation) {
     LOGGER.info("POST request on /firestation");
     if(jsonFireStation != null) {
-      JsonFireStation postedJsonFireStation = fireStationService
+      JsonFireStation postedJsonFireStation = iFireStationService
         .saveAddressFireStationMapping(jsonFireStation);
       if (postedJsonFireStation != null) {
         return postedJsonFireStation;
@@ -84,7 +84,7 @@ public class FireStationRestController {
     @RequestBody JsonFireStation jsonFireStation) {
     LOGGER.info("PUT request on /firestation");
     if (jsonFireStation != null) {
-      JsonFireStation updatedJsonFireStation = fireStationService
+      JsonFireStation updatedJsonFireStation = iFireStationService
         .updateAddressFireStationMapping(jsonFireStation);
       if (updatedJsonFireStation != null) {
         return updatedJsonFireStation;
@@ -111,7 +111,7 @@ public class FireStationRestController {
     @RequestBody JsonFireStation jsonFireStation) {
     LOGGER.info("DELETE request on /firestation");
     if (jsonFireStation != null) {
-      JsonFireStation deletedJsonFireStation = fireStationService
+      JsonFireStation deletedJsonFireStation = iFireStationService
         .eraseAddressFireStationMapping(jsonFireStation);
       if (deletedJsonFireStation != null) {
         return deletedJsonFireStation;

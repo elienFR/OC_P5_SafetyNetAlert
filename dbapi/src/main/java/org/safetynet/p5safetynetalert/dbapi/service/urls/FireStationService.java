@@ -11,9 +11,7 @@ import org.safetynet.p5safetynetalert.dbapi.model.dto.PhonesDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
 import org.safetynet.p5safetynetalert.dbapi.repository.FireStationRepository;
-import org.safetynet.p5safetynetalert.dbapi.service.AddressService;
-import org.safetynet.p5safetynetalert.dbapi.service.AgeService;
-import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
+import org.safetynet.p5safetynetalert.dbapi.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,7 @@ import java.util.*;
 
 @Data
 @Service
-public class FireStationService {
+public class FireStationService implements IFireStationService {
 
   private static final Logger LOGGER = LogManager.getLogger(FireStationService.class);
   @Autowired
@@ -29,9 +27,9 @@ public class FireStationService {
   @Autowired
   private AgeService ageService;
   @Autowired
-  private AddressService addressService;
+  private IAddressService iAddressService;
   @Autowired
-  private PersonService personService;
+  private IPersonService iPersonService;
 
   /**
    * Return a fireStation object according to its number in DB.
@@ -79,11 +77,12 @@ public class FireStationService {
    * @param number is the number of the fire station
    * @return a PersonsFromFireStationDTO if method is successful. null if it is not.
    */
+  @Override
   public PersonsFromFireStationDTO getPersonsAndCount(String number) {
     LOGGER.debug("Loading persons from fire station and their number...");
     FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
-      Collection<PersonDTO> personsList = personService.getPersonDTOsFromAddresses(
+      Collection<PersonDTO> personsList = iPersonService.getPersonDTOsFromAddresses(
         fireStation.getAddresses());
 
       int adultCount = ageService.countAdultsAndChildren(personsList).get("adults");
@@ -108,12 +107,13 @@ public class FireStationService {
    * @param number is the number of the station
    * @return A Collection of PersonFloodDTO
    */
+  @Override
   public Collection<PersonForFloodDTO> getPersonsForFlood(String number) {
     LOGGER.debug("Creating a collection of flood person DTO.");
     FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<PersonForFloodDTO> personForFloodDTOCollection =
-        personService.getPersonsForFlood(fireStation.getAddresses());
+        iPersonService.getPersonsForFlood(fireStation.getAddresses());
       return personForFloodDTOCollection;
     } else {
       LOGGER.warn("The fire station is null.");
@@ -128,13 +128,14 @@ public class FireStationService {
    * @param number It is the number of the fire station.
    * @return A PhonesDTO Object, see description.
    */
+  @Override
   public PhonesDTO getPhonesFromFireStationNumber(String number) {
     LOGGER.debug("Getting list of phones from a fire station...");
     FireStation fireStation = getByNumber(number);
     if (fireStation != null) {
       Collection<String> phoneNumbers =
-        personService.getPhones(
-          personService.getPersonsFromAddresses(
+        iPersonService.getPhones(
+          iPersonService.getPersonsFromAddresses(
             fireStation.getAddresses()
           )
         );
@@ -158,6 +159,7 @@ public class FireStationService {
    *                        and fire station number to map.
    * @return the jsonFireStation object furnished if methods is successful, and null if any error occurs.
    */
+  @Override
   public JsonFireStation saveAddressFireStationMapping(JsonFireStation jsonFireStation) {
     LOGGER.debug("Saving new fire station...");
     //We consider address/road MUST not be null or blank here
@@ -167,8 +169,8 @@ public class FireStationService {
     // If a proper address road is registered in json object
     if (road != null && !road.isBlank()) {
       Address savedAddress;
-      if (addressService.existsByRoad(road)) {
-        savedAddress = addressService.getByRoad(road);
+      if (iAddressService.existsByRoad(road)) {
+        savedAddress = iAddressService.getByRoad(road);
       } else {
         LOGGER.debug("Saving new address because it does not already exists.");
         savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", null);
@@ -190,7 +192,7 @@ public class FireStationService {
         savedAddress.setFireStation(null);
       }
 
-      addressService.save(savedAddress);
+      iAddressService.save(savedAddress);
       LOGGER.debug("Fire station properly saved.");
       return jsonFireStation;
     } else {
@@ -209,6 +211,7 @@ public class FireStationService {
    * @return A null object if the address given does not exist. Or return the given jsonFireStation
    * Object if method was successful.
    */
+  @Override
   public JsonFireStation updateAddressFireStationMapping(JsonFireStation jsonFireStation) {
     LOGGER.debug("Updating fire station in DB...");
     String road = jsonFireStation.getAddress();
@@ -227,10 +230,10 @@ public class FireStationService {
     }
 
     if (road != null) {
-      if (addressService.existsByRoad(road)) {
-        Address updatedAddress = addressService.getByRoad(road);
+      if (iAddressService.existsByRoad(road)) {
+        Address updatedAddress = iAddressService.getByRoad(road);
         updatedAddress.setFireStation(fireStationToUpdate);
-        addressService.save(updatedAddress);
+        iAddressService.save(updatedAddress);
       } else {
         return null;
       }
@@ -252,14 +255,15 @@ public class FireStationService {
    * @return Null if the address is wrong. A JsonFireStation with a null fire station if executed
    * successfully.
    */
+  @Override
   public JsonFireStation eraseAddressFireStationMapping(JsonFireStation jsonFireStation) {
     LOGGER.debug("Deleting fire station in DB...");
     String road = jsonFireStation.getAddress();
 
-    if (addressService.existsByRoad(road)) {
-      Address addressToUnMap = addressService.getByRoad(road);
+    if (iAddressService.existsByRoad(road)) {
+      Address addressToUnMap = iAddressService.getByRoad(road);
       addressToUnMap.setFireStation(null);
-      addressService.save(addressToUnMap);
+      iAddressService.save(addressToUnMap);
 
       jsonFireStation.setStation(null);
       LOGGER.debug("Fire station properly deleted.");

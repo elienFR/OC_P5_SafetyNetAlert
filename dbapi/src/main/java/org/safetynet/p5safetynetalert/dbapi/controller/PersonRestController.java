@@ -3,6 +3,7 @@ package org.safetynet.p5safetynetalert.dbapi.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
+import org.safetynet.p5safetynetalert.dbapi.service.IPersonService;
 import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ public class PersonRestController {
 
   private static final Logger LOGGER = LogManager.getLogger(PersonRestController.class);
   @Autowired
-  private PersonService personService;
+  private IPersonService iPersonService;
 
   /**
    * This method is called with a post request on /person. It saves a new Person in DB thanks to a
@@ -30,7 +31,7 @@ public class PersonRestController {
   public JsonPerson postPerson(@RequestBody JsonPerson newJsonPerson) {
     if (newJsonPerson != null) {
       LOGGER.info("POST request made on url /person.");
-      JsonPerson postedJsonPerson = personService.createPerson(newJsonPerson);
+      JsonPerson postedJsonPerson = iPersonService.createPerson(newJsonPerson);
       if (postedJsonPerson != null) {
         return postedJsonPerson;
       } else {
@@ -59,7 +60,7 @@ public class PersonRestController {
         HttpStatus.NO_CONTENT, "No body content."
       );
     } else {
-      JsonPerson updatedJsonPerson = personService.updatePersonWithJsonPerson(putJsonPerson);
+      JsonPerson updatedJsonPerson = iPersonService.updatePersonWithJsonPerson(putJsonPerson);
       if (updatedJsonPerson == null) {
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "You must at least furnish a valid first name and last name couple."
@@ -84,7 +85,7 @@ public class PersonRestController {
         HttpStatus.NO_CONTENT, "No jsonBody provided"
       );
     } else {
-     JsonPerson personToDelete = personService.delete(jsonPerson);
+     JsonPerson personToDelete = iPersonService.delete(jsonPerson);
       if (personToDelete == null) {
         throw new ResponseStatusException(
           HttpStatus.NOT_FOUND, "person has not been found"

@@ -16,16 +16,8 @@ public class AllergyService {
   @Autowired
   private AllergyRepository allergyRepository;
 
-  public Optional<Allergy> getAllergy(final Integer id) {
-    return allergyRepository.findById(id);
-  }
-
   public Iterable<Allergy> getAllergies() {
     return allergyRepository.findAll();
-  }
-
-  public void deleteAllergy(final Integer id) {
-    allergyRepository.deleteById(id);
   }
 
   public Allergy save(Allergy allergy) {
@@ -34,10 +26,6 @@ public class AllergyService {
 
   public boolean exists(String allergy) {
     return allergyRepository.existsByName(allergy);
-  }
-
-  public Iterable<Allergy> saveAll(List<Allergy> allergiesToCreate) {
-    return allergyRepository.saveAll(allergiesToCreate);
   }
 
   public boolean existsByName(String allergy) {
