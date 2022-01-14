@@ -3,7 +3,7 @@ package org.safetynet.p5safetynetalert.dbapi.controller;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.urls.FireService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.IFireService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class FireRestController {
 
   private static final Logger LOGGER = LogManager.getLogger(FireRestController.class);
   @Autowired
-  private FireService fireService;
+  private IFireService iFireService;
 
   /**
    * This url returns the list of inhabitants living at the given address
@@ -33,7 +33,7 @@ public class FireRestController {
   public FireDTO getPersonsFromAddressInFire(
     @RequestParam("address") String road) {
     LOGGER.info("GET Request on /fire?address=" + road);
-    FireDTO fireDTO = fireService.getFireDTOFromAddressInFire(road);
+    FireDTO fireDTO = iFireService.getFireDTOFromAddressInFire(road);
     if (fireDTO != null) {
       LOGGER.debug("FireDTO properly serialized.");
       return fireDTO;

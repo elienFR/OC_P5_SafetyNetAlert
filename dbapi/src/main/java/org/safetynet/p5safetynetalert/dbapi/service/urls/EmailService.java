@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 
 @Service
-public class EmailService {
+public class EmailService implements IEmailService {
 
   @Autowired
   AddressService addressService;
