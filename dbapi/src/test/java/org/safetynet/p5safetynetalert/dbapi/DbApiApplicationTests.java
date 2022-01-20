@@ -1,7 +1,7 @@
-package org.safetynet.p5safetynetalert.dbapi.controller;
+package org.safetynet.p5safetynetalert.dbapi;
 
 import org.junit.jupiter.api.Test;
-import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
+import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 class DbApiApplicationTests {
 
 	@MockBean
-	private JsonDataInjectorService jsonDataInjectorService;
+	private IJsonDataInjectorService IJsonDataInjectorService;
 
 	@Test
 	void contextLoads() {

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FireDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.FireService;
-import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
+import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -23,7 +23,7 @@ public class FireRestControllerTest {
   private MockMvc mockMvc;
 
   @MockBean
-  private JsonDataInjectorService jsonDataInjectorServiceMock;
+  private IJsonDataInjectorService IJsonDataInjectorServiceMock;
 
   @MockBean
   private FireService fireService;

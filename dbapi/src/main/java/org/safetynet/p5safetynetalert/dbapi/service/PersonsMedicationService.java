@@ -20,7 +20,7 @@ public class PersonsMedicationService implements IPersonsMedicationService {
   @Autowired
   private PersonsMedicationRepository personsMedicationRepository;
 
-  public Iterable<PersonsMedication> getAllFromPerson(Person person) {
+  private Iterable<PersonsMedication> getAllFromPerson(Person person) {
     return personsMedicationRepository.findAllByPerson(person);
   }
 
@@ -30,6 +30,7 @@ public class PersonsMedicationService implements IPersonsMedicationService {
    * @param personsMedications is the person's medications Iterable
    * @return see description.
    */
+  @Override
   public List<String> getMedicationsFromPersonsMedications(
       Iterable<PersonsMedication> personsMedications) {
     LOGGER.debug("Getting persons' medications...");
@@ -42,6 +43,11 @@ public class PersonsMedicationService implements IPersonsMedicationService {
     return medications;
   }
 
+  /**
+   * delete all PersonsMedication in Iterable
+   *
+   * @param personsMedications Iterable of PersonsMedication to delete from DB.
+   */
   public void delete(Iterable<PersonsMedication> personsMedications) {
     personsMedicationRepository.deleteAll(personsMedications);
   }

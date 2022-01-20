@@ -16,10 +16,10 @@ import java.util.*;
 
 @Data
 @Service
-public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
+public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
 
   @Autowired
-  JsonFileExtractorService jsonFileExtractorService;
+  IJsonFileExtractorService IJsonFileExtractorService;
   //Repositories to inject data into databases
   @Autowired
   AllergyRepository allergyRepository;
@@ -52,7 +52,7 @@ public class JsonDataInjectorServiceImpl implements JsonDataInjectorService {
     LOGGER.debug("Starting database initialisation.");
 
     //Extracting file
-    jsonData = jsonFileExtractorService.fromFile(fileName);
+    jsonData = IJsonFileExtractorService.fromFile(fileName);
 
     if (jsonData == null) {
       LOGGER.error("The object jsonData from json file is null.");

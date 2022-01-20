@@ -29,11 +29,11 @@ public class PersonService implements IPersonService {
   @Autowired
   private AgeService ageService;
   @Autowired
-  private PersonsMedicationService personsMedicationService;
+  private IPersonsMedicationService iPersonsMedicationService;
   @Autowired
-  private PersonsAllergyService personsAllergyService;
+  private IPersonsAllergyService iPersonsAllergyService;
   @Autowired
-  private MedicalRecordsService medicalRecordsService;
+  private IMedicalRecordsService iMedicalRecordsService;
   @Autowired
   private AddressService addressService;
 
@@ -162,7 +162,7 @@ public class PersonService implements IPersonService {
           person.getFirstName(),
           person.getLastName(),
           person.getPhone(),
-          medicalRecordsService.getMedicalRecordsDTOFromPerson(person)
+          iMedicalRecordsService.getMedicalRecordsDTOFromPerson(person)
         ));
     }
     LOGGER.debug("Collection of PersonForFireDTOs properly loaded.");
@@ -353,7 +353,7 @@ public class PersonService implements IPersonService {
     personForFloodDTO.setPhone(person.getPhone());
     personForFloodDTO.setAge(ageService.getAge(person.getBirthDate()));
     personForFloodDTO.setMedicalRecords(
-      medicalRecordsService.getMedicalRecords(person)
+      iMedicalRecordsService.getMedicalRecords(person)
     );
 
     return personForFloodDTO;
@@ -480,9 +480,11 @@ public class PersonService implements IPersonService {
       if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(jsonPerson))) {
         Person personToDelete = personRepository
           .findByFirstNameAndLastName(jsonPerson.getFirstName(), jsonPerson.getLastName());
-        personsAllergyService.delete(personToDelete.getPersonsAllergies());
-        personsMedicationService.delete(personToDelete.getPersonsMedications());
+        iPersonsAllergyService.delete(personToDelete.getPersonsAllergies());
+        iPersonsMedicationService.delete(personToDelete.getPersonsMedications());
         personRepository.delete(personToDelete);
+
+
         LOGGER.debug("Person deleted.");
         return jsonPerson;
       } else {
@@ -543,23 +545,23 @@ public class PersonService implements IPersonService {
       )
     ) {
       Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
-      Iterable<String> medicationsFromPerson = medicalRecordsService.getMedicalRecords(personConcerned).getMedications();
-      Iterable<String> allergiesFromPerson = medicalRecordsService.getMedicalRecords(personConcerned).getAllergies();
+      Iterable<String> medicationsFromPerson = iMedicalRecordsService.getMedicalRecords(personConcerned).getMedications();
+      Iterable<String> allergiesFromPerson = iMedicalRecordsService.getMedicalRecords(personConcerned).getAllergies();
 
       //if there is no record we create it, else we drop the call.
-      if (!medicalRecordsService.existsFromPerson(personConcerned)) {
+      if (!iMedicalRecordsService.existsFromPerson(personConcerned)) {
 
         //Update birthdate
         personConcerned = updateBirthDateFromJsonMedicalRecords(jsonMedicalRecord);
 
         //write new medications
         if (Iterables.size(medicationsFromPerson) == 0) {
-          medicalRecordsService.createMedicationsFromJsonPerson(jsonMedicalRecord, personConcerned);
+          iMedicalRecordsService.createMedicationsFromJsonPerson(jsonMedicalRecord, personConcerned);
         }
 
         //write new allergies
         if (Iterables.size(allergiesFromPerson) == 0) {
-          medicalRecordsService.createAllergiesFromJsonPerson(jsonMedicalRecord, personConcerned);
+          iMedicalRecordsService.createAllergiesFromJsonPerson(jsonMedicalRecord, personConcerned);
         }
 
         LOGGER.debug("Medical record created.");
@@ -590,13 +592,13 @@ public class PersonService implements IPersonService {
       personConcerned = updateBirthDateFromJsonMedicalRecords(jsonMedicalRecord);
 
       //delete existing medication
-      medicalRecordsService.deletePersonsMedicationsFromPerson(personConcerned);
+      iMedicalRecordsService.deletePersonsMedicationsFromPerson(personConcerned);
       //update medications
-      medicalRecordsService.createMedicationsFromJsonPerson(jsonMedicalRecord, personConcerned);
+      iMedicalRecordsService.createMedicationsFromJsonPerson(jsonMedicalRecord, personConcerned);
       //delete existing allergies
-      medicalRecordsService.deletePersonsAllergiesFromPerson(personConcerned);
+      iMedicalRecordsService.deletePersonsAllergiesFromPerson(personConcerned);
       //update allergies
-      medicalRecordsService.createAllergiesFromJsonPerson(jsonMedicalRecord, personConcerned);
+      iMedicalRecordsService.createAllergiesFromJsonPerson(jsonMedicalRecord, personConcerned);
 
       return jsonMedicalRecord;
 
@@ -620,11 +622,11 @@ public class PersonService implements IPersonService {
       //delete birthdate
       personConcerned = deleteBirthDateFromJsonMedicalRecords(jsonMedicalRecord);
       //delete existing medication
-      medicalRecordsService.deletePersonsMedicationsFromPerson(personConcerned);
+      iMedicalRecordsService.deletePersonsMedicationsFromPerson(personConcerned);
       //delete existing allergies
-      medicalRecordsService.deletePersonsAllergiesFromPerson(personConcerned);
+      iMedicalRecordsService.deletePersonsAllergiesFromPerson(personConcerned);
 
-      MedicalRecordsDTO deletedMedicalRecordsDTO = medicalRecordsService.getMedicalRecords(personConcerned);
+      MedicalRecordsDTO deletedMedicalRecordsDTO = iMedicalRecordsService.getMedicalRecords(personConcerned);
 
       List<String> deletedMedications = new ArrayList<>();
 

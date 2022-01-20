@@ -35,6 +35,11 @@ public class PersonsAllergyService implements IPersonsAllergyService {
     return allergies;
   }
 
+  /**
+   * delete all PersonsAllergy in Iterable
+   *
+   * @param personsAllergies Iterable of PersonsAllergy to delete from DB.
+   */
   public void delete(Iterable<PersonsAllergy> personsAllergies) {
     personsAllergyRepository.deleteAll(personsAllergies);
   }

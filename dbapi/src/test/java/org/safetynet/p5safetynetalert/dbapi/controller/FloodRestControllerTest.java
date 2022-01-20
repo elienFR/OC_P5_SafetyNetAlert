@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.FloodPersonsListDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.FloodService;
-import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
+import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,7 +19,6 @@ import java.util.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @WebMvcTest(controllers = FloodRestController.class)
 public class FloodRestControllerTest {
@@ -28,7 +27,7 @@ public class FloodRestControllerTest {
   private MockMvc mockMvc;
 
   @MockBean
-  private JsonDataInjectorService jsonDataInjectorService;
+  private IJsonDataInjectorService IJsonDataInjectorService;
 
   @MockBean
   private FloodService floodService;

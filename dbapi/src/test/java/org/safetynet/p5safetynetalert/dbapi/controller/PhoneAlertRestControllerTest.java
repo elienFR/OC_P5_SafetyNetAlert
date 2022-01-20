@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PhonesDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
-import org.safetynet.p5safetynetalert.dbapi.service.initPersist.JsonDataInjectorService;
+import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,7 +22,7 @@ public class PhoneAlertRestControllerTest {
   @Autowired
   private MockMvc mockMvc;
   @MockBean
-  private JsonDataInjectorService jsonDataInjectorService;
+  private IJsonDataInjectorService IJsonDataInjectorService;
   @MockBean
   private FireStationService fireStationServiceMocked;
 

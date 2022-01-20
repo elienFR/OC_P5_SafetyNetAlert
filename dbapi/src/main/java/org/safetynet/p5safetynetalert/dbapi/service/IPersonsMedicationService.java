@@ -29,4 +29,11 @@ public interface IPersonsMedicationService {
    * @return
    */
   PersonsMedication save(PersonsMedication personsMedication);
+
+  /**
+   * delete all PersonsMedication in Iterable
+   *
+   * @param personsMedications Iterable of PersonsMedication to delete from DB.
+   */
+  void delete(Iterable<PersonsMedication> personsMedications);
 }

@@ -1,6 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service.initPersist;
 
 
-public interface JsonDataInjectorService {
+public interface IJsonDataInjectorService {
   public void initDb();
 }

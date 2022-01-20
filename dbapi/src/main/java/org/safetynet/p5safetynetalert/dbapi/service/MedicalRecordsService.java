@@ -31,6 +31,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
    * @param person is the person you want to retrieve the medical record DTO.
    * @return see description.
    */
+  @Override
   public MedicalRecordsDTO getMedicalRecords(Person person) {
     LOGGER.debug("Fetching Medical records DTO from Person.");
     MedicalRecordsDTO medicalRecordsDTO = new MedicalRecordsDTO();
@@ -82,6 +83,14 @@ public class MedicalRecordsService implements IMedicalRecordsService {
     return medicalRecordsDTOs;
   }
 
+  /**
+   * Check the existence of a medical record assigned to a person.
+   * true if at least one medical record is associated with one person.
+   *
+   * @param person person to check medical record from
+   * @return a boolean. true for existence.
+   */
+  @Override
   public boolean existsFromPerson(Person person) {
     Iterable<String> medications = getMedicalRecords(person).getMedications();
     Iterable<String> allergies = getMedicalRecords(person).getAllergies();
@@ -126,6 +135,13 @@ public class MedicalRecordsService implements IMedicalRecordsService {
     return iPersonsAllergyService.save(personsAllergy);
   }
 
+  /**
+   * This method creates a medications in DB from a json medical record for a specific person
+   *
+   * @param jsonMedicalRecord
+   * @param personConcerned
+   */
+  @Override
   public void createMedicationsFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
     Iterable<String> medicationToAdd = jsonMedicalRecord.getMedications();
     for (String medication : medicationToAdd) {
@@ -146,6 +162,13 @@ public class MedicalRecordsService implements IMedicalRecordsService {
 
   }
 
+  /**
+   * This method creates allergies in DB from a json medical record for a specific person
+   *
+   * @param jsonMedicalRecord
+   * @param personConcerned
+   */
+  @Override
   public void createAllergiesFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
     Iterable<String> allergiesToAdd = jsonMedicalRecord.getAllergies();
     for (String allergy : allergiesToAdd) {
@@ -165,10 +188,22 @@ public class MedicalRecordsService implements IMedicalRecordsService {
     }
   }
 
+  /**
+   * This method deletes all medications for one person
+   *
+   * @param person
+   */
+  @Override
   public void deletePersonsMedicationsFromPerson(Person person) {
     iPersonsMedicationService.deleteAllFromPerson(person);
   }
 
+  /**
+   * This method deletes all allergies for one person
+   *
+   * @param person
+   */
+  @Override
   public void deletePersonsAllergiesFromPerson(Person person) {
     iPersonsAllergyService.deleteAllFromPerson(person);
   }

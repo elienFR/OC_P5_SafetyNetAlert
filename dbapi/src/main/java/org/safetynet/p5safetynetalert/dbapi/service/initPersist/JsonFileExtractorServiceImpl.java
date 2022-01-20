@@ -9,7 +9,6 @@ import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonData;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStations;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecords;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPersons;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ import java.nio.file.Path;
 
 @Data
 @Service
-public class JsonFileExtractorServiceImpl implements JsonFileExtractorService {
+public class JsonFileExtractorServiceImpl implements IJsonFileExtractorService {
 
   private Logger logger = LogManager.getLogger(JsonFileExtractorServiceImpl.class);
 
