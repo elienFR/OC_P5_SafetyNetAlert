@@ -35,7 +35,7 @@ public class PersonService implements IPersonService {
   @Autowired
   private IMedicalRecordsService iMedicalRecordsService;
   @Autowired
-  private AddressService addressService;
+  private IAddressService iAddressService;
 
   /**
    * This method checks if a person already exists in the database according to its first name and
@@ -403,11 +403,11 @@ public class PersonService implements IPersonService {
       //check that person does not
       if (!existsByFirstNameAndLastName(person)) {
         //check that address does not exist
-        if (!addressService.existsByRoadAndCityAndZipCode(person.getAddress())) {
-          addressService.save(person.getAddress());
+        if (!iAddressService.existsByRoadAndCityAndZipCode(person.getAddress())) {
+          iAddressService.save(person.getAddress());
         } else {
           person.setAddress(
-            addressService.getByRoadAndCityAndZipCode(person.getAddress())
+            iAddressService.getByRoadAndCityAndZipCode(person.getAddress())
           );
         }
         save(person);
@@ -448,12 +448,12 @@ public class PersonService implements IPersonService {
       addressToUpdate.setCity(putJsonPerson.getCity());
       addressToUpdate.setZipCode(putJsonPerson.getZip());
       //check address difference
-      if (!addressService.existsByRoadAndCityAndZipCode(addressToUpdate)
+      if (!iAddressService.existsByRoadAndCityAndZipCode(addressToUpdate)
       ) {
         LOGGER.debug("A new address is being saved.");
-        addressToUpdate = addressService.save(addressToUpdate);
+        addressToUpdate = iAddressService.save(addressToUpdate);
       } else {
-        addressToUpdate.setId(addressService.getByRoadAndCityAndZipCode(addressToUpdate).getId());
+        addressToUpdate.setId(iAddressService.getByRoadAndCityAndZipCode(addressToUpdate).getId());
       }
       personToUpdate.setAddress(addressToUpdate);
 

@@ -37,5 +37,21 @@ public interface IAddressService {
    * @param savedAddress is the address object to save
    * @return the address object saved.
    */
-  Address save(Address addressToUnMap);
+  Address save(Address savedAddress);
+
+  /**
+   * This method checks if an address exists by checking its road, its city and its zipcode
+   *
+   * @param address the address you want to check.
+   * @return a boolean corresponding to existence. true = exists
+   */
+  boolean existsByRoadAndCityAndZipCode(Address address);
+
+  /**
+   * This method get an Address object from DB according to its road, city and Zip Code.
+   *
+   * @param address is the address object looked in DB
+   * @return the object from db (with its id)
+   */
+  Address getByRoadAndCityAndZipCode(Address address);
 }
