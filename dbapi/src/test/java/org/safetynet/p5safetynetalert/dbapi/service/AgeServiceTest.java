@@ -3,7 +3,6 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
-import org.safetynet.p5safetynetalert.dbapi.service.AgeService;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,10 +23,10 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void isStrictlyOverEighteenWithStringedAgeTest() throws Exception {
+  public void isStrictlyOverEighteenWithStringedAgeTest() {
     //GIVEN
     String testedAge = "01/01/1965";
-    boolean isMajor = false;
+    boolean isMajor;
 
     //WHEN
     isMajor = ageService.isStrictlyOverEighteen(testedAge);
@@ -37,7 +36,7 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void isUnderEighteenWithStringedAgeTest() throws Exception {
+  public void isUnderEighteenWithStringedAgeTest(){
     //GIVEN
     String testedBirthDate = "01/01/";
     Integer yearNow = LocalDate.now().getYear();
@@ -46,7 +45,7 @@ public class AgeServiceTest {
     testedBirthDate = testedBirthDate + (yearNow - howManyYearsOld);
 
     AgeService ageService = new AgeService();
-    boolean isMajor = true;
+    boolean isMajor;
 
     //WHEN
     isMajor = ageService.isStrictlyOverEighteen(testedBirthDate);
@@ -56,7 +55,7 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void isStrictlyOverEighteenThrowsExceptionForNegativeAge() throws Exception {
+  public void isStrictlyOverEighteenThrowsExceptionForNegativeAge() {
     //GIVEN
     LocalDate testedBirthDate = LocalDate.of(LocalDate.now().getYear() + 1, 1, 1);
 
@@ -68,10 +67,10 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void isOverEighteenWithLocalDatedAgeTest() throws Exception {
+  public void isOverEighteenWithLocalDatedAgeTest(){
     //GIVEN
     LocalDate testedBirthDate = LocalDate.of(1965, 1, 1);
-    boolean isMajor = false;
+    boolean isMajor;
 
     //WHEN
     isMajor = ageService.isStrictlyOverEighteen(testedBirthDate);
@@ -81,10 +80,10 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void isUnderEighteenWithLocalDatedAgeTest() throws Exception {
+  public void isUnderEighteenWithLocalDatedAgeTest() {
     //GIVEN
     LocalDate testedBirthDate = LocalDate.of(LocalDate.now().getYear() - 1, 1, 1);
-    boolean isMajor = true;
+    boolean isMajor;
 
     //WHEN
     isMajor = ageService.isStrictlyOverEighteen(testedBirthDate);
@@ -94,7 +93,7 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void countAdultsAndChildren() throws Exception {
+  public void countAdultsAndChildren() {
     //Given
     Collection<PersonDTO> personDTOCollectionToTest = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
