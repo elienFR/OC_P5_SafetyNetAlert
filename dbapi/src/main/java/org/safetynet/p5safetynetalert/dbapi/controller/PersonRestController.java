@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.service.IPersonService;
-import org.safetynet.p5safetynetalert.dbapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -75,7 +74,6 @@ public class PersonRestController {
    * This method is called with a DELETE request on /person endpoint. It deletes a person in DB.
    *
    * @param jsonPerson the json person object you want to update in database.
-   * @return the serialized updated person.
    */
   @DeleteMapping("")
   public void deletePerson(@RequestBody JsonPerson jsonPerson) {
