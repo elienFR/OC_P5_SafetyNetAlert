@@ -28,10 +28,6 @@ public class AllergyService {
     return allergyRepository.existsByName(allergy);
   }
 
-  public boolean existsByName(String allergy) {
-    return allergyRepository.existsByName(allergy);
-  }
-
   public Allergy getByName(String allergy) {
     return allergyRepository.findByName(allergy);
   }

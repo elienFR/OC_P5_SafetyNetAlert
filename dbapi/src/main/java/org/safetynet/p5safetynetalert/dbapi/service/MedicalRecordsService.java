@@ -118,7 +118,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
   }
 
   public boolean getAllergyExistence(String allergy) {
-    return allergyService.existsByName(allergy);
+    return allergyService.exists(allergy);
   }
 
   public Allergy saveAllergy(String allergy) {
@@ -139,7 +139,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
    * This method creates a medications in DB from a json medical record for a specific person
    *
    * @param jsonMedicalRecord
-   * @param personConcerned
+   * @param person
    */
   @Override
   public void createMedicationsFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
@@ -166,7 +166,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
    * This method creates allergies in DB from a json medical record for a specific person
    *
    * @param jsonMedicalRecord
-   * @param personConcerned
+   * @param person
    */
   @Override
   public void createAllergiesFromJsonPerson(JsonMedicalRecord jsonMedicalRecord, Person person) {
