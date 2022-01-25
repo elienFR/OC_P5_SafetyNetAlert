@@ -11,9 +11,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/medicalRecord")
-public class MedicalRecordsController {
+public class MedicalRecordsRestController {
 
-  private static final Logger LOGGER = LogManager.getLogger(MedicalRecordsController.class);
+  private static final Logger LOGGER = LogManager.getLogger(MedicalRecordsRestController.class);
   @Autowired
   private IPersonService iPersonService;
 

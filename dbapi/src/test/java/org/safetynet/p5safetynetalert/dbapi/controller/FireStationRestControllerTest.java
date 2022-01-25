@@ -2,12 +2,9 @@ package org.safetynet.p5safetynetalert.dbapi.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonsFromFireStationDTO;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.FireStation;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonFireStation;
-import org.safetynet.p5safetynetalert.dbapi.service.urls.FireStationService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.IFireStationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import javax.servlet.http.HttpServletRequest;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.mock.http.server.reactive.MockServerHttpRequest.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
