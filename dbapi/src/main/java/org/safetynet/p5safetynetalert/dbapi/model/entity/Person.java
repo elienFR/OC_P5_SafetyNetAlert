@@ -100,4 +100,12 @@ public class Person {
   public Iterable<PersonsAllergy> getPersonsAllergies() {
     return personsAllergies;
   }
+
+  public void setPersonsMedications(Collection<PersonsMedication> personsMedications) {
+    this.personsMedications = personsMedications;
+  }
+
+  public void setPersonsAllergies(Collection<PersonsAllergy> personsAllergies) {
+    this.personsAllergies = personsAllergies;
+  }
 }

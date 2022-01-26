@@ -55,35 +55,6 @@ public class MedicalRecordsService implements IMedicalRecordsService {
   }
 
   /**
-   * This method get the medical record object (list of medications and allergies) assciated to
-   * a person.
-   *
-   * @param person is the person you want to get the medical records from.
-   * @return a MedicalRecordsDTO object linked to one person.
-   */
-  @Override
-  public MedicalRecordsDTO getMedicalRecordsDTOFromPerson(Person person) {
-    List<String> medicationsListToAdd = new ArrayList<>();
-    List<String> allergiesToAdd = new ArrayList<>();
-    MedicalRecordsDTO medicalRecordsDTOs = new MedicalRecordsDTO();
-
-    Iterable<PersonsMedication> personsMedications = person.getPersonsMedications();
-    for (PersonsMedication personsMedication : personsMedications) {
-      medicationsListToAdd.add(personsMedication.getMedication().getName());
-    }
-
-    Iterable<PersonsAllergy> personsAllergies = person.getPersonsAllergies();
-    for (PersonsAllergy personsAllergy : personsAllergies) {
-      allergiesToAdd.add(personsAllergy.getAllergy().getName());
-    }
-
-    medicalRecordsDTOs.setMedications(medicationsListToAdd);
-    medicalRecordsDTOs.setAllergies(allergiesToAdd);
-
-    return medicalRecordsDTOs;
-  }
-
-  /**
    * Check the existence of a medical record assigned to a person.
    * true if at least one medical record is associated with one person.
    *
@@ -92,46 +63,47 @@ public class MedicalRecordsService implements IMedicalRecordsService {
    */
   @Override
   public boolean existsFromPerson(Person person) {
-    Iterable<String> medications = getMedicalRecords(person).getMedications();
-    Iterable<String> allergies = getMedicalRecords(person).getAllergies();
+    MedicalRecordsDTO medicalRecordsDTO = getMedicalRecords(person);
+    Iterable<String> medications = medicalRecordsDTO.getMedications();
+    Iterable<String> allergies = medicalRecordsDTO.getAllergies();
     return !((person.getBirthDate() == null || person.getBirthDate().equals(""))
       && (medications == null || Iterables.size(medications) == 0)
       && (allergies == null || Iterables.size(allergies) == 0));
   }
 
-  public boolean getMedicationExistence(String medication) {
+  private boolean getMedicationExistence(String medication) {
     return medicationService.existsByName(medication);
   }
 
-  public Medication saveMedication(String medication) {
+  private Medication saveMedication(String medication) {
     Medication medicationToSave = new Medication();
     medicationToSave.setName(medication);
     return medicationService.save(medicationToSave);
   }
 
-  public Medication getMedication(String medication) {
+  private Medication getMedication(String medication) {
     return medicationService.getByName(medication);
   }
 
-  public PersonsMedication savePersonsMedication(PersonsMedication personsMedication) {
+  private PersonsMedication savePersonsMedication(PersonsMedication personsMedication) {
     return iPersonsMedicationService.save(personsMedication);
   }
 
-  public boolean getAllergyExistence(String allergy) {
+  private boolean getAllergyExistence(String allergy) {
     return allergyService.exists(allergy);
   }
 
-  public Allergy saveAllergy(String allergy) {
+  private Allergy saveAllergy(String allergy) {
     Allergy allergyToSave = new Allergy();
     allergyToSave.setName(allergy);
     return allergyService.save(allergyToSave);
   }
 
-  public Allergy getAllergyByName(String allergy) {
+  private Allergy getAllergyByName(String allergy) {
     return allergyService.getByName(allergy);
   }
 
-  public PersonsAllergy savePersonsAllergy(PersonsAllergy personsAllergy) {
+  private PersonsAllergy savePersonsAllergy(PersonsAllergy personsAllergy) {
     return iPersonsAllergyService.save(personsAllergy);
   }
 
@@ -146,7 +118,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
     Iterable<String> medicationToAdd = jsonMedicalRecord.getMedications();
     for (String medication : medicationToAdd) {
       if (medication != null && !medication.isBlank()) {
-        Medication medicationToAssign = new Medication();
+        Medication medicationToAssign;
         if (!getMedicationExistence(medication)) {
           medicationToAssign = saveMedication(medication);
         } else {
@@ -156,7 +128,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
         personsMedicationToSave.setPerson(person);
         personsMedicationToSave.setMedication(medicationToAssign);
 
-        personsMedicationToSave = savePersonsMedication(personsMedicationToSave);
+        savePersonsMedication(personsMedicationToSave);
       }
     }
 
@@ -183,7 +155,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
         personsAllergyToSave.setAllergy(allergyToAssign);
         personsAllergyToSave.setPerson(person);
 
-        personsAllergyToSave = savePersonsAllergy(personsAllergyToSave);
+        savePersonsAllergy(personsAllergyToSave);
       }
     }
   }

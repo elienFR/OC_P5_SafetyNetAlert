@@ -162,7 +162,7 @@ public class PersonService implements IPersonService {
           person.getFirstName(),
           person.getLastName(),
           person.getPhone(),
-          iMedicalRecordsService.getMedicalRecordsDTOFromPerson(person)
+          iMedicalRecordsService.getMedicalRecords(person)
         ));
     }
     LOGGER.debug("Collection of PersonForFireDTOs properly loaded.");

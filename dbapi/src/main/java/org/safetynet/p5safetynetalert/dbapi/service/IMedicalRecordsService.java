@@ -7,15 +7,6 @@ import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 public interface IMedicalRecordsService {
 
   /**
-   * This method get the medical record object (list of medications and allergies) assciated to
-   * a person.
-   *
-   * @param person is the person you want to get the medical records from.
-   * @return a MedicalRecordsDTO object linked to one person.
-   */
-  MedicalRecordsDTO getMedicalRecordsDTOFromPerson(Person person);
-
-  /**
    * This method returns the medical records DTO of a Person object.
    *
    * @param person is the person you want to retrieve the medical record DTO.
@@ -30,7 +21,7 @@ public interface IMedicalRecordsService {
    * @param person person to check medical record from
    * @return a boolean. true for existence.
    */
-  boolean existsFromPerson(Person personConcerned);
+  boolean existsFromPerson(Person person);
 
   /**
    * This method creates medications in DB from a json medical record for a specific person
@@ -53,12 +44,12 @@ public interface IMedicalRecordsService {
    *
    * @param person
    */
-  void deletePersonsMedicationsFromPerson(Person personConcerned);
+  void deletePersonsMedicationsFromPerson(Person person);
 
   /**
    * This method deletes all allergies for one person
    *
    * @param person
    */
-  void deletePersonsAllergiesFromPerson(Person personConcerned);
+  void deletePersonsAllergiesFromPerson(Person person);
 }

@@ -80,7 +80,7 @@ public class PersonInfoService implements IPersonInfoService {
     personInfoDTO.setMail(person.getEmail());
 
     personInfoDTO.setMedicalRecords(
-      iMedicalRecordsService.getMedicalRecordsDTOFromPerson(person)
+      iMedicalRecordsService.getMedicalRecords(person)
     );
 
     return personInfoDTO;

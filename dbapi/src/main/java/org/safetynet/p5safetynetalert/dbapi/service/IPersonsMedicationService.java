@@ -1,7 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsAllergy;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsMedication;
 
 import java.util.List;
