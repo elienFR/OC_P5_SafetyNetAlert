@@ -44,7 +44,7 @@ public class PersonService implements IPersonService {
    * @param person is the person object to check in database
    * @return true if the person exists, and false if it does not.
    */
-  public boolean existsByFirstNameAndLastName(Person person) {
+  private boolean existsByFirstNameAndLastName(Person person) {
     LOGGER.debug("Finding person id DB...");
     return personRepository.existsByFirstNameAndLastName(
       person.getFirstName(),
@@ -60,7 +60,7 @@ public class PersonService implements IPersonService {
    * @param lastName  is the person last name
    * @return true if the person exists, and false if it does not.
    */
-  public boolean existsByFirstNameAndLastName(String firstName, String lastName) {
+  private boolean existsByFirstNameAndLastName(String firstName, String lastName) {
     LOGGER.debug("Finding person id DB...");
     return personRepository.existsByFirstNameAndLastName(
       firstName,
@@ -74,7 +74,7 @@ public class PersonService implements IPersonService {
    * @param person is the person you want to save.
    * @return the person saved in DB.
    */
-  public Person save(Person person) {
+  private Person save(Person person) {
     return personRepository.save(person);
   }
 
@@ -169,7 +169,7 @@ public class PersonService implements IPersonService {
     return personToAdd;
   }
 
-  public Collection<PersonDTO> getPersonDTOsFromAddress(Address address) {
+  private Collection<PersonDTO> getPersonDTOsFromAddress(Address address) {
     List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
     Collection<Person> persons = address.getPersons();
     for (Person person : persons) {
@@ -207,7 +207,7 @@ public class PersonService implements IPersonService {
     return listOfPersonsDTO;
   }
 
-  public Collection<PersonDTO> getAdultsFromPersonsDTOs(
+  private Collection<PersonDTO> getAdultsFromPersonsDTOs(
     Collection<PersonDTO> personsDTOs) {
     Collection<PersonDTO> adultsList = new ArrayList<>();
     for (PersonDTO personDTO : personsDTOs) {
@@ -218,7 +218,7 @@ public class PersonService implements IPersonService {
     return adultsList;
   }
 
-  public Collection<ChildDTO> getChildrenFromPersonsDTOs(
+  private Collection<ChildDTO> getChildrenFromPersonsDTOs(
     Collection<PersonDTO> personDTOs) {
     Collection<ChildDTO> childrenList = new ArrayList<>();
     for (PersonDTO personDTO : personDTOs) {
@@ -504,7 +504,7 @@ public class PersonService implements IPersonService {
    * @param jsonMedicalRecord A jsonMedicalRecord object used to find the person in DB.
    * @return A Person object with a null birthdate.
    */
-  public Person updateBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+  private Person updateBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
     Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
 
     if (!jsonMedicalRecord.getBirthdate().equals(personConcerned.getBirthDate()) && !jsonMedicalRecord.getBirthdate().isBlank()) {
