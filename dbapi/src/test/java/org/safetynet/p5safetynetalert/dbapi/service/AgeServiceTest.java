@@ -2,20 +2,27 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.PersonDTO;
 
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 
 public class AgeServiceTest {
 
   private AgeService ageService;
+
+  @Mock
+  private LocalDate localDate;
 
   @BeforeEach
   public void initTest() {
@@ -36,7 +43,25 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void isUnderEighteenWithStringedAgeTest(){
+  public void getAgeTest() {
+    //given
+    String birthdateTested = "01/01/1965";
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    LocalDate localBirthDateTested = LocalDate.parse(birthdateTested, formatter);
+
+    Period period = Period.between(localBirthDateTested, LocalDate.now());
+    int expectedAge = period.getYears();
+
+    //when
+    int result = ageService.getAge(birthdateTested);
+
+    //then
+    assertThat(result).isEqualTo(expectedAge);
+
+  }
+
+  @Test
+  public void isUnderEighteenWithStringedAgeTest() {
     //GIVEN
     String testedBirthDate = "01/01/";
     Integer yearNow = LocalDate.now().getYear();
@@ -67,7 +92,7 @@ public class AgeServiceTest {
   }
 
   @Test
-  public void isOverEighteenWithLocalDatedAgeTest(){
+  public void isOverEighteenWithLocalDatedAgeTest() {
     //GIVEN
     LocalDate testedBirthDate = LocalDate.of(1965, 1, 1);
     boolean isMajor;
@@ -108,7 +133,7 @@ public class AgeServiceTest {
     }
 
     //When
-    Map<String,Integer> adultsAndChildren = ageService.countAdultsAndChildren(personDTOCollectionToTest);
+    Map<String, Integer> adultsAndChildren = ageService.countAdultsAndChildren(personDTOCollectionToTest);
 
     //Then
     assertThat(adultsAndChildren.get("adults")).isEqualTo(3);

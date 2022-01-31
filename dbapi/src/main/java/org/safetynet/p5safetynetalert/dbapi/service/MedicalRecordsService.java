@@ -66,7 +66,7 @@ public class MedicalRecordsService implements IMedicalRecordsService {
     MedicalRecordsDTO medicalRecordsDTO = getMedicalRecords(person);
     Iterable<String> medications = medicalRecordsDTO.getMedications();
     Iterable<String> allergies = medicalRecordsDTO.getAllergies();
-    return !((person.getBirthDate() == null || person.getBirthDate().equals(""))
+    return !((person.getBirthDate() == null || person.getBirthDate().isBlank())
       && (medications == null || Iterables.size(medications) == 0)
       && (allergies == null || Iterables.size(allergies) == 0));
   }

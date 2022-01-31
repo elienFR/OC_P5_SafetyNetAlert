@@ -1,10 +1,14 @@
 package org.safetynet.p5safetynetalert.dbapi.model.initPersist;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public class JsonMedicalRecord {
   private String firstName;
   private String lastName;
