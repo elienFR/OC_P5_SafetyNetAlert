@@ -51,6 +51,22 @@ public class EmailRestControllerTest {
   }
 
   @Test
+  public void getAllEmailFromNullCityInhabitantsTest() throws Exception {
+    //GIVEN
+    //in initTest()
+    //city mocked is "testCity"
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+      .get("/communityEmail")
+      .param("city","")
+      .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isNoContent());
+  }
+
+  @Test
   public void getAllEmailFromCityInhabitantsTest404() throws Exception {
     //GIVEN
     //in initTest()

@@ -32,7 +32,7 @@ public class ChildAlertRestController {
   public ChildFromAddressDTO getChildrenFromAddress(
     @RequestParam("address") String address) {
     LOGGER.info("GET Request on /childAlert?address=" + address);
-    if (address == null) {
+    if (address == null || address.isBlank()) {
       LOGGER.debug("No address provided");
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "No content provided"

@@ -54,7 +54,7 @@ public class FireStationRestController {
    */
   @PostMapping("")
   public JsonFireStation postFireStationAddressMapping(
-    @RequestBody JsonFireStation jsonFireStation) {
+    @RequestBody(required = false) JsonFireStation jsonFireStation) {
     LOGGER.info("POST request on /firestation");
     if(jsonFireStation != null) {
       JsonFireStation postedJsonFireStation = iFireStationService
@@ -81,7 +81,7 @@ public class FireStationRestController {
    */
   @PutMapping("")
   public JsonFireStation putFireStationAddressMapping(
-    @RequestBody JsonFireStation jsonFireStation) {
+    @RequestBody(required = false) JsonFireStation jsonFireStation) {
     LOGGER.info("PUT request on /firestation");
     if (jsonFireStation != null) {
       JsonFireStation updatedJsonFireStation = iFireStationService
@@ -108,7 +108,7 @@ public class FireStationRestController {
    */
   @DeleteMapping("")
   public JsonFireStation deleteFireStationAddressMapping(
-    @RequestBody JsonFireStation jsonFireStation) {
+    @RequestBody(required = false) JsonFireStation jsonFireStation) {
     LOGGER.info("DELETE request on /firestation");
     if (jsonFireStation != null) {
       JsonFireStation deletedJsonFireStation = iFireStationService

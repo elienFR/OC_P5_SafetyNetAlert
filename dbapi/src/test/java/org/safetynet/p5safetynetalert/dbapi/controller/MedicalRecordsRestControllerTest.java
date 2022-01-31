@@ -44,6 +44,21 @@ public class MedicalRecordsRestControllerTest {
   }
 
   @Test
+  public void postNewMedicalRecordsTestWithNullBody() throws Exception {
+    //GIVEN
+    JsonMedicalRecord jsonMedicalRecord = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonMedicalRecord);
+
+    //WHEN
+
+    //THEN
+    mockMvc
+      .perform(post("/medicalRecord")
+        .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
+      .andExpect(status().isNoContent());
+  }
+
+  @Test
   public void postNewMedicalRecordsTestIsAlreadyReported() throws Exception {
     //GIVEN
     JsonMedicalRecord jsonMedicalRecord = new JsonMedicalRecord();
@@ -74,6 +89,21 @@ public class MedicalRecordsRestControllerTest {
         .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
       .andExpect(status().isOk());
   }
+  @Test
+  public void putMedicalRecordsTestWithNullBody() throws Exception {
+    //GIVEN
+    JsonMedicalRecord jsonMedicalRecord = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonMedicalRecord);
+
+    //WHEN
+
+    //THEN
+    mockMvc
+      .perform(put("/medicalRecord")
+        .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
+      .andExpect(status().isNoContent());
+  }
+
 
   @Test
   public void putMedicalRecordsTestIsNotFound() throws Exception {
@@ -105,6 +135,22 @@ public class MedicalRecordsRestControllerTest {
       .perform(delete("/medicalRecord")
         .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
       .andExpect(status().isOk());
+  }
+
+  @Test
+  public void deleteMedicalRecordsTestWithNullBody() throws Exception {
+    //GIVEN
+    JsonMedicalRecord jsonMedicalRecord = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonMedicalRecord);
+    when(iPersonService.deleteMedicalRecords(jsonMedicalRecord)).thenReturn(new JsonMedicalRecord());
+
+    //WHEN
+
+    //THEN
+    mockMvc
+      .perform(delete("/medicalRecord")
+        .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
+      .andExpect(status().isNoContent());
   }
 
   @Test

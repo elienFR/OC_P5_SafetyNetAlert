@@ -25,7 +25,7 @@ public class MedicalRecordsRestController {
    */
   @PostMapping("")
   public JsonMedicalRecord createNewMedicalRecords(
-    @RequestBody JsonMedicalRecord jsonMedicalRecord) {
+    @RequestBody(required = false) JsonMedicalRecord jsonMedicalRecord) {
     LOGGER.info("POST request made on url /medicalRecord.");
     if (jsonMedicalRecord == null) {
       LOGGER.warn("No body provided.");
@@ -46,7 +46,7 @@ public class MedicalRecordsRestController {
   }
 
   @PutMapping("")
-  public JsonMedicalRecord updateMedicalRecords(@RequestBody JsonMedicalRecord jsonMedicalRecord) {
+  public JsonMedicalRecord updateMedicalRecords(@RequestBody(required = false) JsonMedicalRecord jsonMedicalRecord) {
     if (jsonMedicalRecord == null) {
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "Body is needed in request"
@@ -64,7 +64,7 @@ public class MedicalRecordsRestController {
   }
 
   @DeleteMapping("")
-  public JsonMedicalRecord deleteMedicalRecords(@RequestBody JsonMedicalRecord jsonMedicalRecord) {
+  public JsonMedicalRecord deleteMedicalRecords(@RequestBody(required = false) JsonMedicalRecord jsonMedicalRecord) {
     if (jsonMedicalRecord == null) {
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "no body request"

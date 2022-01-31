@@ -43,6 +43,21 @@ public class PersonRestControllerTest {
   }
 
   @Test
+  public void postPersonTestWithNullPostedJsonPerson() throws Exception{
+    //GIVEN
+    JsonPerson jsonPerson = new JsonPerson();
+    String jsonStringTested = "";
+
+    //WHEN
+
+    //THEN
+    mockMvc
+      .perform(post("/person")
+        .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
+      .andExpect(status().isNoContent());
+  }
+
+  @Test
   public void postPersonTestConflict() throws Exception{
     //GIVEN
     JsonPerson jsonPerson = new JsonPerson();
@@ -75,6 +90,21 @@ public class PersonRestControllerTest {
   }
 
   @Test
+  public void putPersonTestWithNullPutJsonPerson() throws Exception{
+    //GIVEN
+    JsonPerson jsonPerson = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonPerson);
+
+    //WHEN
+
+    //THEN
+    mockMvc
+      .perform(put("/person")
+        .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
+      .andExpect(status().isNoContent());
+  }
+
+  @Test
   public void putPersonTestNotFound() throws Exception{
     //GIVEN
     JsonPerson jsonPerson = new JsonPerson();
@@ -104,6 +134,21 @@ public class PersonRestControllerTest {
       .perform(delete("/person")
         .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
       .andExpect(status().isOk());
+  }
+
+  @Test
+  public void deletePersonTestWithNullDeletedPerson() throws Exception{
+    //GIVEN
+    JsonPerson jsonPerson = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonPerson);
+
+    //WHEN
+
+    //THEN
+    mockMvc
+      .perform(delete("/person")
+        .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
+      .andExpect(status().isNoContent());
   }
 
   @Test

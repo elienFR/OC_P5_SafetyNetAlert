@@ -25,7 +25,7 @@ public class EmailRestController {
     @RequestParam("city") String city
   ) {
     LOGGER.info("GET Request on /communityEmail?city=" + city);
-    if (city == null) {
+    if (city == null || city.isBlank()) {
       LOGGER.debug("Given city is null.");
       throw new ResponseStatusException(
         HttpStatus.NO_CONTENT, "No content provided"

@@ -38,7 +38,7 @@ public class FireStationRestControllerTest {
   }
 
   @Test
-  public void testGetPersonsFromFireStationNumber() throws Exception {
+  public void getPersonsFromFireStationNumberTest() throws Exception {
     //GIVEN
     PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
     when(iFireStationServiceMock.getPersonsAndCount("1")).thenReturn(persons);
@@ -54,7 +54,7 @@ public class FireStationRestControllerTest {
   }
 
   @Test
-  public void testGetPersonsFromFireStationNumber404() throws Exception {
+  public void getPersonsFromFireStationNumberTest404() throws Exception {
     //GIVEN
     PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
     when(iFireStationServiceMock.getPersonsAndCount("1")).thenReturn(persons);
@@ -70,7 +70,7 @@ public class FireStationRestControllerTest {
   }
 
   @Test
-  public void testGetPersonsFromFireStationNumber400() throws Exception {
+  public void getPersonsFromFireStationNumberTest400() throws Exception {
     //GIVEN
     PersonsFromFireStationDTO persons = new PersonsFromFireStationDTO();
     when(iFireStationServiceMock.getPersonsAndCount("1")).thenReturn(persons);
@@ -99,6 +99,21 @@ public class FireStationRestControllerTest {
       .perform(post("/firestation")
         .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
       .andExpect(status().isOk());
+  }
+
+  @Test
+  public void postFireStationAddressMappingTestNullBody() throws Exception {
+    //GIVEN
+    JsonFireStation jsonFireStation = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonFireStation);
+
+    //WHEN
+
+    //THEN
+    mockMvc
+      .perform(post("/firestation")
+        .contentType(MediaType.APPLICATION_JSON).content(jsonStringTested))
+      .andExpect(status().isNoContent());
   }
 
   @Test
@@ -135,6 +150,22 @@ public class FireStationRestControllerTest {
   }
 
   @Test
+  public void putFireStationAddressMappingTestNullBody() throws Exception {
+    //GIVEN
+    JsonFireStation jsonFireStation = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonFireStation);
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+      .put("/firestation")
+      .content(jsonStringTested)
+      .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isNoContent());
+  }
+
+  @Test
   public void putFireStationAddressMappingTestNotFound() throws Exception {
     //GIVEN
     JsonFireStation jsonFireStation = new JsonFireStation();
@@ -168,7 +199,37 @@ public class FireStationRestControllerTest {
     mockMvc.perform(builder).andExpect(status().isOk());
   }
 
+  @Test
+  public void deleteFireStationAddressMappingTestNullBody() throws Exception {
+    //GIVEN
+    JsonFireStation jsonFireStation = null;
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonFireStation);
 
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+      .delete("/firestation")
+      .content(jsonStringTested)
+      .contentType(MediaType.APPLICATION_JSON);
 
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void deleteFireStationAddressMappingTestNotFound() throws Exception {
+    //GIVEN
+    JsonFireStation jsonFireStation = new JsonFireStation("some address","3");
+    String jsonStringTested = new ObjectMapper().writeValueAsString(jsonFireStation);
+    when(iFireStationServiceMock.eraseAddressFireStationMapping(jsonFireStation)).thenReturn(null);
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+      .delete("/firestation")
+      .content(jsonStringTested)
+      .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isNotFound());
+  }
 
 }
