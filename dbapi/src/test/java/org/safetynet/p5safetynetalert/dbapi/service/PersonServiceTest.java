@@ -6,6 +6,7 @@ import org.mockito.Mockito;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,7 +225,7 @@ public class PersonServiceTest {
     givenAddress1.setPersons(List.of(person1FromAddress1, person2FromAddress1));
     givenAddress2.setPersons(List.of(person1FromAddress2));
     //given addresses
-    Collection<Address> givenAddresses = new ArrayList(List.of(givenAddress1, givenAddress2));
+    Collection<Address> givenAddresses = new ArrayList<>(List.of(givenAddress1, givenAddress2));
     //expected result
     Collection<PersonForFloodDTO> expected = new ArrayList<>(
       List.of(
@@ -280,7 +281,7 @@ public class PersonServiceTest {
     givenAddress.setPersons(List.of(person1, person2, person3));
 
     AddressDTO expectedAddressDTO = new AddressDTO("rue jourdan", "nantes", "44000");
-    Collection<ChildDTO> expected = new ArrayList(
+    Collection<ChildDTO> expected = new ArrayList<>(
       List.of(
         new ChildDTO("maria", null, 3)
       )
@@ -299,19 +300,188 @@ public class PersonServiceTest {
 
   @Test
   public void getPersonsFromAddressTest() {
-
+    //given
+    Address givenAddress = new Address("rue racine", "nantes", "44000", null);
+    Person givenPerson1 = new Person("marion", null, null, null, null, givenAddress);
+    Person givenPerson2 = new Person("julian", null, null, null, null, givenAddress);
+    givenAddress.setPersons(List.of(givenPerson1, givenPerson2));
+    Collection<Person> expected = new ArrayList<>(
+      List.of(
+        givenPerson1,
+        givenPerson2
+      )
+    );
+    //when
+    Collection<Person> result = iPersonService.getPersonsFromAddress(givenAddress);
+    //then
+    assertThat(result).isEqualTo(expected);
   }
 
-  @Disabled
+  @Test
+  public void getPersonsFromAddressTestWithNullCollection() {
+    //given
+    Address givenAddress = new Address("rue racine", "nantes", "44000", null);
+    givenAddress.setPersons(null);
+    //when
+    Collection<Person> result = iPersonService.getPersonsFromAddress(givenAddress);
+    //then
+    assertThat(result).isNull();
+  }
+
   @Test
   public void getPersonsFromAddressesTest() {
+    //given
+    Address givenAddress1 = new Address("rue racine", "nantes", "44000", null);
+    Address givenAddress2 = new Address("rue chave", "nantes", "44000", null);
+    Person givenPerson1 = new Person("marion", null, null, null, null, givenAddress1);
+    Person givenPerson2 = new Person("julian", null, null, null, null, givenAddress1);
+    Person givenPerson3 = new Person("julian", null, null, null, null, givenAddress2);
+    givenAddress1.setPersons(List.of(givenPerson1, givenPerson2));
+    givenAddress2.setPersons(List.of(givenPerson3));
 
+    Collection<Address> givenAddresses = new ArrayList<>();
+    givenAddresses.add(givenAddress1);
+    givenAddresses.add(givenAddress2);
+
+    Collection<Person> expected = new ArrayList<>(
+      List.of(
+        givenPerson1,
+        givenPerson2,
+        givenPerson3
+      )
+    );
+    //when
+    Collection<Person> result = iPersonService.getPersonsFromAddresses(givenAddresses);
+    //then
+    assertThat(result).isEqualTo(expected);
   }
 
-  @Disabled
   @Test
-  public void createPersonTest() {
+  public void getPersonsFromAddressesTestNullAddressesCollection() {
+    //given
+    Collection<Address> givenAddresses = null;
+    //when
+    Collection<Person> result = iPersonService.getPersonsFromAddresses(givenAddresses);
+    //then
+    assertThat(result).isNull();
+  }
 
+  @Test
+  public void createPersonTestWithNotExistingAddress() {
+    //given
+    String givenFirstName = "jules";
+    String givenLastName = "michou";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+
+    Address expectedAddress = new Address("rue racine","nantes","44000",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(expectedAddress)).thenReturn(false);
+
+    //when
+    JsonPerson result = iPersonService.createPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).save(any(Person.class));
+    verify(iAddressServiceMocked,Mockito.times(1)).save(any(Address.class));
+    assertThat(result).isEqualTo(givenJsonPerson);
+  }
+
+  @Test
+  public void createPersonTestWithExistingPerson() {
+    //given
+    String givenFirstName = "jules";
+    String givenLastName = "michou";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
+    //when
+    JsonPerson result = iPersonService.createPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void createPersonTestWithExistingAddress() {
+    //given
+    String givenFirstName = "jules";
+    String givenLastName = "michou";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(true);
+
+    //when
+    JsonPerson result = iPersonService.createPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).save(any(Person.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(1)).getByRoadAndCityAndZipCode(any(Address.class));
+    assertThat(result).isEqualTo(givenJsonPerson);
+  }
+
+  @Test
+  public void createPersonTestWithBlankFirstName() {
+    //given
+    String givenFirstName = "";
+    String givenLastName = "michou";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+
+    //when
+    JsonPerson result = iPersonService.createPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void createPersonTestWithBlankLastName() {
+    //given
+    String givenFirstName = "jules";
+    String givenLastName = "";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+
+    //when
+    JsonPerson result = iPersonService.createPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void createPersonTestWithNullFirstName() {
+    //given
+    String givenFirstName = null;
+    String givenLastName = "michou";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+
+    //when
+    JsonPerson result = iPersonService.createPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void createPersonTestWithNullLastName() {
+    //given
+    String givenFirstName = "jules";
+    String givenLastName = null;
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+
+    //when
+    JsonPerson result = iPersonService.createPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    assertThat(result).isNull();
   }
 
   @Disabled
