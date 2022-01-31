@@ -1,5 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
+import org.safetynet.p5safetynetalert.dbapi.model.dto.AddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 
 import java.util.Collection;
@@ -54,4 +55,12 @@ public interface IAddressService {
    * @return the object from db (with its id)
    */
   Address getByRoadAndCityAndZipCode(Address address);
+
+  /**
+   * This method converts an address into an addressDTO
+   *
+   * @param address is the adress to be converted
+   * @return is the output addressDTO
+   */
+  AddressDTO convertAddressToAddressDTO(Address address);
 }

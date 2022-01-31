@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-@Data
+
 @Service
 public class FireStationService implements IFireStationService {
 

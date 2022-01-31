@@ -7,5 +7,5 @@ import java.util.List;
 
 @Getter
 public class JsonMedicalRecords {
-  private List<JsonMedicalRecord> medicalRecords;
+  private List<JsonMedicalRecord> medicalrecords;
 }

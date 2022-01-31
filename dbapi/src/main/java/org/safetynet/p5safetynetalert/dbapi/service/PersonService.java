@@ -1,8 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import com.google.common.collect.Iterables;
-import com.sun.istack.NotNull;
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
@@ -13,13 +11,11 @@ import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
-@Data
 @Service
 public class PersonService implements IPersonService {
 
@@ -78,14 +74,12 @@ public class PersonService implements IPersonService {
     return personRepository.save(person);
   }
 
+
   private Collection<PersonDTO> getPersonDTOsFromAddress(Address address) {
     List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
     Collection<Person> persons = address.getPersons();
     for (Person person : persons) {
-      AddressDTO addressDTO = new AddressDTO();
-      addressDTO.setRoad(address.getRoad());
-      addressDTO.setCity(address.getCity());
-      addressDTO.setZip(address.getZipCode());
+      AddressDTO addressDTO = iAddressService.convertAddressToAddressDTO(address);
 
       PersonDTO personDTO = new PersonDTO();
       personDTO.setFirstName(person.getFirstName());
@@ -145,7 +139,6 @@ public class PersonService implements IPersonService {
    */
   private PersonForFloodDTO convertPersonToPersonForFloodDTO(Person person) {
     PersonForFloodDTO personForFloodDTO = new PersonForFloodDTO();
-
     personForFloodDTO.setFirstName(person.getFirstName());
     personForFloodDTO.setLastName(person.getLastName());
     personForFloodDTO.setPhone(person.getPhone());
@@ -159,7 +152,7 @@ public class PersonService implements IPersonService {
 
   /**
    * Convert a JsonPerson into a Person Object. For the purpose of the exercise the address given
-   * is always in Culver with zip code 97451 and the birthdate is null (provided by a medicalrecord
+   * is always in Culver with zip code 97451 and the birthdate is null (provided by a medicalRecord
    * object).
    *
    * @param jsonPerson is the JsonPerson Object to convert
@@ -350,8 +343,7 @@ public class PersonService implements IPersonService {
    */
   @Override
   public Collection<PersonDTO> getAdultsDTO(Address address) {
-    Collection<PersonDTO> listOfAdults = getAdultsFromPersonsDTOs(getPersonDTOsFromAddress(address));
-    return listOfAdults;
+    return getAdultsFromPersonsDTOs(getPersonDTOsFromAddress(address));
   }
 
   /**
@@ -362,9 +354,7 @@ public class PersonService implements IPersonService {
    */
   @Override
   public Collection<ChildDTO> getChildrenDTO(Address address) {
-    Collection<ChildDTO> listOfChildren = getChildrenFromPersonsDTOs(getPersonDTOsFromAddress(address));
-
-    return listOfChildren;
+    return getChildrenFromPersonsDTOs(getPersonDTOsFromAddress(address));
   }
 
   /**
@@ -377,17 +367,12 @@ public class PersonService implements IPersonService {
   public Collection<Person> getPersonsFromAddress(Address address) {
     LOGGER.debug("Loading persons form address...");
     Collection<Person> personCollection = address.getPersons();
-    if (address == null) {
-      LOGGER.debug("Address given is null.");
+    if (personCollection == null) {
+      LOGGER.debug("Collection of Person is null.");
       return null;
     } else {
-      if (personCollection == null) {
-        LOGGER.debug("Collection of Person is null.");
-        return null;
-      } else {
-        LOGGER.debug("Persons properly loaded from address.");
-        return personCollection;
-      }
+      LOGGER.debug("Persons properly loaded from address.");
+      return personCollection;
     }
   }
 
@@ -529,7 +514,7 @@ public class PersonService implements IPersonService {
 
   /**
    * This method creates a medical record for a specific person found from a jsonMedicalRecord. It
-   * works only if the person provided in jsonMedicalRecord already exists and it has no birthdate
+   * works only if the person provided in jsonMedicalRecord already exists, and it has no birthdate
    * and no allergies and no medications already informed in DB.
    *
    * @param jsonMedicalRecord Java Object corresponding to a json Medical Record entity.
@@ -567,7 +552,7 @@ public class PersonService implements IPersonService {
         LOGGER.debug("Medical record created.");
         return jsonMedicalRecord;
       } else {
-        LOGGER.error("A medcal record already exists for that person.");
+        LOGGER.error("A medical record already exists for that person.");
         return null;
       }
     } else {
