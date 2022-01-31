@@ -1,6 +1,5 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
 @Service
 public class PersonsMedicationService implements IPersonsMedicationService {
 

@@ -1,19 +1,14 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
-import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
-@Data
 @Service
 public class AddressService implements IAddressService {
 

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-@Data
 @Service
 public class JsonFileExtractorServiceImpl implements IJsonFileExtractorService {
 

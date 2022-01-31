@@ -78,6 +78,114 @@ public class MedicalRecordsServiceTest {
   }
 
   @Test
+  public void existsFromPersonTestBlankBirthDate() {
+    //given
+    Person givenPerson = new Person("john", "doe", "", null, null, null);
+
+    List<String> givenMedications = new ArrayList<>();
+    givenMedications.add("some meds");
+    List<String> givenAllergies = new ArrayList<>();
+    givenAllergies.add("some allergies");
+
+    when(iPersonsMedicationServiceMocked.getMedicationsFromPersonsMedications(
+      givenPerson.getPersonsMedications())).thenReturn(givenMedications);
+    when(iPersonsAllergyServiceMocked.getAllergiesFromPersonsMedications(
+      givenPerson.getPersonsAllergies())).thenReturn(givenAllergies);
+
+    //when
+    boolean result = iMedicalRecordsService.existsFromPerson(givenPerson);
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void existsFromPersonTestNullBirthDate() {
+    //given
+    Person givenPerson = new Person("john", "doe", null, null, null, null);
+
+    List<String> givenMedications = new ArrayList<>();
+    givenMedications.add("some meds");
+    List<String> givenAllergies = new ArrayList<>();
+    givenAllergies.add("some allergies");
+
+    when(iPersonsMedicationServiceMocked.getMedicationsFromPersonsMedications(
+      givenPerson.getPersonsMedications())).thenReturn(givenMedications);
+    when(iPersonsAllergyServiceMocked.getAllergiesFromPersonsMedications(
+      givenPerson.getPersonsAllergies())).thenReturn(givenAllergies);
+
+    //when
+    boolean result = iMedicalRecordsService.existsFromPerson(givenPerson);
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void existsFromPersonTestNoMeds() {
+    //given
+    Person givenPerson = new Person("john", "doe", "1/1/1", null, null, null);
+
+    List<String> givenMedications = new ArrayList<>();
+    List<String> givenAllergies = new ArrayList<>();
+    givenAllergies.add("some allergies");
+
+    when(iPersonsMedicationServiceMocked.getMedicationsFromPersonsMedications(
+      givenPerson.getPersonsMedications())).thenReturn(givenMedications);
+    when(iPersonsAllergyServiceMocked.getAllergiesFromPersonsMedications(
+      givenPerson.getPersonsAllergies())).thenReturn(givenAllergies);
+
+    //when
+    boolean result = iMedicalRecordsService.existsFromPerson(givenPerson);
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void existsFromPersonTestNoAllergies() {
+    //given
+    Person givenPerson = new Person("john", "doe", "1/1/1", null, null, null);
+
+    List<String> givenMedications = new ArrayList<>();
+    givenMedications.add("some meds");
+    List<String> givenAllergies = new ArrayList<>();
+
+    when(iPersonsMedicationServiceMocked.getMedicationsFromPersonsMedications(
+      givenPerson.getPersonsMedications())).thenReturn(givenMedications);
+    when(iPersonsAllergyServiceMocked.getAllergiesFromPersonsMedications(
+      givenPerson.getPersonsAllergies())).thenReturn(givenAllergies);
+
+    //when
+    boolean result = iMedicalRecordsService.existsFromPerson(givenPerson);
+
+    //then
+    assertThat(result).isTrue();
+  }
+
+  @Test
+  public void existsFromPersonTestFullNull() {
+    //given
+    Person givenPerson = new Person("john", "doe", null, null, null, null);
+
+    List<String> givenMedications = new ArrayList<>();
+    List<String> givenAllergies = new ArrayList<>();
+
+    when(iPersonsMedicationServiceMocked.getMedicationsFromPersonsMedications(
+      givenPerson.getPersonsMedications())).thenReturn(givenMedications);
+    when(iPersonsAllergyServiceMocked.getAllergiesFromPersonsMedications(
+      givenPerson.getPersonsAllergies())).thenReturn(givenAllergies);
+
+    //when
+    boolean result = iMedicalRecordsService.existsFromPerson(givenPerson);
+
+    //then
+    assertThat(result).isFalse();
+  }
+
+
+
+  @Test
   public void createMedicationsFromJsonPersonTest() {
     //given
     JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
