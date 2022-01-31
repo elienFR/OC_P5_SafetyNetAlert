@@ -1,7 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
 import com.google.common.collect.Iterables;
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
