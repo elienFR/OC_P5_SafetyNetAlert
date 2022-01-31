@@ -78,6 +78,139 @@ public class PersonService implements IPersonService {
     return personRepository.save(person);
   }
 
+  private Collection<PersonDTO> getPersonDTOsFromAddress(Address address) {
+    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
+    Collection<Person> persons = address.getPersons();
+    for (Person person : persons) {
+      AddressDTO addressDTO = new AddressDTO();
+      addressDTO.setRoad(address.getRoad());
+      addressDTO.setCity(address.getCity());
+      addressDTO.setZip(address.getZipCode());
+
+      PersonDTO personDTO = new PersonDTO();
+      personDTO.setFirstName(person.getFirstName());
+      personDTO.setLastName(person.getLastName());
+      personDTO.setPhone(person.getPhone());
+      personDTO.setBirthDate(person.getBirthDate());
+      personDTO.setAddress(addressDTO);
+
+      listOfPersonsDTO.add(personDTO);
+    }
+    return listOfPersonsDTO;
+  }
+
+  private Collection<PersonDTO> getAdultsFromPersonsDTOs(
+    Collection<PersonDTO> personsDTOs) {
+    Collection<PersonDTO> adultsList = new ArrayList<>();
+    for (PersonDTO personDTO : personsDTOs) {
+      if (ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
+        adultsList.add(personDTO);
+      }
+    }
+    return adultsList;
+  }
+
+  private Collection<ChildDTO> getChildrenFromPersonsDTOs(
+    Collection<PersonDTO> personDTOs) {
+    Collection<ChildDTO> childrenList = new ArrayList<>();
+    for (PersonDTO personDTO : personDTOs) {
+      if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
+        childrenList.add(new ChildDTO(
+            personDTO.getFirstName(),
+            personDTO.getLastName(),
+            ageService.getAge(personDTO.getBirthDate())
+          )
+        );
+      }
+    }
+    return childrenList;
+  }
+
+  private Collection<PersonForFloodDTO> convertPersonsToPersonForFloodDTOs(
+    Collection<Person> persons) {
+    Collection<PersonForFloodDTO> personForFloodDTOCollection = new ArrayList<>();
+    for (Person person : persons) {
+      personForFloodDTOCollection.add(
+        convertPersonToPersonForFloodDTO(person)
+      );
+    }
+    return personForFloodDTOCollection;
+  }
+
+  /**
+   * This method converts a Person object into a PersonForFloodDTO Object
+   *
+   * @param person A Person object to be converted.
+   * @return A PersonForFloodDTO Object from a Peron Object.
+   */
+  private PersonForFloodDTO convertPersonToPersonForFloodDTO(Person person) {
+    PersonForFloodDTO personForFloodDTO = new PersonForFloodDTO();
+
+    personForFloodDTO.setFirstName(person.getFirstName());
+    personForFloodDTO.setLastName(person.getLastName());
+    personForFloodDTO.setPhone(person.getPhone());
+    personForFloodDTO.setAge(ageService.getAge(person.getBirthDate()));
+    personForFloodDTO.setMedicalRecords(
+      iMedicalRecordsService.getMedicalRecords(person)
+    );
+
+    return personForFloodDTO;
+  }
+
+  /**
+   * Convert a JsonPerson into a Person Object. For the purpose of the exercise the address given
+   * is always in Culver with zip code 97451 and the birthdate is null (provided by a medicalrecord
+   * object).
+   *
+   * @param jsonPerson is the JsonPerson Object to convert
+   * @return a Peron object with null birthdate and an address located in Culver 97451.
+   */
+  private Person convertJsonPersonIntoPerson(JsonPerson jsonPerson) {
+    Person person = new Person();
+    person.setFirstName(jsonPerson.getFirstName());
+    person.setLastName(jsonPerson.getLastName());
+    person.setPhone(jsonPerson.getPhone());
+    person.setEmail(jsonPerson.getEmail());
+    person.setBirthDate(null);
+
+    Address addressToSet = new Address();
+    addressToSet.setRoad(jsonPerson.getAddress());
+    addressToSet.setCity(jsonPerson.getCity());
+    addressToSet.setZipCode(jsonPerson.getZip());
+    person.setAddress(addressToSet);
+    return person;
+  }
+
+  /**
+   * Update the birthdate of a person to new values in DB from the person, and the birthdate found
+   * in a jsonMedicalRecord object.
+   *
+   * @param jsonMedicalRecord A jsonMedicalRecord object used to find the person in DB.
+   * @return A Person object with a null birthdate.
+   */
+  private Person updateBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+    Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
+
+    if (!jsonMedicalRecord.getBirthdate().equals(personConcerned.getBirthDate()) && !jsonMedicalRecord.getBirthdate().isBlank()) {
+      personConcerned.setBirthDate(jsonMedicalRecord.getBirthdate());
+      personConcerned = save(personConcerned);
+    }
+    return personConcerned;
+  }
+
+  /**
+   * Set the birthdate of a person to null in DB from the person found in a jsonMedicalRecord object.
+   *
+   * @param jsonMedicalRecord A jsonMedicalRecord object used to find the person in DB.
+   * @return A Person object with a null birthdate.
+   */
+  private Person deleteBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
+    Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
+    personConcerned.setBirthDate(null);
+    personConcerned = save(personConcerned);
+    return personConcerned;
+  }
+
   /**
    * This method returns a person from DB with its first name and its last name.
    *
@@ -155,9 +288,9 @@ public class PersonService implements IPersonService {
   public Collection<PersonForFireDTO> convertPersonsInPersonForFireDTO(
     Collection<Person> persons) {
     LOGGER.debug("Loading collection of PersonForFireDTOs...");
-    List<PersonForFireDTO> personToAdd = new ArrayList<>();
+    List<PersonForFireDTO> personsToAdd = new ArrayList<>();
     for (Person person : persons) {
-      personToAdd.add(
+      personsToAdd.add(
         new PersonForFireDTO(
           person.getFirstName(),
           person.getLastName(),
@@ -166,28 +299,7 @@ public class PersonService implements IPersonService {
         ));
     }
     LOGGER.debug("Collection of PersonForFireDTOs properly loaded.");
-    return personToAdd;
-  }
-
-  private Collection<PersonDTO> getPersonDTOsFromAddress(Address address) {
-    List<PersonDTO> listOfPersonsDTO = new ArrayList<>();
-    Collection<Person> persons = address.getPersons();
-    for (Person person : persons) {
-      AddressDTO addressDTO = new AddressDTO();
-      addressDTO.setRoad(address.getRoad());
-      addressDTO.setCity(address.getCity());
-      addressDTO.setZip(address.getZipCode());
-
-      PersonDTO personDTO = new PersonDTO();
-      personDTO.setFirstName(person.getFirstName());
-      personDTO.setLastName(person.getLastName());
-      personDTO.setPhone(person.getPhone());
-      personDTO.setBirthDate(person.getBirthDate());
-      personDTO.setAddress(addressDTO);
-
-      listOfPersonsDTO.add(personDTO);
-    }
-    return listOfPersonsDTO;
+    return personsToAdd;
   }
 
   /**
@@ -205,33 +317,6 @@ public class PersonService implements IPersonService {
     }
     LOGGER.debug("Collection of PersonsDTOs properly loaded.");
     return listOfPersonsDTO;
-  }
-
-  private Collection<PersonDTO> getAdultsFromPersonsDTOs(
-    Collection<PersonDTO> personsDTOs) {
-    Collection<PersonDTO> adultsList = new ArrayList<>();
-    for (PersonDTO personDTO : personsDTOs) {
-      if (ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
-        adultsList.add(personDTO);
-      }
-    }
-    return adultsList;
-  }
-
-  private Collection<ChildDTO> getChildrenFromPersonsDTOs(
-    Collection<PersonDTO> personDTOs) {
-    Collection<ChildDTO> childrenList = new ArrayList<>();
-    for (PersonDTO personDTO : personDTOs) {
-      if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
-        childrenList.add(new ChildDTO(
-            personDTO.getFirstName(),
-            personDTO.getLastName(),
-            ageService.getAge(personDTO.getBirthDate())
-          )
-        );
-      }
-    }
-    return childrenList;
   }
 
   /**
@@ -255,17 +340,6 @@ public class PersonService implements IPersonService {
     }
     LOGGER.debug("Collection of PersonForFloodDTOs created.");
     return personsToReturn;
-  }
-
-  private Collection<PersonForFloodDTO> convertPersonsToPersonForFloodDTOs(
-    Collection<Person> persons) {
-    Collection<PersonForFloodDTO> personForFloodDTOCollection = new ArrayList<>();
-    for (Person person : persons) {
-      personForFloodDTOCollection.add(
-        convertPersonToPersonForFloodDTO(person)
-      );
-    }
-    return personForFloodDTOCollection;
   }
 
   /**
@@ -337,50 +411,6 @@ public class PersonService implements IPersonService {
       LOGGER.debug("The collection of persons has been properly extracted.");
       return persons;
     }
-  }
-
-  /**
-   * This method converts a Person object into a PersonForFloodDTO Object
-   *
-   * @param person A Person object to be converted.
-   * @return A PersonForFloodDTO Object from a Peron Object.
-   */
-  private PersonForFloodDTO convertPersonToPersonForFloodDTO(Person person) {
-    PersonForFloodDTO personForFloodDTO = new PersonForFloodDTO();
-
-    personForFloodDTO.setFirstName(person.getFirstName());
-    personForFloodDTO.setLastName(person.getLastName());
-    personForFloodDTO.setPhone(person.getPhone());
-    personForFloodDTO.setAge(ageService.getAge(person.getBirthDate()));
-    personForFloodDTO.setMedicalRecords(
-      iMedicalRecordsService.getMedicalRecords(person)
-    );
-
-    return personForFloodDTO;
-  }
-
-  /**
-   * Convert a JsonPerson into a Person Object. For the purpose of the exercise the address given
-   * is always in Culver with zip code 97451 and the birthdate is null (provided by a medicalrecord
-   * object).
-   *
-   * @param jsonPerson is the JsonPerson Object to convert
-   * @return a Peron object with null birthdate and an address located in Culver 97451.
-   */
-  private Person convertJsonPersonIntoPerson(JsonPerson jsonPerson) {
-    Person person = new Person();
-    person.setFirstName(jsonPerson.getFirstName());
-    person.setLastName(jsonPerson.getLastName());
-    person.setPhone(jsonPerson.getPhone());
-    person.setEmail(jsonPerson.getEmail());
-    person.setBirthDate(null);
-
-    Address addressToSet = new Address();
-    addressToSet.setRoad(jsonPerson.getAddress());
-    addressToSet.setCity(jsonPerson.getCity());
-    addressToSet.setZipCode(jsonPerson.getZip());
-    person.setAddress(addressToSet);
-    return person;
   }
 
   /**
@@ -498,36 +528,6 @@ public class PersonService implements IPersonService {
   }
 
   /**
-   * Update the birthdate of a person to new values in DB from the person, and the birthdate found
-   * in a jsonMedicalRecord object.
-   *
-   * @param jsonMedicalRecord A jsonMedicalRecord object used to find the person in DB.
-   * @return A Person object with a null birthdate.
-   */
-  private Person updateBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
-    Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
-
-    if (!jsonMedicalRecord.getBirthdate().equals(personConcerned.getBirthDate()) && !jsonMedicalRecord.getBirthdate().isBlank()) {
-      personConcerned.setBirthDate(jsonMedicalRecord.getBirthdate());
-      personConcerned = save(personConcerned);
-    }
-    return personConcerned;
-  }
-
-  /**
-   * Set the birthdate of a person to null in DB from the person found in a jsonMedicalRecord object.
-   *
-   * @param jsonMedicalRecord A jsonMedicalRecord object used to find the person in DB.
-   * @return A Person object with a null birthdate.
-   */
-  private Person deleteBirthDateFromJsonMedicalRecords(JsonMedicalRecord jsonMedicalRecord) {
-    Person personConcerned = getByFirstNameAndLastName(jsonMedicalRecord.getFirstName(), jsonMedicalRecord.getLastName());
-    personConcerned.setBirthDate(null);
-    personConcerned = save(personConcerned);
-    return personConcerned;
-  }
-
-  /**
    * This method creates a medical record for a specific person found from a jsonMedicalRecord. It
    * works only if the person provided in jsonMedicalRecord already exists and it has no birthdate
    * and no allergies and no medications already informed in DB.
@@ -625,8 +625,6 @@ public class PersonService implements IPersonService {
       iMedicalRecordsService.deletePersonsMedicationsFromPerson(personConcerned);
       //delete existing allergies
       iMedicalRecordsService.deletePersonsAllergiesFromPerson(personConcerned);
-
-      MedicalRecordsDTO deletedMedicalRecordsDTO = iMedicalRecordsService.getMedicalRecords(personConcerned);
 
       List<String> deletedMedications = new ArrayList<>();
 

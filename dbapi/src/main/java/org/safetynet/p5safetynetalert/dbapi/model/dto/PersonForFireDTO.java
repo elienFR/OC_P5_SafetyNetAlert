@@ -9,6 +9,8 @@ public class PersonForFireDTO {
   private String phone;
   private MedicalRecordsDTO medicalRecords;
 
+  public PersonForFireDTO(){}
+
   public PersonForFireDTO(String firstName, String lastName, String phone, MedicalRecordsDTO medicalRecords) {
     this.firstName = firstName;
     this.lastName = lastName;

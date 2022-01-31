@@ -27,7 +27,7 @@ public class PersonRestController {
    * @return the JsonPerson object of the saved Person.
    */
   @PostMapping("")
-  public JsonPerson postPerson(@RequestBody JsonPerson newJsonPerson) {
+  public JsonPerson postPerson(@RequestBody(required = false) JsonPerson newJsonPerson) {
     if (newJsonPerson != null) {
       LOGGER.info("POST request made on url /person.");
       JsonPerson postedJsonPerson = iPersonService.createPerson(newJsonPerson);
@@ -52,7 +52,7 @@ public class PersonRestController {
    * @return the serialized updated person.
    */
   @PutMapping("")
-  public JsonPerson putPerson(@RequestBody JsonPerson putJsonPerson) {
+  public JsonPerson putPerson(@RequestBody(required = false) JsonPerson putJsonPerson) {
     LOGGER.info("PUT request made on url /person.");
     if (putJsonPerson == null) {
       throw new ResponseStatusException(
@@ -76,7 +76,7 @@ public class PersonRestController {
    * @param jsonPerson the json person object you want to update in database.
    */
   @DeleteMapping("")
-  public void deletePerson(@RequestBody JsonPerson jsonPerson) {
+  public void deletePerson(@RequestBody(required = false) JsonPerson jsonPerson) {
     LOGGER.info("DELETE request made on url /person.");
     if (jsonPerson == null) {
       throw new ResponseStatusException(

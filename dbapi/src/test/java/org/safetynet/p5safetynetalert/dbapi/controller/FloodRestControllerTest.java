@@ -54,11 +54,24 @@ public class FloodRestControllerTest {
 
     MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
       .get("/flood/stations")
-//      .param("stations","1,2,3")
       .params(params)
       .contentType(MediaType.APPLICATION_JSON);
 
     mockMvc.perform(builder).andExpect(status().isOk());
+
+  }
+
+  @Test
+  public void getPersonsFloodDTOFromFireStationsTestNull() throws Exception {
+    MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+    params.add("stations", "null");
+
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+      .get("/flood/stations")
+      .params(params)
+      .contentType(MediaType.APPLICATION_JSON);
+
+    mockMvc.perform(builder).andExpect(status().isNotFound());
 
   }
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.ChildFromAddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.service.urls.ChildAlertService;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
+import org.safetynet.p5safetynetalert.dbapi.service.urls.IChildAlertService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -26,12 +27,12 @@ public class ChildAlertRestControllerTest {
   private IJsonDataInjectorService IJsonDataInjectorService;
 
   @MockBean
-  private ChildAlertService childAlertService;
+  private IChildAlertService iChildAlertService;
 
   @BeforeEach
   public void iniTest() throws Exception {
     ChildFromAddressDTO children = new ChildFromAddressDTO();
-    when(childAlertService.getChildrenFromAddress("test")).thenReturn(children);
+    when(iChildAlertService.getChildrenFromAddress("test")).thenReturn(children);
   }
 
   @Test
@@ -64,5 +65,38 @@ public class ChildAlertRestControllerTest {
 
     //THEN
     mockMvc.perform(builder).andExpect(status().isBadRequest());
+  }
+
+  @Test
+  public void getChildrenFromBlankAddress() throws Exception {
+    //GIVEN
+    //in initTest()
+    //road used is "test"
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+      .get("/childAlert")
+      .param("address", "")
+      .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isNoContent());
+  }
+
+  @Test
+  public void getChildrenFromAddressNotFound() throws Exception {
+    //GIVEN
+    //in initTest()
+    //road used is "test"
+    when(iChildAlertService.getChildrenFromAddress("test")).thenReturn(null);
+
+    //WHEN
+    MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+      .get("/childAlert")
+      .param("address", "test")
+      .contentType(MediaType.APPLICATION_JSON);
+
+    //THEN
+    mockMvc.perform(builder).andExpect(status().isNotFound());
   }
 }
