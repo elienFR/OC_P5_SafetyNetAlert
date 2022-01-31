@@ -122,14 +122,11 @@ public class AddressServiceTest {
   @Test
   public void saveTestNull() {
     //given
-    Address givenAddress = new Address();
-    Address expected = null;
-    when(addressRepositoryMocked.save(givenAddress)).thenReturn(null);
+    Address givenAddress = null;
     //when
     Address result = iAddressService.save(givenAddress);
     //then
-    assertThat(result).isEqualTo(expected);
-    verify(addressRepositoryMocked, Mockito.times(1)).save(givenAddress);
+    assertThat(result).isNull();
   }
 
   @Test

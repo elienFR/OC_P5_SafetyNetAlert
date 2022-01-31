@@ -18,12 +18,18 @@ public class PersonsAllergyService implements IPersonsAllergyService {
   @Autowired
   private PersonsAllergyRepository personsAllergyRepository;
 
+
+  private Iterable<PersonsAllergy> getAllFromPerson(Person person) {
+    return personsAllergyRepository.findAllByPerson(person);
+  }
+
   /**
    * This method creates a list of allergy strings from a persons medications Iterable.
    *
    * @param personsAllergies is the person's allergies Iterable
    * @return see description.
    */
+  @Override
   public List<String> getAllergiesFromPersonsMedications(
     Iterable<PersonsAllergy> personsAllergies) {
     LOGGER.debug("Getting persons' allergies...");
@@ -40,6 +46,7 @@ public class PersonsAllergyService implements IPersonsAllergyService {
    *
    * @param personsAllergies Iterable of PersonsAllergy to delete from DB.
    */
+  @Override
   public void delete(Iterable<PersonsAllergy> personsAllergies) {
     personsAllergyRepository.deleteAll(personsAllergies);
   }
@@ -53,10 +60,6 @@ public class PersonsAllergyService implements IPersonsAllergyService {
   @Override
   public PersonsAllergy save(PersonsAllergy personsAllergy) {
     return personsAllergyRepository.save(personsAllergy);
-  }
-
-  private Iterable<PersonsAllergy> getAllFromPerson(Person person) {
-    return personsAllergyRepository.findAllByPerson(person);
   }
 
   /**
