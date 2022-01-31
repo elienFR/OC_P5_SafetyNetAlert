@@ -37,6 +37,10 @@ public class Address {
     return persons;
   }
 
+  public void setPersons(Collection<Person> persons) {
+    this.persons = persons;
+  }
+
   public void setId(Integer id) {
     this.id = id;
   }

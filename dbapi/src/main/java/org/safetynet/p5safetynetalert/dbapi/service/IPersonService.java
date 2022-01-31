@@ -79,7 +79,7 @@ public interface IPersonService {
    * @param address is the address where to extract ChildrenDTO
    * @return A collection of ChildDTO
    */
-  Iterable<ChildDTO> getChildrenDTO(Address address);
+  Collection<ChildDTO> getChildrenDTO(Address address);
 
   /**
    * This method returns a collection of adults DTO from an Address
@@ -87,7 +87,7 @@ public interface IPersonService {
    * @param address is the address where to extract ChildrenDTO
    * @return A collection of AdultDTO
    */
-  Iterable<PersonDTO> getAdultsDTO(Address address);
+  Collection<PersonDTO> getAdultsDTO(Address address);
 
   /**
    * This method returns a Collection of Person found in a specific address.

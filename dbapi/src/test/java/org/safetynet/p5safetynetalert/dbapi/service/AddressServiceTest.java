@@ -2,6 +2,7 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.AddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
@@ -153,6 +154,19 @@ public class AddressServiceTest {
     //then
     assertThat(result).isEqualTo(expected);
     verify(addressRepositoryMocked,Mockito.times(0)).findAllByCity(givenCity);
+  }
+
+  @Test
+  public void convertAddressToAddressDTO(){
+    //given
+    Address givenAddress = new Address("rue poitier","nantes","44000",null);
+    AddressDTO expected = new AddressDTO("rue poitier","nantes","44000");
+    //when
+    AddressDTO result = iAddressService.convertAddressToAddressDTO(givenAddress);
+    //then
+    assertThat(result.getRoad()).isEqualTo(givenAddress.getRoad());
+    assertThat(result.getCity()).isEqualTo(givenAddress.getCity());
+    assertThat(result.getZip()).isEqualTo(givenAddress.getZipCode());
   }
 
 }

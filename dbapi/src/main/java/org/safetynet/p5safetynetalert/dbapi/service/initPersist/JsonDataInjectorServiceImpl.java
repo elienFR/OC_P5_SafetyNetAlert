@@ -76,13 +76,13 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
     List<Allergy> myList = new ArrayList<>();
 
     //create a unique set
-    int length = jsonData.getMedicalRecords().getMedicalRecords().size();
+    int length = jsonData.getMedicalRecords().getMedicalrecords().size();
     for (int i = 0; i < length; i++) {
-      int subLength = jsonData.getMedicalRecords().getMedicalRecords().get(i).getAllergies()
+      int subLength = jsonData.getMedicalRecords().getMedicalrecords().get(i).getAllergies()
           .size();
       for (int j = 0; j < subLength; j++) {
         String stringToAdd = jsonData.getMedicalRecords()
-            .getMedicalRecords()
+            .getMedicalrecords()
             .get(i)
             .getAllergies()
             .get(j);
@@ -155,7 +155,7 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
       personToAdd.setAddress(addressToAdd);
 
       //Setting BirthDate
-      for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalRecords()) {
+      for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()) {
         if (jsonMedicalRecord.getFirstName().equals(jsonPerson.getFirstName())
             && jsonMedicalRecord.getLastName().equals(jsonPerson.getLastName())) {
           personToAdd.setBirthDate(jsonMedicalRecord.getBirthdate());
@@ -197,12 +197,12 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
     List<Medication> myList = new ArrayList<>();
 
     //Create a unique set
-    int length = jsonData.getMedicalRecords().getMedicalRecords().size();
+    int length = jsonData.getMedicalRecords().getMedicalrecords().size();
     for (int i = 0; i < length; i++) {
-      int subLength = jsonData.getMedicalRecords().getMedicalRecords().get(i).getMedications().size();
+      int subLength = jsonData.getMedicalRecords().getMedicalrecords().get(i).getMedications().size();
       for (int j = 0; j < subLength; j++) {
         String stringToAdd = jsonData.getMedicalRecords()
-            .getMedicalRecords()
+            .getMedicalrecords()
             .get(i)
             .getMedications()
             .get(j);
@@ -227,7 +227,7 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
 
     Set<String> mySet = new TreeSet<>();
     //Analyse each line in data.json concerning Medical records
-    for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalRecords()) {
+    for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()) {
       //Constructing unique key
       String firstName = jsonMedicalRecord.getFirstName();
       String lastName = jsonMedicalRecord.getLastName();
@@ -259,7 +259,7 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
 
     Set<String> mySet = new TreeSet<>();
     //Analyse each line in data.json concerning Medical records
-    for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalRecords()) {
+    for (JsonMedicalRecord jsonMedicalRecord : jsonData.getMedicalRecords().getMedicalrecords()) {
       //Constructing unique key
       String firstName = jsonMedicalRecord.getFirstName();
       String lastName = jsonMedicalRecord.getLastName();

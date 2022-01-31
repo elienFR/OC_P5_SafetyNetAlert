@@ -2,6 +2,7 @@ package org.safetynet.p5safetynetalert.dbapi.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.safetynet.p5safetynetalert.dbapi.model.dto.AddressDTO;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.repository.AddressRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +111,22 @@ public class AddressService implements IAddressService {
       LOGGER.debug("All addresses properly requested in collection.");
       return addressRepository.findAllByCity(city);
     }
+  }
+
+  /**
+   * This method converts an address into an addressDTO
+   *
+   * @param address is the adress to be converted
+   * @return is the output addressDTO
+   */
+  @Override
+  public AddressDTO convertAddressToAddressDTO(Address address){
+    AddressDTO addressDTO = new AddressDTO();
+    addressDTO.setRoad(address.getRoad());
+    addressDTO.setCity(address.getCity());
+    addressDTO.setZip(address.getZipCode());
+
+    return addressDTO;
   }
 
 }
