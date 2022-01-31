@@ -45,7 +45,6 @@ public class PersonRestControllerTest {
   @Test
   public void postPersonTestWithNullPostedJsonPerson() throws Exception{
     //GIVEN
-    JsonPerson jsonPerson = new JsonPerson();
     String jsonStringTested = "";
 
     //WHEN
