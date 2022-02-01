@@ -34,5 +34,5 @@ public interface IPersonsMedicationService {
    *
    * @param personsMedications Iterable of PersonsMedication to delete from DB.
    */
-  void delete(Iterable<PersonsMedication> personsMedications);
+  void deleteAll(Iterable<PersonsMedication> personsMedications);
 }

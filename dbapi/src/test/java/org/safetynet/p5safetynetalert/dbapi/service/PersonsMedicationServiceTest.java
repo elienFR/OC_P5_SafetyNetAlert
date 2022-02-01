@@ -58,7 +58,7 @@ public class PersonsMedicationServiceTest {
     //given
     Iterable<PersonsMedication> givenPersonsMedicationList = new ArrayList<>();
     //when
-    iPersonsMedicationService.delete(givenPersonsMedicationList);
+    iPersonsMedicationService.deleteAll(givenPersonsMedicationList);
     //then
     verify(personsMedicationRepository, Mockito.times(1)).deleteAll(givenPersonsMedicationList);
   }

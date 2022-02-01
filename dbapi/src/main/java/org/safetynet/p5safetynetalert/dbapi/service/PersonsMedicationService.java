@@ -46,7 +46,7 @@ public class PersonsMedicationService implements IPersonsMedicationService {
    *
    * @param personsMedications Iterable of PersonsMedication to delete from DB.
    */
-  public void delete(Iterable<PersonsMedication> personsMedications) {
+  public void deleteAll(Iterable<PersonsMedication> personsMedications) {
     personsMedicationRepository.deleteAll(personsMedications);
   }
 

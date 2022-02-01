@@ -34,5 +34,5 @@ public interface IPersonsAllergyService {
    *
    * @param personsAllergies Iterable of PersonsAllergy to delete from DB.
    */
-  void delete(Iterable<PersonsAllergy> personsAllergies);
+  void deleteAll(Iterable<PersonsAllergy> personsAllergies);
 }

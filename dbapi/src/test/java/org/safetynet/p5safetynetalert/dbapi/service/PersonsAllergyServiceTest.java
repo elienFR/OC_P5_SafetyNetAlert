@@ -55,7 +55,7 @@ public class PersonsAllergyServiceTest {
     //given
     Iterable<PersonsAllergy> givenPersonsAllergyList = new ArrayList<>();
     //when
-    iPersonsAllergyService.delete(givenPersonsAllergyList);
+    iPersonsAllergyService.deleteAll(givenPersonsAllergyList);
     //then
     verify(personsAllergyRepository, Mockito.times(1)).deleteAll(givenPersonsAllergyList);
   }

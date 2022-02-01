@@ -495,8 +495,8 @@ public class PersonService implements IPersonService {
       if (existsByFirstNameAndLastName(convertJsonPersonIntoPerson(jsonPerson))) {
         Person personToDelete = personRepository
           .findByFirstNameAndLastName(jsonPerson.getFirstName(), jsonPerson.getLastName());
-        iPersonsAllergyService.delete(personToDelete.getPersonsAllergies());
-        iPersonsMedicationService.delete(personToDelete.getPersonsMedications());
+        iPersonsAllergyService.deleteAll(personToDelete.getPersonsAllergies());
+        iPersonsMedicationService.deleteAll(personToDelete.getPersonsMedications());
         personRepository.delete(personToDelete);
 
 

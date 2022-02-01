@@ -6,6 +6,8 @@ import org.mockito.Mockito;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
 import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsAllergy;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsMedication;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
@@ -494,19 +496,163 @@ public class PersonServiceTest {
     assertThat(result).isNull();
   }
 
-  @Disabled
+  @Test
+  public void updatePersonWithJsonPersonTestWithNotExistingPerson() {
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,null,null,null,null,null);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    //when
+    JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    assertThat(result).isNull();
+  }
+
   @Test
   public void updatePersonWithJsonPersonTest() {
-
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    Address updatedAddress = new Address();
+    Person foundPerson = new Person();
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
+    when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(false);
+    when(iAddressServiceMocked.save(any(Address.class))).thenReturn(updatedAddress);
+    //when
+    JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(iAddressServiceMocked,Mockito.times(1)).existsByRoadAndCityAndZipCode(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(1)).save(any(Address.class));
+    verify(personRepositoryMocked,Mockito.times(1)).save(foundPerson);
+    assertThat(result).isEqualTo(givenJsonPerson);
   }
 
-  @Disabled
+  @Test
+  public void updatePersonWithJsonPersonTestWithExistingAddress() {
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    Address updatedAddress = new Address(1,givenJsonPerson.getAddress(),givenJsonPerson.getCity(),givenJsonPerson.getZip(),null);
+    Person foundPerson = new Person(givenFirstName,givenLastName,null,givenJsonPerson.getPhone(),givenJsonPerson.getEmail(),null);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
+    when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(true);
+    when(iAddressServiceMocked.getByRoadAndCityAndZipCode(any(Address.class))).thenReturn(updatedAddress);
+    //when
+    JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(iAddressServiceMocked,Mockito.times(1)).existsByRoadAndCityAndZipCode(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked,Mockito.times(1)).getByRoadAndCityAndZipCode(any(Address.class));
+    verify(personRepositoryMocked,Mockito.times(1)).save(foundPerson);
+    assertThat(result).isEqualTo(givenJsonPerson);
+  }
+
+  @Test
+  public void deleteTestWithNullFirstName() {
+    //given
+    String givenFirstName = null;
+    String givenLastName = "denis";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    //when
+    JsonPerson result = iPersonService.delete(givenJsonPerson);
+    //then
+    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void deleteTestWithBlankFirstName() {
+    //given
+    String givenFirstName = "";
+    String givenLastName = "denis";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    //when
+    JsonPerson result = iPersonService.delete(givenJsonPerson);
+    //then
+    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void deleteTestWithNullLastName() {
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = null;
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    //when
+    JsonPerson result = iPersonService.delete(givenJsonPerson);
+    //then
+    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void deleteTestWithBlankLastName() {
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    //when
+    JsonPerson result = iPersonService.delete(givenJsonPerson);
+    //then
+    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void deleteTestWithNotExistingPerson() {
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    //when
+    JsonPerson result = iPersonService.delete(givenJsonPerson);
+    //then
+    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    assertThat(result).isNull();
+  }
+
   @Test
   public void deleteTest() {
-
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    Collection<PersonsAllergy> givenPersonsAllergies = new ArrayList<>();
+    Collection<PersonsMedication> givenPersonsMedication = new ArrayList<>();
+    Person foundPersonToDelete = new Person(givenFirstName,givenLastName,null,givenJsonPerson.getPhone(),givenJsonPerson.getEmail(),null);
+    foundPersonToDelete.setPersonsAllergies(givenPersonsAllergies);
+    foundPersonToDelete.setPersonsMedications(givenPersonsMedication);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(foundPersonToDelete);
+    //when
+    JsonPerson result = iPersonService.delete(givenJsonPerson);
+    //then
+    verify(iPersonsAllergyServiceMocked,Mockito.times(1)).deleteAll(givenPersonsAllergies);
+    verify(iPersonsMedicationServiceMocked,Mockito.times(1)).deleteAll(givenPersonsMedication);
+    verify(personRepositoryMocked,Mockito.times(1)).delete(foundPersonToDelete);
+    assertThat(result).isEqualTo(givenJsonPerson);
   }
 
-  @Disabled
   @Test
   public void createMedicalRecordsTest() {
 
