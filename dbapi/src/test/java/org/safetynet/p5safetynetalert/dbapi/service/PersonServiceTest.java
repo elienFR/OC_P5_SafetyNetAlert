@@ -1,13 +1,10 @@
 package org.safetynet.p5safetynetalert.dbapi.service;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.safetynet.p5safetynetalert.dbapi.model.dto.*;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.Address;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.Person;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsAllergy;
-import org.safetynet.p5safetynetalert.dbapi.model.entity.PersonsMedication;
+import org.safetynet.p5safetynetalert.dbapi.model.entity.*;
+import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonMedicalRecord;
 import org.safetynet.p5safetynetalert.dbapi.model.initPersist.JsonPerson;
 import org.safetynet.p5safetynetalert.dbapi.repository.PersonRepository;
 import org.safetynet.p5safetynetalert.dbapi.service.initPersist.IJsonDataInjectorService;
@@ -383,18 +380,18 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
 
-    Address expectedAddress = new Address("rue racine","nantes","44000",null);
+    Address expectedAddress = new Address("rue racine", "nantes", "44000", null);
 
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
     when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(expectedAddress)).thenReturn(false);
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(1)).save(any(Person.class));
-    verify(iAddressServiceMocked,Mockito.times(1)).save(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(1)).save(any(Person.class));
+    verify(iAddressServiceMocked, Mockito.times(1)).save(any(Address.class));
     assertThat(result).isEqualTo(givenJsonPerson);
   }
 
@@ -403,13 +400,13 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
 
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    verify(personRepositoryMocked, Mockito.times(0)).save(any(Person.class));
     assertThat(result).isNull();
   }
 
@@ -418,17 +415,17 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
 
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
     when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(true);
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(1)).save(any(Person.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(1)).getByRoadAndCityAndZipCode(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(1)).save(any(Person.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(1)).getByRoadAndCityAndZipCode(any(Address.class));
     assertThat(result).isEqualTo(givenJsonPerson);
   }
 
@@ -437,14 +434,14 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
     assertThat(result).isNull();
   }
 
@@ -453,14 +450,14 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
     assertThat(result).isNull();
   }
 
@@ -469,14 +466,14 @@ public class PersonServiceTest {
     //given
     String givenFirstName = null;
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
     assertThat(result).isNull();
   }
 
@@ -485,14 +482,14 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = null;
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(0)).save(any(Person.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).getByRoadAndCityAndZipCode(any(Address.class));
     assertThat(result).isNull();
   }
 
@@ -501,12 +498,12 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,null,null,null,null,null);
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, null, null, null, null, null);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
     //when
     JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     assertThat(result).isNull();
   }
 
@@ -515,20 +512,20 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
     Address updatedAddress = new Address();
     Person foundPerson = new Person();
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
     when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(false);
     when(iAddressServiceMocked.save(any(Address.class))).thenReturn(updatedAddress);
     //when
     JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
-    verify(iAddressServiceMocked,Mockito.times(1)).existsByRoadAndCityAndZipCode(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(1)).save(any(Address.class));
-    verify(personRepositoryMocked,Mockito.times(1)).save(foundPerson);
+    verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
+    verify(iAddressServiceMocked, Mockito.times(1)).existsByRoadAndCityAndZipCode(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(1)).save(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(1)).save(foundPerson);
     assertThat(result).isEqualTo(givenJsonPerson);
   }
 
@@ -537,21 +534,21 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
-    Address updatedAddress = new Address(1,givenJsonPerson.getAddress(),givenJsonPerson.getCity(),givenJsonPerson.getZip(),null);
-    Person foundPerson = new Person(givenFirstName,givenLastName,null,givenJsonPerson.getPhone(),givenJsonPerson.getEmail(),null);
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+    Address updatedAddress = new Address(1, givenJsonPerson.getAddress(), givenJsonPerson.getCity(), givenJsonPerson.getZip(), null);
+    Person foundPerson = new Person(givenFirstName, givenLastName, null, givenJsonPerson.getPhone(), givenJsonPerson.getEmail(), null);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
     when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(true);
     when(iAddressServiceMocked.getByRoadAndCityAndZipCode(any(Address.class))).thenReturn(updatedAddress);
     //when
     JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
     //then
-    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
-    verify(iAddressServiceMocked,Mockito.times(1)).existsByRoadAndCityAndZipCode(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
-    verify(iAddressServiceMocked,Mockito.times(1)).getByRoadAndCityAndZipCode(any(Address.class));
-    verify(personRepositoryMocked,Mockito.times(1)).save(foundPerson);
+    verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
+    verify(iAddressServiceMocked, Mockito.times(1)).existsByRoadAndCityAndZipCode(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(0)).save(any(Address.class));
+    verify(iAddressServiceMocked, Mockito.times(1)).getByRoadAndCityAndZipCode(any(Address.class));
+    verify(personRepositoryMocked, Mockito.times(1)).save(foundPerson);
     assertThat(result).isEqualTo(givenJsonPerson);
   }
 
@@ -560,13 +557,13 @@ public class PersonServiceTest {
     //given
     String givenFirstName = null;
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
     //then
-    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked, Mockito.times(0)).delete(any(Person.class));
     assertThat(result).isNull();
   }
 
@@ -575,13 +572,13 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
     //then
-    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked, Mockito.times(0)).delete(any(Person.class));
     assertThat(result).isNull();
   }
 
@@ -590,13 +587,13 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = null;
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
     //then
-    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked, Mockito.times(0)).delete(any(Person.class));
     assertThat(result).isNull();
   }
 
@@ -605,13 +602,13 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
     //then
-    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked, Mockito.times(0)).delete(any(Person.class));
     assertThat(result).isNull();
   }
 
@@ -620,14 +617,14 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(false);
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
     //then
-    verify(iPersonsAllergyServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(iPersonsMedicationServiceMocked,Mockito.times(0)).deleteAll(any(Iterable.class));
-    verify(personRepositoryMocked,Mockito.times(0)).delete(any(Person.class));
+    verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
+    verify(personRepositoryMocked, Mockito.times(0)).delete(any(Person.class));
     assertThat(result).isNull();
   }
 
@@ -636,39 +633,271 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName,givenLastName,"rue racine","nantes","44000","123","mail@mail.com");
+    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
     Collection<PersonsAllergy> givenPersonsAllergies = new ArrayList<>();
     Collection<PersonsMedication> givenPersonsMedication = new ArrayList<>();
-    Person foundPersonToDelete = new Person(givenFirstName,givenLastName,null,givenJsonPerson.getPhone(),givenJsonPerson.getEmail(),null);
+    Person foundPersonToDelete = new Person(givenFirstName, givenLastName, null, givenJsonPerson.getPhone(), givenJsonPerson.getEmail(), null);
     foundPersonToDelete.setPersonsAllergies(givenPersonsAllergies);
     foundPersonToDelete.setPersonsMedications(givenPersonsMedication);
-    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(true);
-    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(foundPersonToDelete);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPersonToDelete);
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
     //then
-    verify(iPersonsAllergyServiceMocked,Mockito.times(1)).deleteAll(givenPersonsAllergies);
-    verify(iPersonsMedicationServiceMocked,Mockito.times(1)).deleteAll(givenPersonsMedication);
-    verify(personRepositoryMocked,Mockito.times(1)).delete(foundPersonToDelete);
+    verify(iPersonsAllergyServiceMocked, Mockito.times(1)).deleteAll(givenPersonsAllergies);
+    verify(iPersonsMedicationServiceMocked, Mockito.times(1)).deleteAll(givenPersonsMedication);
+    verify(personRepositoryMocked, Mockito.times(1)).delete(foundPersonToDelete);
     assertThat(result).isEqualTo(givenJsonPerson);
   }
 
   @Test
-  public void createMedicalRecordsTest() {
-
+  public void createMedicalRecordsTestWithNotExistingPerson() {
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    List<String> givenMedications = new ArrayList<>();
+    List<String> givenAllergies = new ArrayList<>();
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+    //when
+    JsonMedicalRecord result = iPersonService.createMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(personRepositoryMocked,Mockito.times(0)).findByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).getMedicalRecords(any(Person.class));
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).existsFromPerson(any(Person.class));
+    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createMedicationsFromJsonPerson(any(JsonMedicalRecord.class),any(Person.class));
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createAllergiesFromJsonPerson(any(JsonMedicalRecord.class),any(Person.class));
+    assertThat(result).isNull();
   }
 
-  @Disabled
+  @Test
+  public void createMedicalRecordsTestWithAlreadyExistingMedicalRecord() {
+    //given
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
+    MedicalRecordsDTO givenMedicalRecordDTO = new MedicalRecordsDTO();
+    givenMedicalRecordDTO.setMedications(givenMedications);
+    givenMedicalRecordDTO.setAllergies(givenAllergies);
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, givenJsonMedicalRecord.getBirthdate(), "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(foundPerson);
+    when(iMedicalRecordsServiceMocked.getMedicalRecords(foundPerson)).thenReturn(givenMedicalRecordDTO);
+    when(iMedicalRecordsServiceMocked.existsFromPerson(foundPerson)).thenReturn(true);
+    //when
+    JsonMedicalRecord result = iPersonService.createMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(personRepositoryMocked,Mockito.times(1)).findByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(2)).getMedicalRecords(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).existsFromPerson(foundPerson);
+    verify(personRepositoryMocked,Mockito.times(0)).save(any(Person.class));
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createMedicationsFromJsonPerson(any(JsonMedicalRecord.class),any(Person.class));
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createAllergiesFromJsonPerson(any(JsonMedicalRecord.class),any(Person.class));
+    assertThat(result).isNull();
+  }
+
+  @Test
+  public void createMedicalRecordsTestWithNonExistingMedicalRecord() {
+    //given
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
+
+    List<String> existingMedications = new ArrayList<>();
+    List<String> existingAllergies = new ArrayList<>();
+    MedicalRecordsDTO existingMedicalRecordsDTO = new MedicalRecordsDTO();
+    existingMedicalRecordsDTO.setMedications(existingMedications);
+    existingMedicalRecordsDTO.setAllergies(existingAllergies);
+
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, givenJsonMedicalRecord.getBirthdate(), "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(foundPerson);
+    when(iMedicalRecordsServiceMocked.getMedicalRecords(foundPerson)).thenReturn(existingMedicalRecordsDTO);
+    when(iMedicalRecordsServiceMocked.existsFromPerson(foundPerson)).thenReturn(false);
+    //when
+    JsonMedicalRecord result = iPersonService.createMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(personRepositoryMocked,Mockito.times(2)).findByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(2)).getMedicalRecords(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).existsFromPerson(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).createMedicationsFromJsonPerson(givenJsonMedicalRecord,foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).createAllergiesFromJsonPerson(givenJsonMedicalRecord,foundPerson);
+    assertThat(result).isEqualTo(givenJsonMedicalRecord);
+  }
+
+  @Test
+  public void createMedicalRecordsTestWithExistingMedicalRecord() {
+    //given
+
+    List<String> existingMedications = new ArrayList<>(List.of("existingMed"));
+    List<String> existingAllergies = new ArrayList<>(List.of("existingAllergy"));
+    MedicalRecordsDTO existingMedicalRecordsDTO = new MedicalRecordsDTO();
+    existingMedicalRecordsDTO.setMedications(existingMedications);
+    existingMedicalRecordsDTO.setAllergies(existingAllergies);
+
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
+
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, givenJsonMedicalRecord.getBirthdate(), "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName,givenLastName)).thenReturn(foundPerson);
+    when(iMedicalRecordsServiceMocked.getMedicalRecords(foundPerson)).thenReturn(existingMedicalRecordsDTO);
+    when(iMedicalRecordsServiceMocked.existsFromPerson(foundPerson)).thenReturn(false);
+    //when
+    JsonMedicalRecord result = iPersonService.createMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(personRepositoryMocked,Mockito.times(2)).findByFirstNameAndLastName(givenFirstName,givenLastName);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(2)).getMedicalRecords(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).existsFromPerson(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createMedicationsFromJsonPerson(givenJsonMedicalRecord,foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createAllergiesFromJsonPerson(givenJsonMedicalRecord,foundPerson);
+    assertThat(result).isEqualTo(givenJsonMedicalRecord);
+  }
+
+  @Test
+  public void updateMedicalRecordsTestWithNonExistingPerson() {
+    //given
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
+
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, givenJsonMedicalRecord.getBirthdate(), "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+    //when
+    JsonMedicalRecord result = iPersonService.updateMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).deletePersonsMedicationsFromPerson(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createMedicationsFromJsonPerson(givenJsonMedicalRecord, foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).deletePersonsAllergiesFromPerson(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).createAllergiesFromJsonPerson(givenJsonMedicalRecord, foundPerson);
+    assertThat(result).isNull();
+  }
+
   @Test
   public void updateMedicalRecordsTest() {
+    //given
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
 
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, givenJsonMedicalRecord.getBirthdate(), "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
+    //when
+    JsonMedicalRecord result = iPersonService.updateMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).deletePersonsMedicationsFromPerson(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).createMedicationsFromJsonPerson(givenJsonMedicalRecord, foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).deletePersonsAllergiesFromPerson(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).createAllergiesFromJsonPerson(givenJsonMedicalRecord, foundPerson);
+    assertThat(result).isEqualTo(givenJsonMedicalRecord);
   }
 
-  @Disabled
+  @Test
+  public void updateMedicalRecordsTestWithDifferenceInBirthDate() {
+    //given
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
+
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, "someDiffBirthDate", "123", "mail@mail.com",null);
+    Person savedPerson = new Person(givenFirstName, givenLastName, givenJsonMedicalRecord.getBirthdate(), "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
+    when(personRepositoryMocked.save(foundPerson)).thenReturn(savedPerson);
+    //when
+    JsonMedicalRecord result = iPersonService.updateMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
+    verify(personRepositoryMocked,Mockito.times(1)).save(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).deletePersonsMedicationsFromPerson(savedPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).createMedicationsFromJsonPerson(givenJsonMedicalRecord, savedPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).deletePersonsAllergiesFromPerson(savedPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).createAllergiesFromJsonPerson(givenJsonMedicalRecord, savedPerson);
+    assertThat(result).isEqualTo(givenJsonMedicalRecord);
+  }
+
   @Test
   public void deleteMedicalRecordsTest() {
+    //given
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
 
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, "01/01/1965", "123", "mail@mail.com",null);
+    Person updatedPerson = new Person(givenFirstName, givenLastName, "", "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
+    when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
+    when(personRepositoryMocked.save(foundPerson)).thenReturn(updatedPerson);
+    //when
+    JsonMedicalRecord result = iPersonService.deleteMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(1)).save(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).deletePersonsMedicationsFromPerson(updatedPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(1)).deletePersonsAllergiesFromPerson(updatedPerson);
+    assertThat(result.getBirthdate()).isEqualTo("");
+    assertThat(result.getMedications().size()).isEqualTo(0);
+    assertThat(result.getAllergies().size()).isEqualTo(0);
   }
 
+  @Test
+  public void deleteMedicalRecordsTestWithNonExistingPerson() {
+    //given
+    List<String> givenMedications = new ArrayList(List.of("someMed1","someMed2"));
+    List<String> givenAllergies = new ArrayList(List.of("someAllergy1","someAllergy2"));
+
+    String givenFirstName = "emile";
+    String givenLastName = "denis";
+    String givenBirthDate = "01/01/1965";
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications,givenAllergies);
+    Person foundPerson = new Person(givenFirstName, givenLastName, "01/01/1965", "123", "mail@mail.com",null);
+    Person updatedPerson = new Person(givenFirstName, givenLastName, "", "123", "mail@mail.com",null);
+
+    when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+    //when
+    JsonMedicalRecord result = iPersonService.deleteMedicalRecords(givenJsonMedicalRecord);
+    //then
+    verify(personRepositoryMocked,Mockito.times(0)).save(foundPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).deletePersonsMedicationsFromPerson(updatedPerson);
+    verify(iMedicalRecordsServiceMocked,Mockito.times(0)).deletePersonsAllergiesFromPerson(updatedPerson);
+    assertThat(result).isNull();
+  }
 }
 
