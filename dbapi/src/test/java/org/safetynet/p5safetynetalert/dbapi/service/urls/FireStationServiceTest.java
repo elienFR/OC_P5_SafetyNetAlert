@@ -476,5 +476,51 @@ public class FireStationServiceTest {
     assertThat(result).isEqualTo(givenJsonFireStation);
   }
 
+  @Test
+  public void eraseAddressFireStationMappingTestNonExistingAddress() {
+    //given
+    JsonFireStation givenJsonFireStation = new JsonFireStation(
+      "someRoad",
+      "someNumber"
+    );
+
+    when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(false);
+
+    //when
+    JsonFireStation result = iFireStationService.eraseAddressFireStationMapping(givenJsonFireStation);
+
+    //then
+    assertThat(result).isNull();
+    verify(iAddressServiceMocked,Mockito.times(0)).save(any(Address.class));
+  }
+
+  @Test
+  public void eraseAddressFireStationMappingTest() {
+    //given
+    JsonFireStation givenJsonFireStation = new JsonFireStation(
+      "someRoad",
+      "someNumber"
+    );
+
+    when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
+    Address foundAddress = new Address("someRoad","someCity","someZipCode",new FireStation());
+    when(iAddressServiceMocked.getByRoad(givenJsonFireStation.getAddress())).thenReturn(foundAddress);
+    Address addressToSave = foundAddress;
+    addressToSave.setFireStation(null);
+    when(iAddressServiceMocked.save(addressToSave)).thenReturn(any(Address.class));
+
+    JsonFireStation expected = givenJsonFireStation;
+    expected.setStation(null);
+
+    //when
+    JsonFireStation result = iFireStationService.eraseAddressFireStationMapping(givenJsonFireStation);
+
+    //then
+    verify(iAddressServiceMocked,Mockito.times(1)).existsByRoad(givenJsonFireStation.getAddress());
+    verify(iAddressServiceMocked,Mockito.times(1)).getByRoad(givenJsonFireStation.getAddress());
+    verify(iAddressServiceMocked,Mockito.times(1)).save(addressToSave);
+    assertThat(result).isEqualTo(expected);
+  }
+
 
 }
