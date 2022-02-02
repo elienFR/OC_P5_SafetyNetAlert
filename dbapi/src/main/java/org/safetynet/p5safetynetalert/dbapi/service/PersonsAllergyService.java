@@ -47,7 +47,7 @@ public class PersonsAllergyService implements IPersonsAllergyService {
    * @param personsAllergies Iterable of PersonsAllergy to delete from DB.
    */
   @Override
-  public void delete(Iterable<PersonsAllergy> personsAllergies) {
+  public void deleteAll(Iterable<PersonsAllergy> personsAllergies) {
     personsAllergyRepository.deleteAll(personsAllergies);
   }
 
