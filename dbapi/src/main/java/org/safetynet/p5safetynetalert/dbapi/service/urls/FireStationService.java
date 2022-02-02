@@ -216,13 +216,15 @@ public class FireStationService implements IFireStationService {
     LOGGER.debug("Updating fire station in DB...");
     String road = jsonFireStation.getAddress();
     String fireStationNumber = jsonFireStation.getStation();
-    FireStation fireStationToUpdate = null;
+    FireStation fireStationToUpdate;
 
     //If the fire station has properly been filled
     if (fireStationNumber != null && !fireStationNumber.isBlank()) {
       //If it does not already exist in DB
       if (!existsByNumber(fireStationNumber)) {
         fireStationToUpdate = save(new FireStation(fireStationNumber));
+      } else {
+        fireStationToUpdate = getByNumber(jsonFireStation.getStation());
       }
     } else {
       LOGGER.warn("Fire station from json file is null or blank.");
