@@ -26,6 +26,10 @@ public class FireStation {
     return addresses;
   }
 
+  public void setAddresses(Collection<Address> addresses) {
+    this.addresses = addresses;
+  }
+
   public String getNumber() {
     return number;
   }
