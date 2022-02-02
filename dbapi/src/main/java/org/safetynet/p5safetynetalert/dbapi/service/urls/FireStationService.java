@@ -47,7 +47,7 @@ public class FireStationService implements IFireStationService {
    * @param fireStation is the object to be saved.
    * @return the saved object.
    */
-  public FireStation save(FireStation fireStation) {
+  private FireStation save(FireStation fireStation) {
     if (fireStation == null) {
       LOGGER.warn("Fire station given is null");
       return null;
@@ -64,7 +64,7 @@ public class FireStationService implements IFireStationService {
    * @param number is the number to be checked
    * @return a boolean with true for existence and false for nonexistence.
    */
-  public boolean existsByNumber(String number) {
+  private boolean existsByNumber(String number) {
     return fireStationRepository.existsByNumber(number);
   }
 
@@ -216,13 +216,15 @@ public class FireStationService implements IFireStationService {
     LOGGER.debug("Updating fire station in DB...");
     String road = jsonFireStation.getAddress();
     String fireStationNumber = jsonFireStation.getStation();
-    FireStation fireStationToUpdate = null;
+    FireStation fireStationToUpdate;
 
     //If the fire station has properly been filled
     if (fireStationNumber != null && !fireStationNumber.isBlank()) {
       //If it does not already exist in DB
       if (!existsByNumber(fireStationNumber)) {
         fireStationToUpdate = save(new FireStation(fireStationNumber));
+      } else {
+        fireStationToUpdate = getByNumber(jsonFireStation.getStation());
       }
     } else {
       LOGGER.warn("Fire station from json file is null or blank.");

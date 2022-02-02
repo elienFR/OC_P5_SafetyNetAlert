@@ -9,4 +9,13 @@ public class PersonInfoDTO {
   private Integer age;
   private String mail;
   private MedicalRecordsDTO medicalRecords;
+
+  public PersonInfoDTO(){}
+  public PersonInfoDTO(String firstName, String lastName, Integer age, String mail, MedicalRecordsDTO medicalRecords) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.age = age;
+    this.mail = mail;
+    this.medicalRecords = medicalRecords;
+  }
 }
