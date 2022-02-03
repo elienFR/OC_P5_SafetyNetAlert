@@ -49,7 +49,7 @@ public interface IPersonService {
    * This method also saves the address if it does not exist already.
    * And it checks if the person already exists (according to first and last name)
    *
-   * @param newJsonPerson is the JsonPerson to add into DB.
+   * @param jsonPerson is the JsonPerson to add into DB.
    * @return the save JsonPerson
    */
   JsonPerson createPerson(JsonPerson jsonPerson);
@@ -59,7 +59,7 @@ public interface IPersonService {
    * it will return null. If it does, it will update it with the information found in putJsonPerson
    * parameter.
    *
-   * @param putJsonPerson is the JsonPerson you want to update
+   * @param jsonPerson is the JsonPerson you want to update
    * @return null or a JsonPersonObject which has been updated. See description.
    */
   JsonPerson updatePersonWithJsonPerson(JsonPerson jsonPerson);
@@ -82,10 +82,10 @@ public interface IPersonService {
   Collection<ChildDTO> getChildrenDTO(Address address);
 
   /**
-   * This method returns a collection of adults DTO from an Address
+   * This method returns a collection of Person DTO from an Address
    *
    * @param address is the address where to extract ChildrenDTO
-   * @return A collection of AdultDTO
+   * @return A collection of PersonDTO
    */
   Collection<PersonDTO> getAdultsDTO(Address address);
 
@@ -133,7 +133,7 @@ public interface IPersonService {
    * This method returns a collection of string. Each one represent a phone number extracted from a
    * collection of Persons.
    *
-   * @param persons is the collection of persons.
+   * @param personsFromAddresses is the collection of persons.
    * @return is the collection of phone' string.
    */
   Collection<String> getPhones(Collection<Person> personsFromAddresses);

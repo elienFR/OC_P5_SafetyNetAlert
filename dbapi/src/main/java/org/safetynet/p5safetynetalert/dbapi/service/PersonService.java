@@ -339,7 +339,7 @@ public class PersonService implements IPersonService {
    * This method returns a collection of adults DTO from an Address
    *
    * @param address is the address where to extract ChildrenDTO
-   * @return A collection of AdultDTO
+   * @return A collection of PersonDTO
    */
   @Override
   public Collection<PersonDTO> getAdultsDTO(Address address) {

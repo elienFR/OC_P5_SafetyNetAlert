@@ -1,9 +1,13 @@
 package org.safetynet.p5safetynetalert.dbapi.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonFilter;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+import java.util.Objects;
+
+@Getter
+@Setter
 public class PersonDTO {
   private String firstName;
   private String lastName;
@@ -18,5 +22,13 @@ public class PersonDTO {
     this.phone = phone;
     this.birthDate = birthDate;
     this.address = address;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    PersonDTO personDTO = (PersonDTO) o;
+    return Objects.equals(firstName, personDTO.firstName) && Objects.equals(lastName, personDTO.lastName) && Objects.equals(phone, personDTO.phone) && Objects.equals(birthDate, personDTO.birthDate) && Objects.equals(address, personDTO.address);
   }
 }
