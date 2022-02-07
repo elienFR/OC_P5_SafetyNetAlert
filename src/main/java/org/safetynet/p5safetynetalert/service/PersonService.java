@@ -110,12 +110,11 @@ public class PersonService implements IPersonService {
     Collection<ChildDTO> childrenList = new ArrayList<>();
     for (PersonDTO personDTO : personDTOs) {
       if (!ageService.isStrictlyOverEighteen(personDTO.getBirthDate())) {
-        childrenList.add(new ChildDTO(
-            personDTO.getFirstName(),
-            personDTO.getLastName(),
-            ageService.getAge(personDTO.getBirthDate())
-          )
-        );
+        ChildDTO childDTOToAdd = new ChildDTO();
+        childDTOToAdd.setFirstName(personDTO.getFirstName());
+        childDTOToAdd.setLastName(personDTO.getLastName());
+        childDTOToAdd.setAge(ageService.getAge(personDTO.getBirthDate()));
+        childrenList.add(childDTOToAdd);
       }
     }
     return childrenList;
@@ -284,13 +283,12 @@ public class PersonService implements IPersonService {
     LOGGER.debug("Loading collection of PersonForFireDTOs...");
     List<PersonForFireDTO> personsToAdd = new ArrayList<>();
     for (Person person : persons) {
-      personsToAdd.add(
-        new PersonForFireDTO(
-          person.getFirstName(),
-          person.getLastName(),
-          person.getPhone(),
-          iMedicalRecordsService.getMedicalRecords(person)
-        ));
+      PersonForFireDTO personForFireDTOToAdd = new PersonForFireDTO();
+      personForFireDTOToAdd.setFirstName(person.getFirstName());
+      personForFireDTOToAdd.setLastName(person.getLastName());
+      personForFireDTOToAdd.setPhone(person.getPhone());
+      personForFireDTOToAdd.setMedicalRecords(iMedicalRecordsService.getMedicalRecords(person));
+      personsToAdd.add(personForFireDTOToAdd);
     }
     LOGGER.debug("Collection of PersonForFireDTOs properly loaded.");
     return personsToAdd;

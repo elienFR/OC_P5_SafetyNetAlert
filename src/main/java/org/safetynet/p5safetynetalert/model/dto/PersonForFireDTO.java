@@ -14,13 +14,6 @@ public class PersonForFireDTO {
 
   public PersonForFireDTO(){}
 
-  public PersonForFireDTO(String firstName, String lastName, String phone, MedicalRecordsDTO medicalRecords) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.phone = phone;
-    this.medicalRecords = medicalRecords;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

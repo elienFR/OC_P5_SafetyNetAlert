@@ -18,10 +18,6 @@ public class FireStation {
 
   public FireStation() {};
 
-  public FireStation(String number) {
-    this.number = number;
-  }
-
   public Collection<Address> getAddresses() {
     return addresses;
   }

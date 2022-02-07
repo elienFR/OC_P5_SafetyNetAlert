@@ -19,11 +19,6 @@ public class PersonsAllergy {
   public PersonsAllergy() {
   }
 
-  public PersonsAllergy(Person person, Allergy allergy) {
-    this.person = person;
-    this.allergy = allergy;
-  }
-
   public Allergy getAllergy() {
     return allergy;
   }

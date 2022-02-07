@@ -37,7 +37,10 @@ public class FireServiceTest {
     //given
     String givenRoad = "someRoad";
 
-    Address foundAddress = new Address(null,null,null,new FireStation("4"));
+    FireStation linkedFireStation = new FireStation();
+    linkedFireStation.setNumber("4");
+    Address foundAddress = new Address();
+    foundAddress.setFireStation(linkedFireStation);
     when(iAddressService.getByRoad(givenRoad)).thenReturn(foundAddress);
 
     Collection<Person> foundPersons = new ArrayList<>();

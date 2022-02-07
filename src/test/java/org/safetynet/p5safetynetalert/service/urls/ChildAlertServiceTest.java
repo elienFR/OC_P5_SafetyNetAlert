@@ -49,7 +49,8 @@ public class ChildAlertServiceTest {
     //given
     String givenRoad = "someRoad";
 
-    Address foundAddress = new Address("someRoad",null,null,null);
+    Address foundAddress = new Address();
+    foundAddress.setRoad("someRoad");
     when(iAddressServiceMocked.getByRoad(givenRoad)).thenReturn(foundAddress);
 
     Collection<ChildDTO> createdChildrenAtAddress = new ArrayList<>();

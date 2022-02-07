@@ -32,20 +32,25 @@ public class PersonsMedicationServiceTest {
   public void getMedicationsFromPersonsMedicationsTest() {
     //given
     List<String> expectedContent = new ArrayList<>(List.of("someMeds", "someOtherMeds"));
+
     List<PersonsMedication> givenPersonsMedicationList = new ArrayList<>();
     Person personConcerned = new Person();
-    givenPersonsMedicationList.add(
-      new PersonsMedication(
-        personConcerned,
-        new Medication("someMeds")
-      )
-    );
-    givenPersonsMedicationList.add(
-      new PersonsMedication(
-        personConcerned,
-        new Medication("someOtherMeds")
-      )
-    );
+    
+    Medication linkedMedication1 = new Medication();
+    linkedMedication1.setName("someMeds");
+    PersonsMedication personsMedicationToAdd1 = new PersonsMedication();
+    personsMedicationToAdd1.setPerson(personConcerned);
+    personsMedicationToAdd1.setMedication(linkedMedication1);
+
+    Medication linkedMedication2 = new Medication();
+    linkedMedication2.setName("someOtherMeds");
+    PersonsMedication personsMedicationToAdd2 = new PersonsMedication();
+    personsMedicationToAdd2.setPerson(personConcerned);
+    personsMedicationToAdd2.setMedication(linkedMedication2);
+
+    givenPersonsMedicationList.add(personsMedicationToAdd1);
+    givenPersonsMedicationList.add(personsMedicationToAdd2);
+
     //when
     List<String> result = iPersonsMedicationService.getMedicationsFromPersonsMedications(givenPersonsMedicationList);
     //then
@@ -66,13 +71,24 @@ public class PersonsMedicationServiceTest {
   @Test
   public void saveTest() {
     //given
-    Person givenPerson = new Person("john","doe",null,null,null,null);
-    Medication givenMedication = new Medication("someMeds");
-    PersonsMedication expectedPersonsMedication = new PersonsMedication(givenPerson, givenMedication);
-    PersonsMedication savedPersonsMeds = new PersonsMedication(givenPerson,givenMedication);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+
+    Medication givenMedication = new Medication();
+    givenMedication.setName("someMeds");
+
+    PersonsMedication expectedPersonsMedication = new PersonsMedication();
+    expectedPersonsMedication.setPerson(givenPerson);
+    expectedPersonsMedication.setMedication(givenMedication);
+    PersonsMedication savedPersonsMeds = new PersonsMedication();
+    savedPersonsMeds.setPerson(givenPerson);
+    savedPersonsMeds.setMedication(givenMedication);
     when(personsMedicationRepository.save(savedPersonsMeds)).thenReturn(expectedPersonsMedication);
+
     //when
     PersonsMedication result = iPersonsMedicationService.save(savedPersonsMeds);
+
     //then
     assertThat(result).isEqualTo(expectedPersonsMedication);
     assertThat(result.getMedication().getName()).isEqualTo("someMeds");

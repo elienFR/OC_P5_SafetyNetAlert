@@ -18,10 +18,6 @@ public class Allergy {
 
   public Allergy() {};
 
-  public Allergy(String name) {
-    this.name = name;
-  }
-
   public String getName() {
     return name;
   }

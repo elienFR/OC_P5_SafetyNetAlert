@@ -1,18 +1,17 @@
 package org.safetynet.p5safetynetalert.model.dto;
 
 
+import lombok.Setter;
+
 import java.util.Objects;
 
+@Setter
 public class ChildDTO {
   private String firstName;
   private String lastName;
   private Integer age;
 
-   public ChildDTO(String firstName, String lastName, Integer age) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.age = age;
-  }
+   public ChildDTO() {}
 
   @Override
   public boolean equals(Object o) {

@@ -27,16 +27,6 @@ public class Person {
 
   public Person() {};
 
-  public Person(String firstName, String lastName, String birthDate,
-                String phone, String email, Address address) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.birthDate = birthDate;
-    this.phone = phone;
-    this.email = email;
-    this.address = address;
-  }
-
   public void setId(Integer id) {
     this.id = id;
   }

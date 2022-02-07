@@ -14,13 +14,6 @@ public class PersonInfoDTO {
   private MedicalRecordsDTO medicalRecords;
 
   public PersonInfoDTO(){}
-  public PersonInfoDTO(String firstName, String lastName, Integer age, String mail, MedicalRecordsDTO medicalRecords) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.age = age;
-    this.mail = mail;
-    this.medicalRecords = medicalRecords;
-  }
 
   @Override
   public boolean equals(Object o) {

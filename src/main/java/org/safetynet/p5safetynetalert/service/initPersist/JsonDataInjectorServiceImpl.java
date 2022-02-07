@@ -92,7 +92,9 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
 
     //generate proper list to insert into DataBase
     for (String allergy : mySet) {
-      myList.add(new Allergy(allergy));
+      Allergy allergyToAdd = new Allergy();
+      allergyToAdd.setName(allergy);
+      myList.add(allergyToAdd);
     }
 
     //Import in H2 DB
@@ -181,7 +183,9 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
     Set<String> mySet = new TreeSet<>();
     for (JsonFireStation jsonFireStation : jsonData.getFireStations().getFirestations()) {
       if (!mySet.contains(jsonFireStation.getStation())) {
-        fireStationRepository.save(new FireStation(jsonFireStation.getStation()));
+        FireStation fireStationToSave = new FireStation();
+        fireStationToSave.setNumber(jsonFireStation.getStation());
+        fireStationRepository.save(fireStationToSave);
       }
       mySet.add(jsonFireStation.getStation());
     }
@@ -212,7 +216,9 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
 
     //Generate proper list to insert into DataBase
     for (String medicationName : mySet) {
-      myList.add(new Medication(medicationName));
+      Medication medicationToAdd = new Medication();
+      medicationToAdd.setName(medicationName);
+      myList.add(medicationToAdd);
     }
 
     //Import in H2 DB
@@ -243,7 +249,10 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
         //Recover each medication for one person
         for (String medicationName : jsonMedicalRecord.getMedications()) {
           Medication medicationToAdd = medicationRepository.findByName(medicationName);
-          personsMedicationRepository.save(new PersonsMedication(personToAdd, medicationToAdd));
+          PersonsMedication personsMedicationToSave = new PersonsMedication();
+          personsMedicationToSave.setPerson(personToAdd);
+          personsMedicationToSave.setMedication(medicationToAdd);
+          personsMedicationRepository.save(personsMedicationToSave);
         }
       }
 
@@ -275,7 +284,10 @@ public class JsonDataInjectorServiceImpl implements IJsonDataInjectorService {
         //Recover each allergy for one person
         for (String allergy : jsonMedicalRecord.getAllergies()) {
           Allergy allergyToAdd = allergyRepository.findByName(allergy);
-          personsAllergyRepository.save(new PersonsAllergy(personToAdd, allergyToAdd));
+          PersonsAllergy personsAllergyToSave = new PersonsAllergy();
+          personsAllergyToSave.setPerson(personToAdd);
+          personsAllergyToSave.setAllergy(allergyToAdd);
+          personsAllergyRepository.save(personsAllergyToSave);
         }
       }
       mySet.add(uniqueKey);

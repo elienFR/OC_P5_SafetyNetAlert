@@ -19,11 +19,6 @@ public class PersonsMedication {
   public PersonsMedication() {
   }
 
-  public PersonsMedication(Person person, Medication medication) {
-    this.person = person;
-    this.medication = medication;
-  }
-
   public Person getPerson() {
     return person;
   }

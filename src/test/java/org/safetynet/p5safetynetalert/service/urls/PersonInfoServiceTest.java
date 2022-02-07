@@ -52,7 +52,11 @@ public class PersonInfoServiceTest {
     String givenFirstName = "firstName";
     String givenLastName = "lastName";
     String givenBirthDate = "someDate";
-    Person foundPerson = new Person("jim", "carrey", givenBirthDate, null, "someMail", null);
+    Person foundPerson = new Person();
+    foundPerson.setFirstName("jim");
+    foundPerson.setLastName("carrey");
+    foundPerson.setBirthDate(givenBirthDate);
+    foundPerson.setEmail("someMail");
     when(iPersonServiceMocked.getByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
 
     when(ageServiceMocked.getAge(foundPerson.getBirthDate())).thenReturn(42);
@@ -60,15 +64,29 @@ public class PersonInfoServiceTest {
     MedicalRecordsDTO foundMedicalRecordForPersonInfoDTO = new MedicalRecordsDTO();
     when(iMedicalRecordsServiceMocked.getMedicalRecords(foundPerson)).thenReturn(foundMedicalRecordForPersonInfoDTO);
 
-    PersonInfoDTO expectedPersonInfoDTO = new PersonInfoDTO(foundPerson.getFirstName(),foundPerson.getLastName(),42,foundPerson.getEmail(),foundMedicalRecordForPersonInfoDTO);
+    PersonInfoDTO expectedPersonInfoDTO = new PersonInfoDTO();
     expectedPersonInfoDTO.setFirstName(foundPerson.getFirstName());
     expectedPersonInfoDTO.setLastName(foundPerson.getLastName());
     expectedPersonInfoDTO.setAge(42);
+    expectedPersonInfoDTO.setMail(foundPerson.getEmail());
     expectedPersonInfoDTO.setMedicalRecords(foundMedicalRecordForPersonInfoDTO);
 
-    Person foundFamilyRelative1 = new Person("remi", "name", givenBirthDate, null, "mail@mail.com", null);
-    Person foundFamilyRelative2 = new Person("jorge", "name", givenBirthDate, null, "mail@mail.com", null);
-    Person foundFamilyRelative3 = new Person("zoe", "name", givenBirthDate, null, "mail@mail.com", null);
+    Person foundFamilyRelative1 = new Person();
+    foundFamilyRelative1.setFirstName("remi");
+    foundFamilyRelative1.setLastName("name");
+    foundFamilyRelative1.setBirthDate(givenBirthDate);
+    foundFamilyRelative1.setEmail("mail@mail.com");
+    Person foundFamilyRelative2 = new Person();
+    foundFamilyRelative2.setFirstName("jorge");
+    foundFamilyRelative2.setLastName("name");
+    foundFamilyRelative2.setBirthDate(givenBirthDate);
+    foundFamilyRelative2.setEmail("mail@mail.com");
+    Person foundFamilyRelative3 = new Person();
+    foundFamilyRelative3.setFirstName("zoe");
+    foundFamilyRelative3.setLastName("name");
+    foundFamilyRelative3.setBirthDate(givenBirthDate);
+    foundFamilyRelative3.setEmail("mail@mail.com");
+    
     Collection<Person> foundFamilyRelatives = new ArrayList<>();
     foundFamilyRelatives.add(foundFamilyRelative1);
     foundFamilyRelatives.add(foundFamilyRelative2);
@@ -78,16 +96,31 @@ public class PersonInfoServiceTest {
 
     MedicalRecordsDTO foundMedicalRecordForFamilyRelative1 = new MedicalRecordsDTO();
     when(iMedicalRecordsServiceMocked.getMedicalRecords(foundFamilyRelative1)).thenReturn(foundMedicalRecordForFamilyRelative1);
-    PersonInfoDTO convertedFamilyRelative1 = new PersonInfoDTO(foundFamilyRelative1.getFirstName(), foundFamilyRelative1.getLastName(), 42, foundFamilyRelative1.getEmail(), foundMedicalRecordForFamilyRelative1);
-
+    PersonInfoDTO convertedFamilyRelative1 = new PersonInfoDTO();
+    convertedFamilyRelative1.setFirstName(foundFamilyRelative1.getFirstName());
+    convertedFamilyRelative1.setLastName(foundFamilyRelative1.getLastName());
+    convertedFamilyRelative1.setAge(42);
+    convertedFamilyRelative1.setMail(foundFamilyRelative1.getEmail());
+    convertedFamilyRelative1.setMedicalRecords(foundMedicalRecordForFamilyRelative1);
+    
     MedicalRecordsDTO foundMedicalRecordForFamilyRelative2 = new MedicalRecordsDTO();
     when(iMedicalRecordsServiceMocked.getMedicalRecords(foundFamilyRelative2)).thenReturn(foundMedicalRecordForFamilyRelative2);
-    PersonInfoDTO convertedFamilyRelative2 = new PersonInfoDTO(foundFamilyRelative2.getFirstName(), foundFamilyRelative2.getLastName(), 42, foundFamilyRelative2.getEmail(), foundMedicalRecordForFamilyRelative2);
-
+    PersonInfoDTO convertedFamilyRelative2 = new PersonInfoDTO();
+    convertedFamilyRelative2.setFirstName(foundFamilyRelative2.getFirstName());
+    convertedFamilyRelative2.setLastName(foundFamilyRelative2.getLastName());
+    convertedFamilyRelative2.setAge(42);
+    convertedFamilyRelative2.setMail(foundFamilyRelative2.getEmail());
+    convertedFamilyRelative2.setMedicalRecords(foundMedicalRecordForFamilyRelative2);
+    
     MedicalRecordsDTO foundMedicalRecordForFamilyRelative3 = new MedicalRecordsDTO();
     when(iMedicalRecordsServiceMocked.getMedicalRecords(foundFamilyRelative3)).thenReturn(foundMedicalRecordForFamilyRelative3);
-    PersonInfoDTO convertedFamilyRelative3 = new PersonInfoDTO(foundFamilyRelative3.getFirstName(), foundFamilyRelative3.getLastName(), 42, foundFamilyRelative3.getEmail(), foundMedicalRecordForFamilyRelative3);
-
+    PersonInfoDTO convertedFamilyRelative3 = new PersonInfoDTO();
+    convertedFamilyRelative3.setFirstName(foundFamilyRelative3.getFirstName());
+    convertedFamilyRelative3.setLastName(foundFamilyRelative3.getLastName());
+    convertedFamilyRelative3.setAge(42);
+    convertedFamilyRelative3.setMail(foundFamilyRelative3.getEmail());
+    convertedFamilyRelative3.setMedicalRecords(foundMedicalRecordForFamilyRelative3);
+    
     Collection<PersonInfoDTO> expectedFamilyRelativesInPersonDTO = new ArrayList<>();
     expectedFamilyRelativesInPersonDTO.add(convertedFamilyRelative1);
     expectedFamilyRelativesInPersonDTO.add(convertedFamilyRelative2);

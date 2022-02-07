@@ -18,10 +18,6 @@ public class Medication {
 
   public Medication() {};
 
-  public Medication(String name) {
-    this.name = name;
-  }
-
   public String getName() {
     return name;
   }

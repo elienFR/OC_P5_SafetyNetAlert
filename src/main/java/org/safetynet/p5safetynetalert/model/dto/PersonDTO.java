@@ -1,9 +1,11 @@
 package org.safetynet.p5safetynetalert.model.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Objects;
+
 
 @Getter
 @Setter
@@ -15,13 +17,6 @@ public class PersonDTO {
   private AddressDTO address;
 
   public PersonDTO(){}
-  public PersonDTO(String firstName, String lastName, String phone, String birthDate, AddressDTO address) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.phone = phone;
-    this.birthDate = birthDate;
-    this.address = address;
-  }
 
   @Override
   public boolean equals(Object o) {

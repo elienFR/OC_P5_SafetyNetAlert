@@ -58,7 +58,8 @@ public class FireStationServiceTest {
     //given
     String givenFireStationNumber = "someNumber";
 
-    FireStation foundFireStation = new FireStation("1");
+    FireStation foundFireStation = new FireStation();
+    foundFireStation.setNumber("1");
     Collection<Address> fireStationAddresses = new ArrayList<>();
     foundFireStation.setAddresses(fireStationAddresses);
     when(fireStationRepositoryMocked.findByNumber(givenFireStationNumber)).thenReturn(foundFireStation);
@@ -107,7 +108,8 @@ public class FireStationServiceTest {
     //given
     String givenFireStationNumber = "someNumber";
 
-    FireStation foundFireStation = new FireStation("1");
+    FireStation foundFireStation = new FireStation();
+    foundFireStation.setNumber("1");
     Collection<Address> fireStationAddresses = new ArrayList<>();
     foundFireStation.setAddresses(fireStationAddresses);
     when(fireStationRepositoryMocked.findByNumber(givenFireStationNumber)).thenReturn(foundFireStation);
@@ -149,7 +151,9 @@ public class FireStationServiceTest {
     //given
     String givenFireStationNumber = "2";
 
-    FireStation foundFireStation = new FireStation("1");
+    FireStation foundFireStation = new FireStation();
+    foundFireStation.setNumber("1");
+
     Collection<Address> fireStationAddresses = new ArrayList<>();
     foundFireStation.setAddresses(fireStationAddresses);
     when(fireStationRepositoryMocked.findByNumber(givenFireStationNumber)).thenReturn(foundFireStation);
@@ -247,9 +251,18 @@ public class FireStationServiceTest {
     );
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
-    Address foundAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", new FireStation("someNumber"));
+    FireStation linkedFireStation = new FireStation();
+    linkedFireStation.setNumber("someNumber");
+    Address foundAddress = new Address();
+    foundAddress.setRoad(givenJsonFireStation.getAddress());
+    foundAddress.setCity("Culver");
+    foundAddress.setZipCode("97451");
+    foundAddress.setFireStation(linkedFireStation);
     when(iAddressServiceMocked.getByRoad(givenJsonFireStation.getAddress())).thenReturn(foundAddress);
-    Address savedAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", null);
+    Address savedAddress = new Address();
+    savedAddress.setRoad(givenJsonFireStation.getAddress());
+    savedAddress.setCity("Culver");
+    savedAddress.setZipCode("97451");
     when(iAddressServiceMocked.save(foundAddress)).thenReturn(savedAddress);
 
 
@@ -273,9 +286,18 @@ public class FireStationServiceTest {
     );
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
-    Address foundAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", new FireStation("someNumber"));
+    FireStation linkedFireStation = new FireStation();
+    linkedFireStation.setNumber("someNumber");
+    Address foundAddress = new Address();
+    foundAddress.setRoad(givenJsonFireStation.getAddress());
+    foundAddress.setCity("Culver");
+    foundAddress.setZipCode("97451");
+    foundAddress.setFireStation(linkedFireStation);
     when(iAddressServiceMocked.getByRoad(givenJsonFireStation.getAddress())).thenReturn(foundAddress);
-    Address savedAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", null);
+    Address savedAddress = new Address();
+    savedAddress.setRoad(givenJsonFireStation.getAddress());
+    savedAddress.setCity("Culver");
+    savedAddress.setZipCode("97451");
     when(iAddressServiceMocked.save(foundAddress)).thenReturn(savedAddress);
 
 
@@ -299,13 +321,23 @@ public class FireStationServiceTest {
     );
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
-    Address foundAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", new FireStation("someNumber"));
+    FireStation linkedFireStation = new FireStation();
+    linkedFireStation.setNumber("someNumber");
+    Address foundAddress = new Address();
+    foundAddress.setRoad(givenJsonFireStation.getAddress());
+    foundAddress.setCity("Culver");
+    foundAddress.setZipCode("97451");
+    foundAddress.setFireStation(linkedFireStation);
     when(iAddressServiceMocked.getByRoad(givenJsonFireStation.getAddress())).thenReturn(foundAddress);
-    Address savedAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", null);
+    Address savedAddress = new Address();
+    savedAddress.setRoad(givenJsonFireStation.getAddress());
+    savedAddress.setCity("Culver");
+    savedAddress.setZipCode("97451");
     when(iAddressServiceMocked.save(foundAddress)).thenReturn(savedAddress);
 
     when(fireStationRepositoryMocked.existsByNumber(givenJsonFireStation.getStation())).thenReturn(false);
-    FireStation savedFireStation = new FireStation(givenJsonFireStation.getStation());
+    FireStation savedFireStation = new FireStation();
+    savedFireStation.setNumber(givenJsonFireStation.getStation());
     when(fireStationRepositoryMocked.save(any(FireStation.class))).thenReturn(savedFireStation);
 
     //when
@@ -329,14 +361,25 @@ public class FireStationServiceTest {
     );
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
-    Address foundAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", new FireStation("someNumber"));
+    FireStation linkedFireStation = new FireStation();
+    linkedFireStation.setNumber("someNumber");
+    Address foundAddress = new Address();
+    foundAddress.setRoad(givenJsonFireStation.getAddress());
+    foundAddress.setCity("Culver");
+    foundAddress.setZipCode("97451");
+    foundAddress.setFireStation(linkedFireStation);
     when(iAddressServiceMocked.getByRoad(givenJsonFireStation.getAddress())).thenReturn(foundAddress);
 
     when(fireStationRepositoryMocked.existsByNumber(givenJsonFireStation.getStation())).thenReturn(true);
-    FireStation foundFireStation = new FireStation(givenJsonFireStation.getStation());
+    FireStation foundFireStation = new FireStation();
+    foundFireStation.setNumber(givenJsonFireStation.getStation());
     when(fireStationRepositoryMocked.findByNumber(givenJsonFireStation.getStation())).thenReturn(foundFireStation);
 
-    Address savedAddress = new Address(givenJsonFireStation.getAddress(), "Culver", "97451", foundFireStation);
+    Address savedAddress = new Address();
+    savedAddress.setRoad(givenJsonFireStation.getAddress());
+    savedAddress.setCity("Culver");
+    savedAddress.setZipCode("97451");
+    savedAddress.setFireStation(foundFireStation);
     when(iAddressServiceMocked.save(foundAddress)).thenReturn(savedAddress);
 
     //when
@@ -454,11 +497,16 @@ public class FireStationServiceTest {
     );
 
     when(fireStationRepositoryMocked.existsByNumber(givenJsonFireStation.getStation())).thenReturn(true);
-    FireStation foundFireStation = new FireStation(givenJsonFireStation.getStation());
+    FireStation foundFireStation = new FireStation();
+    foundFireStation.setNumber(givenJsonFireStation.getStation());
     when(fireStationRepositoryMocked.findByNumber(givenJsonFireStation.getStation())).thenReturn(foundFireStation);
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
-    Address foundAddress = new Address("someRoad", "Culver", "SomeZip", new FireStation());
+    Address foundAddress = new Address();
+    foundAddress.setRoad("someRoad");
+    foundAddress.setCity("Culver");
+    foundAddress.setZipCode("SomeZip");
+    foundAddress.setFireStation(new FireStation());
     when(iAddressServiceMocked.getByRoad(givenJsonFireStation.getAddress())).thenReturn(foundAddress);
     Address addressToSave = foundAddress;
     addressToSave.setFireStation(foundFireStation);
@@ -503,7 +551,11 @@ public class FireStationServiceTest {
     );
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
-    Address foundAddress = new Address("someRoad","someCity","someZipCode",new FireStation());
+    Address foundAddress = new Address();
+    foundAddress.setRoad("someRoad");
+    foundAddress.setCity("someCity");
+    foundAddress.setZipCode("someZipCode");
+    foundAddress.setFireStation(new FireStation());
     when(iAddressServiceMocked.getByRoad(givenJsonFireStation.getAddress())).thenReturn(foundAddress);
     Address addressToSave = foundAddress;
     addressToSave.setFireStation(null);

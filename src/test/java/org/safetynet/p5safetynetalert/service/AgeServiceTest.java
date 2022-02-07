@@ -121,14 +121,14 @@ public class AgeServiceTest {
     //Given
     Collection<PersonDTO> personDTOCollectionToTest = new ArrayList<>();
     for (int i = 0; i < 3; i++) {
-      personDTOCollectionToTest.add(
-        new PersonDTO(null, null, null, "01/01/1965", null)
-      );
+      PersonDTO personDTOToAdd = new PersonDTO();
+      personDTOToAdd.setBirthDate("01/01/1965");
+      personDTOCollectionToTest.add(personDTOToAdd);
     }
     for (int i = 0; i < 2; i++) {
-      personDTOCollectionToTest.add(
-        new PersonDTO(null, null, null, "01/01/" + (LocalDate.now().getYear() - 4), null)
-      );
+      PersonDTO personDTOToAdd = new PersonDTO();
+      personDTOToAdd.setBirthDate("01/01/" + (LocalDate.now().getYear() - 4));
+      personDTOCollectionToTest.add(personDTOToAdd);
     }
 
     //When

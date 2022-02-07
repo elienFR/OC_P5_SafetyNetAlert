@@ -13,13 +13,6 @@ public class PersonForFloodDTO {
   private MedicalRecordsDTO medicalRecords;
 
   public PersonForFloodDTO(){}
-  public PersonForFloodDTO(String firstName, String lastName, String phone, Integer age, MedicalRecordsDTO medicalRecords) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.phone = phone;
-    this.age = age;
-    this.medicalRecords = medicalRecords;
-  }
 
   @Override
   public boolean equals(Object o) {

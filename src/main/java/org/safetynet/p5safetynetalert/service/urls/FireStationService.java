@@ -174,7 +174,10 @@ public class FireStationService implements IFireStationService {
         savedAddress = iAddressService.getByRoad(road);
       } else {
         LOGGER.debug("Saving new address because it does not already exists.");
-        savedAddress = new Address(jsonFireStation.getAddress(), "Culver", "97451", null);
+        savedAddress = new Address();
+        savedAddress.setRoad(jsonFireStation.getAddress());
+        savedAddress.setCity("Culver");
+        savedAddress.setZipCode("97451");
       }
 
       // If a proper fire station is registered in json object
@@ -185,8 +188,10 @@ public class FireStationService implements IFireStationService {
           );
         } else {
           LOGGER.debug("Creating new fire station because it does not already exists.");
-          FireStation newFireStation = save(new FireStation(fireStationNumber));
-          savedAddress.setFireStation(newFireStation);
+          FireStation fireStationToSave = new FireStation();
+          fireStationToSave.setNumber(fireStationNumber);
+          FireStation savedFireStation = save(fireStationToSave);
+          savedAddress.setFireStation(savedFireStation);
         }
       } else { //Is similar to create a new address without fire station.
         LOGGER.warn("Fire station number in json is null or blank.");
@@ -217,15 +222,18 @@ public class FireStationService implements IFireStationService {
     LOGGER.debug("Updating fire station in DB...");
     String road = jsonFireStation.getAddress();
     String fireStationNumber = jsonFireStation.getStation();
-    FireStation fireStationToUpdate;
+    FireStation fireStationToUpdated;
 
     //If the fire station has properly been filled
     if (fireStationNumber != null && !fireStationNumber.isBlank()) {
       //If it does not already exist in DB
       if (!existsByNumber(fireStationNumber)) {
-        fireStationToUpdate = save(new FireStation(fireStationNumber));
+//        FireStation fireStationToUpdate = new FireStation();
+        FireStation fireStationToUpdate = new FireStation();
+        fireStationToUpdate.setNumber(fireStationNumber);
+        fireStationToUpdated = save(fireStationToUpdate);
       } else {
-        fireStationToUpdate = getByNumber(jsonFireStation.getStation());
+        fireStationToUpdated = getByNumber(jsonFireStation.getStation());
       }
     } else {
       LOGGER.warn("Fire station from json file is null or blank.");
@@ -235,7 +243,7 @@ public class FireStationService implements IFireStationService {
     if (road != null) {
       if (iAddressService.existsByRoad(road)) {
         Address updatedAddress = iAddressService.getByRoad(road);
-        updatedAddress.setFireStation(fireStationToUpdate);
+        updatedAddress.setFireStation(fireStationToUpdated);
         iAddressService.save(updatedAddress);
       } else {
         return null;

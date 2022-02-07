@@ -159,8 +159,14 @@ public class AddressServiceTest {
   @Test
   public void convertAddressToAddressDTO(){
     //given
-    Address givenAddress = new Address("rue poitier","nantes","44000",null);
-    AddressDTO expected = new AddressDTO("rue poitier","nantes","44000");
+    Address givenAddress = new Address();
+    givenAddress.setRoad("rue poitier");
+      givenAddress.setCity("nantes");
+    givenAddress.setZipCode("44000");
+    AddressDTO expected = new AddressDTO();
+    expected.setRoad("rue poitier");
+    expected.setCity("nantes");
+    expected.setZip("44000");
     //when
     AddressDTO result = iAddressService.convertAddressToAddressDTO(givenAddress);
     //then

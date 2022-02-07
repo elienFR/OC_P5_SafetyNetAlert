@@ -33,18 +33,22 @@ public class PersonsAllergyServiceTest {
     List<String> expectedContent = new ArrayList<>(List.of("someAllergy", "someOtherAllergy"));
     List<PersonsAllergy> givenPersonsAllergyList = new ArrayList<>();
     Person personConcerned = new Person();
-    givenPersonsAllergyList.add(
-      new PersonsAllergy(
-        personConcerned,
-        new Allergy("someAllergy")
-      )
-    );
-    givenPersonsAllergyList.add(
-      new PersonsAllergy(
-        personConcerned,
-        new Allergy("someOtherAllergy")
-      )
-    );
+
+    Allergy linkedAllergy1 = new Allergy();
+    linkedAllergy1.setName("someAllergy");
+    PersonsAllergy personsAllergy1 = new PersonsAllergy();
+    personsAllergy1.setPerson(personConcerned);
+    personsAllergy1.setAllergy(linkedAllergy1);
+
+    Allergy linkedAllergy2 = new Allergy();
+    linkedAllergy2.setName("someOtherAllergy");
+    PersonsAllergy personsAllergy2 = new PersonsAllergy();
+    personsAllergy2.setPerson(personConcerned);
+    personsAllergy2.setAllergy(linkedAllergy2);
+
+    givenPersonsAllergyList.add(personsAllergy1);
+    givenPersonsAllergyList.add(personsAllergy2);
+
     //when
     List<String> result = iPersonsAllergyService.getAllergiesFromPersonsMedications(givenPersonsAllergyList);
     //then
@@ -65,22 +69,33 @@ public class PersonsAllergyServiceTest {
   @Test
   public void saveTest() {
 //given
-    Person givenPerson = new Person("john","doe",null,null,null,null);
-    Allergy givenAllergy = new Allergy("someAllergy");
-    PersonsAllergy expectedPersonsAllergy = new PersonsAllergy(givenPerson, givenAllergy);
-    PersonsAllergy savedPersonsAllergy = new PersonsAllergy(givenPerson,givenAllergy);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+
+    Allergy givenAllergy = new Allergy();
+    givenAllergy.setName("someAllergy");
+
+    PersonsAllergy expectedPersonsAllergy = new PersonsAllergy();
+    expectedPersonsAllergy.setPerson(givenPerson);
+    expectedPersonsAllergy.setAllergy(givenAllergy);
+
+    PersonsAllergy savedPersonsAllergy = new PersonsAllergy();
+    savedPersonsAllergy.setPerson(givenPerson);
+    savedPersonsAllergy.setAllergy(givenAllergy);
     when(personsAllergyRepository.save(savedPersonsAllergy)).thenReturn(expectedPersonsAllergy);
+
     //when
     PersonsAllergy result = iPersonsAllergyService.save(savedPersonsAllergy);
     //then
     assertThat(result).isEqualTo(expectedPersonsAllergy);
     assertThat(result.getAllergy().getName()).isEqualTo("someAllergy");
     assertThat(result.getPerson().getFirstName()).isEqualTo("john");
-    verify(personsAllergyRepository,Mockito.times(1)).save(savedPersonsAllergy);
+    verify(personsAllergyRepository, Mockito.times(1)).save(savedPersonsAllergy);
   }
 
   @Test
-  public void deleteAllFromPersonTest(){
+  public void deleteAllFromPersonTest() {
     //given
     Person givenPersonToWhomWeDeleteAllergies = new Person();
     //when

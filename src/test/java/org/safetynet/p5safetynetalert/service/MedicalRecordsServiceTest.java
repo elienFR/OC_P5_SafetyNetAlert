@@ -58,7 +58,10 @@ public class MedicalRecordsServiceTest {
   @Test
   public void existsFromPersonTest() {
     //given
-    Person givenPerson = new Person("john", "doe", "1/1/1", null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+    givenPerson.setBirthDate("1/1/1");
 
     List<String> givenMedications = new ArrayList<>();
     givenMedications.add("some meds");
@@ -80,7 +83,10 @@ public class MedicalRecordsServiceTest {
   @Test
   public void existsFromPersonTestBlankBirthDate() {
     //given
-    Person givenPerson = new Person("john", "doe", "", null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+    givenPerson.setBirthDate("");
 
     List<String> givenMedications = new ArrayList<>();
     givenMedications.add("some meds");
@@ -102,7 +108,9 @@ public class MedicalRecordsServiceTest {
   @Test
   public void existsFromPersonTestNullBirthDate() {
     //given
-    Person givenPerson = new Person("john", "doe", null, null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
 
     List<String> givenMedications = new ArrayList<>();
     givenMedications.add("some meds");
@@ -124,7 +132,10 @@ public class MedicalRecordsServiceTest {
   @Test
   public void existsFromPersonTestNoMeds() {
     //given
-    Person givenPerson = new Person("john", "doe", "1/1/1", null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+    givenPerson.setBirthDate("1/1/1");
 
     List<String> givenMedications = new ArrayList<>();
     List<String> givenAllergies = new ArrayList<>();
@@ -145,7 +156,10 @@ public class MedicalRecordsServiceTest {
   @Test
   public void existsFromPersonTestNoAllergies() {
     //given
-    Person givenPerson = new Person("john", "doe", "1/1/1", null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+    givenPerson.setBirthDate("1/1/1");
 
     List<String> givenMedications = new ArrayList<>();
     givenMedications.add("some meds");
@@ -166,7 +180,9 @@ public class MedicalRecordsServiceTest {
   @Test
   public void existsFromPersonTestFullNull() {
     //given
-    Person givenPerson = new Person("john", "doe", null, null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
 
     List<String> givenMedications = new ArrayList<>();
     List<String> givenAllergies = new ArrayList<>();
@@ -191,26 +207,25 @@ public class MedicalRecordsServiceTest {
     JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
     givenJsonMedicalRecord.setMedications(List.of("first meds exists", "second meds does not exist"));
 
-    Medication expectedMedicationToFind = new Medication("first meds");
-    Medication expectedMedicationToSave = new Medication("second meds does not exist");
+    Medication expectedMedicationToFind = new Medication();
+    expectedMedicationToFind.setName("first meds");
+    Medication expectedMedicationToSave = new Medication();
+    expectedMedicationToFind.setName("second meds does not exist");
 
     //here we consider the medication already exists
-    when(medicationServiceMocked.existsByName(
-      givenJsonMedicalRecord.getMedications().get(0)
-    )).thenReturn(true);
-    when(medicationServiceMocked.existsByName(
-      givenJsonMedicalRecord.getMedications().get(1)
-    )).thenReturn(false);
-    when(medicationServiceMocked.getByName(
-      givenJsonMedicalRecord.getMedications().get(0)
-    )).thenReturn(expectedMedicationToFind);
-    when(medicationServiceMocked.getByName(
-      givenJsonMedicalRecord.getMedications().get(1)
-    )).thenReturn(expectedMedicationToSave);
-    when(medicationServiceMocked.save(new Medication("second meds does not exist")
-    )).thenReturn(expectedMedicationToSave);
+    when(medicationServiceMocked.existsByName(givenJsonMedicalRecord.getMedications().get(0))).thenReturn(true);
+    when(medicationServiceMocked.existsByName(givenJsonMedicalRecord.getMedications().get(1))).thenReturn(false);
+    when(medicationServiceMocked.getByName(givenJsonMedicalRecord.getMedications().get(0))).thenReturn(expectedMedicationToFind);
+    when(medicationServiceMocked.getByName(givenJsonMedicalRecord.getMedications().get(1))).thenReturn(expectedMedicationToSave);
+    Medication medicationToSave = new Medication();
+    medicationToSave.setName("second meds does not exist");
+    when(medicationServiceMocked.save(medicationToSave)).thenReturn(expectedMedicationToSave);
 
-    Person givenPerson = new Person("john", "doe", "1/1/1", null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+    givenPerson.setBirthDate("1/1/1");
+
     PersonsMedication expectedPersonsMedicationToSave1 = new PersonsMedication();
     expectedPersonsMedicationToSave1.setPerson(givenPerson);
     expectedPersonsMedicationToSave1.setMedication(expectedMedicationToFind);
@@ -240,26 +255,25 @@ public class MedicalRecordsServiceTest {
     JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
     givenJsonMedicalRecord.setAllergies(List.of("first allergy exists", "second allergy does not exist"));
 
-    Allergy expectedAllergyToFind = new Allergy("first allergy exists");
-    Allergy expectedAllergyToSave = new Allergy("second allergy does not exist");
+    Allergy expectedAllergyToFind = new Allergy();
+    expectedAllergyToFind.setName("first allergy exists");
+    Allergy expectedAllergyToSave = new Allergy();
+    expectedAllergyToSave.setName("second allergy does not exist");
 
     //here we consider the medication already exists
-    when(allergyServiceMocked.exists(
-      givenJsonMedicalRecord.getAllergies().get(0)
-    )).thenReturn(true);
-    when(allergyServiceMocked.exists(
-      givenJsonMedicalRecord.getAllergies().get(1)
-    )).thenReturn(false);
-    when(allergyServiceMocked.getByName(
-      givenJsonMedicalRecord.getAllergies().get(0)
-    )).thenReturn(expectedAllergyToFind);
-    when(allergyServiceMocked.getByName(
-      givenJsonMedicalRecord.getAllergies().get(1)
-    )).thenReturn(expectedAllergyToSave);
-    when(allergyServiceMocked.save(new Allergy("second allergy does not exist")
-    )).thenReturn(expectedAllergyToSave);
+    when(allergyServiceMocked.exists(givenJsonMedicalRecord.getAllergies().get(0))).thenReturn(true);
+    when(allergyServiceMocked.exists(givenJsonMedicalRecord.getAllergies().get(1))).thenReturn(false);
+    when(allergyServiceMocked.getByName(givenJsonMedicalRecord.getAllergies().get(0))).thenReturn(expectedAllergyToFind);
+    when(allergyServiceMocked.getByName(givenJsonMedicalRecord.getAllergies().get(1))).thenReturn(expectedAllergyToSave);
+    Allergy allergyToSave = new Allergy();
+    allergyToSave.setName("second allergy does not exist");
+    when(allergyServiceMocked.save(allergyToSave)).thenReturn(expectedAllergyToSave);
 
-    Person givenPerson = new Person("john", "doe", "1/1/1", null, null, null);
+    Person givenPerson = new Person();
+    givenPerson.setFirstName("john");
+    givenPerson.setLastName("doe");
+    givenPerson.setBirthDate("1/1/1");
+
     PersonsAllergy expectedPersonsAllergyToSave1 = new PersonsAllergy();
     expectedPersonsAllergyToSave1.setPerson(givenPerson);
     expectedPersonsAllergyToSave1.setAllergy(expectedAllergyToFind);

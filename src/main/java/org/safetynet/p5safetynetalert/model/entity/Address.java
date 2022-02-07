@@ -26,21 +26,6 @@ public class Address {
   public Address() {
   }
 
-  public Address(String road, String city, String zipCode, FireStation fireStation) {
-    this.road = road;
-    this.city = city;
-    this.zipCode = zipCode;
-    this.fireStation = fireStation;
-  }
-
-  public Address(Integer id, String road, String city, String zipCode, FireStation fireStation) {
-    this.id = id;
-    this.road = road;
-    this.city = city;
-    this.zipCode = zipCode;
-    this.fireStation = fireStation;
-  }
-
   public Collection<Person> getPersons() {
     return persons;
   }
