@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Configuration
-@ConfigurationProperties(prefix = "org.safetynet.p5safetynetalert.dbapi")
+@ConfigurationProperties(prefix = "org.safetynet.p5safetynetalert")
 @Setter
 @Getter
 public class CustomProperties {
