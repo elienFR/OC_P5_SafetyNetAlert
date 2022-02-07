@@ -10,10 +10,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-class DbApiApplicationTests {
+class SafetyNetAlertAppTests {
 
 	@Autowired
-	DbApiApplication dbApiApplication;
+	SafetyNetAlertApp safetyNetAlertApp;
 	@MockBean
 	private IJsonDataInjectorService iJsonDataInjectorService;
 

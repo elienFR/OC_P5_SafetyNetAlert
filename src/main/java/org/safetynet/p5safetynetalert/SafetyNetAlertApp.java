@@ -6,13 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DbApiApplication implements CommandLineRunner {
+public class SafetyNetAlertApp implements CommandLineRunner {
 
   @Autowired
   org.safetynet.p5safetynetalert.service.initPersist.IJsonDataInjectorService IJsonDataInjectorService;
 
   public static void main(String[] args) {
-    SpringApplication.run(DbApiApplication.class, args);
+    SpringApplication.run(SafetyNetAlertApp.class, args);
   }
 
   @Override

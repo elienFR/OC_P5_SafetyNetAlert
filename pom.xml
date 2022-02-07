@@ -13,8 +13,9 @@
 
     <groupId>org.safetynet</groupId>
     <artifactId>P5SafetyNetAlert</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
+
     <modules>
     </modules>
 
@@ -156,7 +157,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                org.safetynet.p5safetynetalert
+                                org.safetynet.p5safetynetalert.SafetyNetAlertApp
                             </mainClass>
                         </manifest>
                     </archive>
