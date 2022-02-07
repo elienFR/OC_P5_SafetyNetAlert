@@ -1,7 +1,6 @@
 package org.safetynet.p5safetynetalert.dbapi.service.initPersist;
 
 import com.google.gson.Gson;
-import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.safetynet.p5safetynetalert.dbapi.CustomProperties;
@@ -31,7 +30,6 @@ public class JsonFileExtractorServiceImpl implements IJsonFileExtractorService {
    */
   public JsonData fromFile(String fileName) {
     logger.debug("Start Extracting Json file.");
-
     //Json's file location
     String jsonLocation = props.getMainResourcesPath() + fileName;
     String jsonContent = new String();

@@ -116,7 +116,7 @@ public class AddressService implements IAddressService {
   /**
    * This method converts an address into an addressDTO
    *
-   * @param address is the adress to be converted
+   * @param address is the address to be converted
    * @return is the output addressDTO
    */
   @Override

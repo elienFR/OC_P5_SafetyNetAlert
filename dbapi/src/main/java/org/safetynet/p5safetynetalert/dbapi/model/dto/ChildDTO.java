@@ -1,10 +1,8 @@
 package org.safetynet.p5safetynetalert.dbapi.model.dto;
 
-import lombok.Getter;
 
 import java.util.Objects;
 
-@Getter
 public class ChildDTO {
   private String firstName;
   private String lastName;

@@ -1,12 +1,10 @@
 package org.safetynet.p5safetynetalert.dbapi.model.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+
 import lombok.Setter;
 
 import java.util.Objects;
 
-@Getter
 @Setter
 public class PersonInfoDTO {
   private String firstName;
@@ -31,4 +29,5 @@ public class PersonInfoDTO {
     PersonInfoDTO that = (PersonInfoDTO) o;
     return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(age, that.age) && Objects.equals(mail, that.mail) && Objects.equals(medicalRecords, that.medicalRecords);
   }
+
 }

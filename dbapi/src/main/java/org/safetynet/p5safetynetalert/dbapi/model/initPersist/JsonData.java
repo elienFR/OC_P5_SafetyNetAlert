@@ -9,4 +9,5 @@ public class JsonData {
   private JsonPersons persons;
   private JsonMedicalRecords medicalRecords;
   private JsonFireStations fireStations;
+
 }
