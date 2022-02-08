@@ -1,10 +1,12 @@
 package org.safetynet.p5safetynetalert.model.dto;
 
 
+import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Objects;
 
+@Getter
 @Setter
 public class ChildDTO {
   private String firstName;
