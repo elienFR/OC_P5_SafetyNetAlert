@@ -179,9 +179,10 @@
                 <configuration>
                     <!--suppress UnresolvedMavenProperty -->
                     <argLine>${surefire.jacoco.args}</argLine>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
                 </configuration>
             </plugin>
-
+            <!--maven-jacoco-plugin-->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -222,10 +223,6 @@
                 <artifactId>maven-project-info-reports-plugin</artifactId>
                 <version>${mvn.project.info.reports.version}</version>
             </plugin>
-
         </plugins>
     </build>
-
-
-
 </project>
