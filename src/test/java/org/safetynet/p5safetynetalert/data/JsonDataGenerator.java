@@ -1,36 +1,19 @@
-package org.safetynet.p5safetynetalert.service.initPersist;
+package org.safetynet.p5safetynetalert.data;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.safetynet.p5safetynetalert.model.initPersist.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+public class JsonDataGenerator {
 
-@ExtendWith(MockitoExtension.class)
-public class JsonDataInjectorServiceTest {
-
-  private static IJsonDataInjectorService iJsonDataInjectorServiceUnderTest;
-
-  @Mock
-  private static IJsonFileExtractorService iJsonFileExtractorServiceMocked;
-
-  private static JsonData jsonData;
-
-  @BeforeAll
-  public static void init() {
+  public static JsonData generate() {
     JsonPerson jsonPerson1 = new JsonPerson();
     jsonPerson1.setFirstName("john");
     jsonPerson1.setLastName("doe");
     jsonPerson1.setPhone("somePhone");
     jsonPerson1.setEmail("e@e.com");
+    jsonPerson1.setAddress("someRoad");
     jsonPerson1.setCity("someCity");
     jsonPerson1.setZip("someZip");
 
@@ -42,7 +25,7 @@ public class JsonDataInjectorServiceTest {
 
     JsonFireStation jsonFireStation = new JsonFireStation();
     jsonFireStation.setStation("someStation");
-    jsonFireStation.setAddress("someAddress");
+    jsonFireStation.setAddress("someRoad");
 
     List<JsonFireStation> jsonFireStationList = new ArrayList<>();
     jsonFireStationList.add(jsonFireStation);
@@ -54,8 +37,8 @@ public class JsonDataInjectorServiceTest {
     jsonMedicalRecord.setFirstName("jenny");
     jsonMedicalRecord.setLastName("Fer");
     jsonMedicalRecord.setBirthdate("someBirthDate");
-    jsonMedicalRecord.setAllergies(List.of("one allergy","twoAllergies"));
-    jsonMedicalRecord.setMedications(List.of("one meds","two meds"));
+    jsonMedicalRecord.setAllergies(List.of("one allergy", "twoAllergies"));
+    jsonMedicalRecord.setMedications(List.of("one meds", "two meds"));
 
     List<JsonMedicalRecord> jsonMedicalRecordList = new ArrayList<>();
     jsonMedicalRecordList.add(jsonMedicalRecord);
@@ -63,23 +46,11 @@ public class JsonDataInjectorServiceTest {
     JsonMedicalRecords jsonMedicalRecords = new JsonMedicalRecords();
     jsonMedicalRecords.setMedicalrecords(jsonMedicalRecordList);
 
-    jsonData = new JsonData();
+    JsonData jsonData = new JsonData();
     jsonData.setPersons(jsonPersons);
     jsonData.setFireStations(jsonFireStations);
     jsonData.setMedicalRecords(jsonMedicalRecords);
-  }
 
-  @BeforeEach
-  public void setup(){
-    when(iJsonFileExtractorServiceMocked.fromFile("test")).thenReturn(jsonData);
+    return jsonData;
   }
-
-  @Disabled
-  @Test
-  public void test1(){
-    iJsonDataInjectorServiceUnderTest = new JsonDataInjectorServiceImpl();
-    iJsonDataInjectorServiceUnderTest.initDb();
-    System.out.println("print test");
-  }
-
 }

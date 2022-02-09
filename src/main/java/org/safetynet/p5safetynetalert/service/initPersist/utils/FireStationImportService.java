@@ -37,5 +37,4 @@ public class FireStationImportService {
       mySet.add(jsonFireStation.getStation());
     }
   }
-
 }
