@@ -4,23 +4,26 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.safetynet.p5safetynetalert.CustomProperties;
 import org.safetynet.p5safetynetalert.model.initPersist.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class JsonDataInjectorServiceTest {
+@SpringBootTest
+public class JsonDataInjectorServiceTest2 {
 
+  @Autowired
   private static IJsonDataInjectorService iJsonDataInjectorServiceUnderTest;
-
-  @Mock
+  @MockBean
   private static IJsonFileExtractorService iJsonFileExtractorServiceMocked;
+  @MockBean
+  private static CustomProperties customPropertiesMocked;
 
   private static JsonData jsonData;
 
@@ -71,15 +74,18 @@ public class JsonDataInjectorServiceTest {
 
   @BeforeEach
   public void setup(){
-    when(iJsonFileExtractorServiceMocked.fromFile("test")).thenReturn(jsonData);
+
   }
 
-  @Disabled
   @Test
-  public void test1(){
-    iJsonDataInjectorServiceUnderTest = new JsonDataInjectorServiceImpl();
+  public void initDBTest(){
+    String givenMainResourcePath = "./src/test/resources/";
+    when(customPropertiesMocked.getMainResourcesPath()).thenReturn(givenMainResourcePath);
+
+
+    when(iJsonFileExtractorServiceMocked.fromFile("data.json")).thenReturn(jsonData);
+
     iJsonDataInjectorServiceUnderTest.initDb();
-    System.out.println("print test");
   }
 
 }
