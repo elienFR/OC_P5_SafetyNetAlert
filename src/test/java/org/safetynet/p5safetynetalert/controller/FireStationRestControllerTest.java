@@ -88,7 +88,10 @@ public class FireStationRestControllerTest {
   @Test
   public void postFireStationAddressMappingTest() throws Exception {
     //GIVEN
-    JsonFireStation jsonFireStation = new JsonFireStation("some address", "1");
+    JsonFireStation jsonFireStation = new JsonFireStation();
+    jsonFireStation.setAddress("some address");
+    jsonFireStation.setStation("1");
+
     String jsonStringTested = new ObjectMapper().writeValueAsString(jsonFireStation);
     when(iFireStationServiceMock.saveAddressFireStationMapping(jsonFireStation)).thenReturn(new JsonFireStation());
 
@@ -185,7 +188,10 @@ public class FireStationRestControllerTest {
   @Test
   public void deleteFireStationAddressMappingTest() throws Exception {
     //GIVEN
-    JsonFireStation jsonFireStation = new JsonFireStation("some address","3");
+    JsonFireStation jsonFireStation = new JsonFireStation();
+    jsonFireStation.setAddress("some address");
+    jsonFireStation.setStation("3");
+
     String jsonStringTested = new ObjectMapper().writeValueAsString(jsonFireStation);
     when(iFireStationServiceMock.eraseAddressFireStationMapping(jsonFireStation)).thenReturn(new JsonFireStation());
 
@@ -218,7 +224,10 @@ public class FireStationRestControllerTest {
   @Test
   public void deleteFireStationAddressMappingTestNotFound() throws Exception {
     //GIVEN
-    JsonFireStation jsonFireStation = new JsonFireStation("some address","3");
+    JsonFireStation jsonFireStation = new JsonFireStation();
+    jsonFireStation.setAddress("some address");
+    jsonFireStation.setStation("3");
+
     String jsonStringTested = new ObjectMapper().writeValueAsString(jsonFireStation);
     when(iFireStationServiceMock.eraseAddressFireStationMapping(jsonFireStation)).thenReturn(null);
 

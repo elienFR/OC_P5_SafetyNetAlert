@@ -186,10 +186,8 @@ public class FireStationServiceTest {
   @Test
   public void saveAddressFireStationMappingTestNullRoad() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      null,
-      "someStation"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setStation("someStation");
 
     //when
     JsonFireStation result = iFireStationService.saveAddressFireStationMapping(givenJsonFireStation);
@@ -205,10 +203,10 @@ public class FireStationServiceTest {
   @Test
   public void saveAddressFireStationMappingTestBlankRoad() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "",
-      "someStation"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("");
+    givenJsonFireStation.setStation("someStation");
+
 
     //when
     JsonFireStation result = iFireStationService.saveAddressFireStationMapping(givenJsonFireStation);
@@ -224,10 +222,8 @@ public class FireStationServiceTest {
   @Test
   public void saveAddressFireStationMappingTestSomeAddressGivenButNotExistingWithNullFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someAddress",
-      null
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someAddress");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(false);
 
@@ -245,10 +241,8 @@ public class FireStationServiceTest {
   @Test
   public void saveAddressFireStationMappingTestSomeAddressGivenAndExistingWithNullFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someAddress",
-      null
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someAddress");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
     FireStation linkedFireStation = new FireStation();
@@ -280,10 +274,9 @@ public class FireStationServiceTest {
   @Test
   public void saveAddressFireStationMappingTestSomeAddressGivenAndExistingWithBlankFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someAddress",
-      ""
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("SomeAddress");
+    givenJsonFireStation.setStation("");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
     FireStation linkedFireStation = new FireStation();
@@ -315,10 +308,9 @@ public class FireStationServiceTest {
   @Test
   public void saveAddressFireStationMappingTestSomeAddressGivenAndExistingWithNonExistingFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someAddress",
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someAddress");
+    givenJsonFireStation.setStation("someNumber");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
     FireStation linkedFireStation = new FireStation();
@@ -355,10 +347,9 @@ public class FireStationServiceTest {
   @Test
   public void saveAddressFireStationMappingTestSomeAddressGivenAndExistingWithExistingFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someAddress",
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someAddress");
+    givenJsonFireStation.setStation("someNumber");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
     FireStation linkedFireStation = new FireStation();
@@ -397,10 +388,8 @@ public class FireStationServiceTest {
   @Test
   public void updateAddressFireStationMappingTestWithNullFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someRoad",
-      null
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someRoad");
 
     //when
     JsonFireStation result = iFireStationService.updateAddressFireStationMapping(givenJsonFireStation);
@@ -414,10 +403,9 @@ public class FireStationServiceTest {
   @Test
   public void updateAddressFireStationMappingTestWithBlankFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someRoad",
-      ""
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someRoad");
+    givenJsonFireStation.setStation("");
 
     //when
     JsonFireStation result = iFireStationService.updateAddressFireStationMapping(givenJsonFireStation);
@@ -431,10 +419,8 @@ public class FireStationServiceTest {
   @Test
   public void updateAddressFireStationMappingTestWithNullAddress() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      null,
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setStation("someNumber");
 
     //when
     JsonFireStation result = iFireStationService.updateAddressFireStationMapping(givenJsonFireStation);
@@ -448,10 +434,9 @@ public class FireStationServiceTest {
   @Test
   public void updateAddressFireStationMappingTestWithNonExistingFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someRoad",
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someRoad");
+    givenJsonFireStation.setStation("someNumber");
 
     when(fireStationRepositoryMocked.existsByNumber(givenJsonFireStation.getStation())).thenReturn(false);
 
@@ -472,10 +457,9 @@ public class FireStationServiceTest {
   @Test
   public void updateAddressFireStationMappingTestWithNonExistingAddress() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someRoad",
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someRoad");
+    givenJsonFireStation.setStation("someNumber");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(false);
 
@@ -491,10 +475,9 @@ public class FireStationServiceTest {
   @Test
   public void updateAddressFireStationMappingTestExistingAddressAndFireStation() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someRoad",
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someRoad");
+    givenJsonFireStation.setStation("someNumber");
 
     when(fireStationRepositoryMocked.existsByNumber(givenJsonFireStation.getStation())).thenReturn(true);
     FireStation foundFireStation = new FireStation();
@@ -527,10 +510,9 @@ public class FireStationServiceTest {
   @Test
   public void eraseAddressFireStationMappingTestNonExistingAddress() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someRoad",
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someRoad");
+    givenJsonFireStation.setStation("someNumber");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(false);
 
@@ -545,10 +527,9 @@ public class FireStationServiceTest {
   @Test
   public void eraseAddressFireStationMappingTest() {
     //given
-    JsonFireStation givenJsonFireStation = new JsonFireStation(
-      "someRoad",
-      "someNumber"
-    );
+    JsonFireStation givenJsonFireStation = new JsonFireStation();
+    givenJsonFireStation.setAddress("someRoad");
+    givenJsonFireStation.setStation("someNumber");
 
     when(iAddressServiceMocked.existsByRoad(givenJsonFireStation.getAddress())).thenReturn(true);
     Address foundAddress = new Address();

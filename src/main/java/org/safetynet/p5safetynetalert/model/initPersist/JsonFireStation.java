@@ -13,11 +13,4 @@ public class JsonFireStation {
 
   public JsonFireStation() {
   }
-
-  public JsonFireStation(String address, String station) {
-    this.address = address;
-    this.station = station;
-  }
-
-
 }
