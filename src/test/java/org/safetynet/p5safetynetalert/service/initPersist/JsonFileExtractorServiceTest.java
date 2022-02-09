@@ -7,7 +7,7 @@ import org.safetynet.p5safetynetalert.CustomProperties;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-public class JsonFileExtractorServiceImplTest {
+public class JsonFileExtractorServiceTest {
 
   private IJsonFileExtractorService iJsonFileExtractorServiceUnderTest;
   @Mock
