@@ -961,10 +961,19 @@ public class PersonServiceTest {
     String givenBirthDate = "01/01/1965";
     List<String> givenMedications = new ArrayList<>();
     List<String> givenAllergies = new ArrayList<>();
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
+
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+
     //when
     JsonMedicalRecord result = iPersonService.createMedicalRecords(givenJsonMedicalRecord);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     verify(personRepositoryMocked, Mockito.times(0)).findByFirstNameAndLastName(givenFirstName, givenLastName);
@@ -987,7 +996,14 @@ public class PersonServiceTest {
     MedicalRecordsDTO givenMedicalRecordDTO = new MedicalRecordsDTO();
     givenMedicalRecordDTO.setMedications(givenMedications);
     givenMedicalRecordDTO.setAllergies(givenAllergies);
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
+
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
     foundPerson.setLastName(givenLastName);
@@ -999,8 +1015,10 @@ public class PersonServiceTest {
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
     when(iMedicalRecordsServiceMocked.getMedicalRecords(foundPerson)).thenReturn(givenMedicalRecordDTO);
     when(iMedicalRecordsServiceMocked.existsFromPerson(foundPerson)).thenReturn(true);
+
     //when
     JsonMedicalRecord result = iPersonService.createMedicalRecords(givenJsonMedicalRecord);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     verify(personRepositoryMocked, Mockito.times(1)).findByFirstNameAndLastName(givenFirstName, givenLastName);
@@ -1027,7 +1045,14 @@ public class PersonServiceTest {
     String givenFirstName = "emile";
     String givenLastName = "denis";
     String givenBirthDate = "01/01/1965";
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
+
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
     foundPerson.setLastName(givenLastName);
@@ -1067,7 +1092,14 @@ public class PersonServiceTest {
     String givenFirstName = "emile";
     String givenLastName = "denis";
     String givenBirthDate = "01/01/1965";
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
+
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
     foundPerson.setLastName(givenLastName);
@@ -1101,7 +1133,13 @@ public class PersonServiceTest {
     String givenFirstName = "emile";
     String givenLastName = "denis";
     String givenBirthDate = "01/01/1965";
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
 
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
@@ -1111,8 +1149,10 @@ public class PersonServiceTest {
     foundPerson.setEmail("mail@mail.com");
 
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+
     //when
     JsonMedicalRecord result = iPersonService.updateMedicalRecords(givenJsonMedicalRecord);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     verify(iMedicalRecordsServiceMocked, Mockito.times(0)).deletePersonsMedicationsFromPerson(foundPerson);
@@ -1131,7 +1171,14 @@ public class PersonServiceTest {
     String givenFirstName = "emile";
     String givenLastName = "denis";
     String givenBirthDate = "01/01/1965";
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
+
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
     foundPerson.setLastName(givenLastName);
@@ -1141,8 +1188,10 @@ public class PersonServiceTest {
 
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
+
     //when
     JsonMedicalRecord result = iPersonService.updateMedicalRecords(givenJsonMedicalRecord);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     verify(iMedicalRecordsServiceMocked, Mockito.times(1)).deletePersonsMedicationsFromPerson(foundPerson);
@@ -1161,7 +1210,14 @@ public class PersonServiceTest {
     String givenFirstName = "emile";
     String givenLastName = "denis";
     String givenBirthDate = "01/01/1965";
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+   JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
+
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
     foundPerson.setLastName(givenLastName);
@@ -1179,8 +1235,10 @@ public class PersonServiceTest {
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
     when(personRepositoryMocked.save(foundPerson)).thenReturn(savedPerson);
+
     //when
     JsonMedicalRecord result = iPersonService.updateMedicalRecords(givenJsonMedicalRecord);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     verify(personRepositoryMocked, Mockito.times(1)).save(foundPerson);
@@ -1200,7 +1258,14 @@ public class PersonServiceTest {
     String givenFirstName = "emile";
     String givenLastName = "denis";
     String givenBirthDate = "01/01/1965";
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
+
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
     foundPerson.setLastName(givenLastName);
@@ -1218,8 +1283,10 @@ public class PersonServiceTest {
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
     when(personRepositoryMocked.save(foundPerson)).thenReturn(updatedPerson);
+
     //when
     JsonMedicalRecord result = iPersonService.deleteMedicalRecords(givenJsonMedicalRecord);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).save(foundPerson);
     verify(iMedicalRecordsServiceMocked, Mockito.times(1)).deletePersonsMedicationsFromPerson(updatedPerson);
@@ -1238,7 +1305,13 @@ public class PersonServiceTest {
     String givenFirstName = "emile";
     String givenLastName = "denis";
     String givenBirthDate = "01/01/1965";
-    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord(givenFirstName, givenLastName, givenBirthDate, givenMedications, givenAllergies);
+
+    JsonMedicalRecord givenJsonMedicalRecord = new JsonMedicalRecord();
+    givenJsonMedicalRecord.setFirstName(givenFirstName);
+    givenJsonMedicalRecord.setLastName(givenLastName);
+    givenJsonMedicalRecord.setBirthdate(givenBirthDate);
+    givenJsonMedicalRecord.setMedications(givenMedications);
+    givenJsonMedicalRecord.setAllergies(givenAllergies);
 
     Person foundPerson = new Person();
     foundPerson.setFirstName(givenFirstName);
@@ -1255,8 +1328,10 @@ public class PersonServiceTest {
     foundPerson.setEmail("mail@mail.com");
 
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+
     //when
     JsonMedicalRecord result = iPersonService.deleteMedicalRecords(givenJsonMedicalRecord);
+
     //then
     verify(personRepositoryMocked, Mockito.times(0)).save(foundPerson);
     verify(iMedicalRecordsServiceMocked, Mockito.times(0)).deletePersonsMedicationsFromPerson(updatedPerson);
