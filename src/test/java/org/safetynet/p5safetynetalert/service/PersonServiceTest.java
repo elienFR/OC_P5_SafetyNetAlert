@@ -519,7 +519,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     Address expectedAddress = new Address();
     expectedAddress.setRoad("rue racine");
@@ -542,7 +550,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     //when
@@ -557,7 +573,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
     when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(true);
@@ -576,7 +600,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "";
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
@@ -592,7 +624,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = "";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
@@ -608,7 +648,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = null;
     String givenLastName = "michou";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
@@ -624,7 +672,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "jules";
     String givenLastName = null;
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     //when
     JsonPerson result = iPersonService.createPerson(givenJsonPerson);
@@ -640,10 +696,16 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, null, null, null, null, null);
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+
     //when
     JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     assertThat(result).isNull();
@@ -654,15 +716,27 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
+
     Address updatedAddress = new Address();
     Person foundPerson = new Person();
+
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPerson);
     when(iAddressServiceMocked.existsByRoadAndCityAndZipCode(any(Address.class))).thenReturn(false);
     when(iAddressServiceMocked.save(any(Address.class))).thenReturn(updatedAddress);
+
     //when
     JsonPerson result = iPersonService.updatePersonWithJsonPerson(givenJsonPerson);
+
     //then
     verify(personRepositoryMocked, Mockito.times(1)).existsByFirstNameAndLastName(givenFirstName, givenLastName);
     verify(iAddressServiceMocked, Mockito.times(1)).existsByRoadAndCityAndZipCode(any(Address.class));
@@ -676,7 +750,15 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
 
     Address updatedAddress = new Address();
     updatedAddress.setId(1);
@@ -710,9 +792,19 @@ public class PersonServiceTest {
     //given
     String givenFirstName = null;
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
+
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
+
     //then
     verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
     verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
@@ -725,9 +817,19 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
+
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
+
     //then
     verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
     verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
@@ -740,9 +842,19 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = null;
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
+
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
+
     //then
     verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
     verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
@@ -755,9 +867,19 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
+
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
+
     //then
     verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
     verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
@@ -770,10 +892,21 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
-    JsonPerson givenJsonPerson = new JsonPerson(givenFirstName, givenLastName, "rue racine", "nantes", "44000", "123", "mail@mail.com");
+
+    JsonPerson givenJsonPerson = new JsonPerson();
+    givenJsonPerson.setFirstName(givenFirstName);
+    givenJsonPerson.setLastName(givenLastName);
+    givenJsonPerson.setAddress("rue racine");
+    givenJsonPerson.setCity("nantes");
+    givenJsonPerson.setZip("44000");
+    givenJsonPerson.setPhone("123");
+    givenJsonPerson.setEmail("mail@mail.com");
+
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(false);
+
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
+
     //then
     verify(iPersonsAllergyServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
     verify(iPersonsMedicationServiceMocked, Mockito.times(0)).deleteAll(any(Iterable.class));
@@ -786,6 +919,7 @@ public class PersonServiceTest {
     //given
     String givenFirstName = "emile";
     String givenLastName = "denis";
+
     JsonPerson givenJsonPerson = new JsonPerson();
     givenJsonPerson.setFirstName(givenFirstName);
     givenJsonPerson.setLastName(givenLastName);
@@ -808,8 +942,10 @@ public class PersonServiceTest {
 
     when(personRepositoryMocked.existsByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(true);
     when(personRepositoryMocked.findByFirstNameAndLastName(givenFirstName, givenLastName)).thenReturn(foundPersonToDelete);
+
     //when
     JsonPerson result = iPersonService.delete(givenJsonPerson);
+
     //then
     verify(iPersonsAllergyServiceMocked, Mockito.times(1)).deleteAll(givenPersonsAllergies);
     verify(iPersonsMedicationServiceMocked, Mockito.times(1)).deleteAll(givenPersonsMedication);
