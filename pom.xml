@@ -187,11 +187,11 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
-                <configuration>
-                    <excludes>
-                        <exclude>org/safetynet/p5safetynetalert/service/initPersist/**</exclude>
-                    </excludes>
-                </configuration>
+<!--                <configuration>-->
+<!--                    <excludes>-->
+<!--                        <exclude>org/safetynet/p5safetynetalert/service/initPersist/**</exclude>-->
+<!--                    </excludes>-->
+<!--                </configuration>-->
                 <executions>
                     <execution>
                         <id>before-unit-test-execution</id>
