@@ -30,13 +30,17 @@ public class FireService implements IFireService {
   public FireDTO getFireDTOFromAddressInFire(String road) {
     LOGGER.debug("FireDTO creation...");
     Address address = iAddressService.getByRoad(road);
-    FireDTO fireDTO = new FireDTO();
-    fireDTO.setPersonsList(
-      iPersonService.convertPersonsInPersonForFireDTO(
-        iPersonService.getPersonsFromAddress(address))
-    );
-    fireDTO.setFireStationNumber(address.getFireStation().getNumber());
-    LOGGER.debug("FireDTO properly created");
-    return fireDTO;
+    if (address != null) {
+      FireDTO fireDTO = new FireDTO();
+      fireDTO.setPersonsList(
+        iPersonService.convertPersonsInPersonForFireDTO(
+          iPersonService.getPersonsFromAddress(address))
+      );
+      fireDTO.setFireStationNumber(address.getFireStation().getNumber());
+      LOGGER.debug("FireDTO properly created");
+      return fireDTO;
+    } else {
+      return null;
+    }
   }
 }
